@@ -155,7 +155,7 @@ export const getCurrentUser = () => {
       localStorage.getItem('persist:root') != null
         ? JSON.parse(localStorage.getItem('persist:root'))
         : null;
-        console.log('>>>>: src/helpers/Utils.js  : getCurrentUser -> error', authuser['authUser']);
+        console.log('>>>>: src/helpers/Utils.js  : getCurrentUser -> ok', authuser['authUser']);
     user = JSON.parse(authuser['authUser'])['currentUser'];
   } catch (error) {
     console.log('>>>>: src/helpers/Utils.js  : getCurrentUser -> error', error);

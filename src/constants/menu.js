@@ -10,15 +10,9 @@ const data = [
   {
     id: 'booking',
     icon: 'iconsminds-money-bag',
-    label: 'menu.booking',
+    label: 'menu.bookings',
     to: `${adminRoot}/booking`,
-    subs: [
-      {
-        icon: 'simple-icon-paper-plane',
-        label: 'menu.start',
-        to: `${adminRoot}/booking/start`,
-      },
-    ],
+    subs: [],
   },
   {
     id: 'chef',

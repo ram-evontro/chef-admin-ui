@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import { Colxx } from 'components/common/CustomBootstrap';
 import { images } from 'helpers/images';
-
+import { adminRoot } from 'constants/defaultValues';
 const ThumbListView = ({ product, isSelect, collect, onCheckItem }) => {
   return (
     <Colxx xxs="12" key={product.id} className="mb-3">
@@ -16,7 +16,7 @@ const ThumbListView = ({ product, isSelect, collect, onCheckItem }) => {
             active: isSelect,
           })}
         >
-          <NavLink to={`/app/chef/view?p=${product.id}`} className="d-flex">
+          <NavLink to={`${adminRoot}/chef/view?p=${product.id}`} className="d-flex">
             <img
               alt={product.name}
               src={product.user_details[0]?product.user_details[0]['picture']?product.user_details[0]['picture']:images.chefplaceholder.default:images.chefplaceholder.default}
@@ -25,7 +25,7 @@ const ThumbListView = ({ product, isSelect, collect, onCheckItem }) => {
           </NavLink>
           <div className="pl-2 d-flex flex-grow-1 min-width-zero">
             <div className="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
-              <NavLink to={`/app/chef/view?p=${product.id}`} className="w-40 w-sm-100">
+              <NavLink to={`${adminRoot}/chef/view?p=${product.id}`} className="w-40 w-sm-100">
                 <p className="list-item-heading mb-1 truncate">
                   {product.name}
                 </p>
