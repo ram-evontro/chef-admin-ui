@@ -6,6 +6,7 @@ import Menupageheading from './menupageheading';
 import AddNewModal from 'containers/pages/AddNewModal';
 import Menupagelisting from './menupagelisting';
 import useMousetrap from 'hooks/use-mousetrap';
+import Menuadd from './menuadd';
 
 const getIndex = (value, arr, prop) => {
   for (let i = 0; i < arr.length; i += 1) {
@@ -185,7 +186,7 @@ const Menu = ({ currentUser }) => {
           pageSizes={pageSizes}
           toggleModal={() => setModalOpen(!modalOpen)}
         />
-        <AddNewModal
+        <Menuadd
           modalOpen={modalOpen}
           toggleModal={() => setModalOpen(!modalOpen)}
           categories={categories}

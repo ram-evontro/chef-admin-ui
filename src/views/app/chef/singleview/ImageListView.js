@@ -9,6 +9,7 @@ import {
   CustomInput,
   Badge,
 } from 'reactstrap';
+import { adminRoot } from 'constants/defaultValues';
 import { NavLink } from 'react-router-dom';
 import classnames from 'classnames';
 import { ContextMenuTrigger } from 'react-contextmenu';
@@ -25,7 +26,7 @@ const ImageListView = ({ menu, isSelect, collect, onCheckItem }) => {
           })}
         >
           <div className="position-relative">
-            <NavLink to={`?p=${menu.id}`} className="w-40 w-sm-100">
+            <NavLink to={`${adminRoot}/chef/menuview?p=${menu.id}`} className="w-40 w-sm-100">
               <CardImg top alt={menu.title} src="https://chefassets.s3.ap-south-1.amazonaws.com/4101501.jpg" />
             </NavLink>
             <Badge

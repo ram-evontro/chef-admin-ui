@@ -8,7 +8,16 @@ const List = React.lazy(() =>
   import(/* webpackChunkName: "second" */ './list')
 );
 const Singleview = React.lazy(() =>
-  import(/* webpackChunkName: "second" */ './singleview')
+  import(/* webpackChunkName: "singleview" */ './singleview')
+);
+const Menuview = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './menuview')
+);
+const Allmenus = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './allmenus')
+);
+const Chefrequests = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './chefrequests')
 );
 const Chef = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
@@ -25,6 +34,18 @@ const Chef = ({ match }) => (
       <Route
         path={`${match.url}/view`}
         render={(props) => <Singleview {...props} />}
+      />
+      <Route
+        path={`${match.url}/menuview`}
+        render={(props) => <Menuview {...props} />}
+      />
+      <Route
+        path={`${match.url}/allmenus`}
+        render={(props) => <Allmenus {...props} />}
+      />
+      <Route
+        path={`${match.url}/chefrequests`}
+        render={(props) => <Chefrequests {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

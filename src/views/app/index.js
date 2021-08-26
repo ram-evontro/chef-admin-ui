@@ -13,10 +13,9 @@ const Booking = React.lazy(() =>
 const Chef = React.lazy(() =>
   import(/* webpackChunkName: "viwes-second-menu" */ './chef')
 );
-const BlankPage = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-blank-page" */ './blank-page')
+const Settings = React.lazy(() =>
+  import(/* webpackChunkName: "viwes-second-menu" */ './settings')
 );
-
 const App = ({ match }) => {
   return (
     <AppLayout>
@@ -36,15 +35,15 @@ const App = ({ match }) => {
               path={`${match.url}/chef`}
               render={(props) => <Chef {...props} />}
             />
+            <Route
+              path={`${match.url}/settings`}
+              render={(props) => <Settings {...props} />}
+            />
             {/* <ProtectedRoute
                     path={`${match.url}/second-menu`}
                     component={SecondMenu}
                     roles={[UserRole.Admin]}
             /> */}
-            <Route
-              path={`${match.url}/blank-page`}
-              render={(props) => <BlankPage {...props} />}
-            />
             <Redirect to="/error" />
           </Switch>
         </Suspense>

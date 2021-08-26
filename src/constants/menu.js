@@ -4,7 +4,7 @@ const data = [
   {
     id: 'dashboards',
     icon: 'iconsminds-shop-4',
-    label: 'menu.dashboards',
+    label: 'menu.dashboard',
     to: `${adminRoot}/dashboards`,
   },
   {
@@ -31,13 +31,109 @@ const data = [
         label: 'menu.chefviewall',
         to: `${adminRoot}/chef/list`,
       },
+      {
+        icon: 'simple-icon-note',
+        label: 'menu.chef_join_requests',
+        to: `${adminRoot}/chef/chefrequests`,
+      },{
+        icon: 'simple-icon-cup',
+        label: 'menu.chef_menus',
+        to: `${adminRoot}/chef/allmenus`,
+      },
     ],
   },
   {
-    id: 'blankpage',
-    icon: 'iconsminds-bucket',
-    label: 'menu.blank-page',
+    id: 'settings',
+    icon: 'iconsminds-gears',
+    label: 'menu.settings',
+    to: `${adminRoot}/menu`,
+    subs: [
+      {
+        icon: 'simple-icon-layers',
+        label: 'menu.taxonomy',
+        to: `${adminRoot}/settings`,
+        subs: [
+          {
+            icon: 'simple-icon-arrow-right',
+            label: 'menu.chef_types',
+            to: `${adminRoot}/settings/chef_types`,
+          },
+          {
+            icon: 'simple-icon-arrow-right',
+            label: 'menu.feedback_parameters',
+            to: `${adminRoot}/settings/feedback_parameters`,
+          },
+          {
+            icon: 'simple-icon-arrow-right',
+            label: 'menu.meal_courses',
+            to: `${adminRoot}/settings/meal_courses`,
+          } ,
+          {
+            icon: 'simple-icon-arrow-right',
+            label: 'menu.cuisine',
+            to: `${adminRoot}/settings/cuisine`,
+          },
+        ],
+      },
+      {
+        icon: 'simple-icon-screen-desktop',
+        label: 'menu.website_settings',
+        to: `${adminRoot}/settings/website_settings`,
+      },      
+      {
+        icon: 'simple-icon-present',
+        label: 'menu.vouchers',
+        to: `${adminRoot}/settings/vouchers`,
+      },
+      {
+        icon: 'simple-icon-handbag',
+        label: 'menu.booking_settings',
+        to: `${adminRoot}/settings/booking_settings`,
+      },
+      {
+        icon: 'simple-icon-speech',
+        label: 'menu.sms_templates',
+        to: `${adminRoot}/settings/sms_templates`,
+      },
+      {
+        icon: 'simple-icon-envelope-letter',
+        label: 'menu.email_templates',
+        to: `${adminRoot}/settings/email_templates`,
+      },
+    ],
+  },
+  {
+    id: 'integrations',
+    icon: 'iconsminds-three-arrow-fork',
+    label: 'menu.integrations',
     to: `${adminRoot}/blank-page`,
+    subs: [
+      {
+        icon: 'simple-icon-map',
+        label: 'menu.google_map',
+        to: `${adminRoot}/chef/add`,
+      },
+      {
+        icon: 'simple-icon-envelope-open',
+        label: 'menu.mailchimp',
+        to: `${adminRoot}/chef/list`,
+      },
+      {
+        icon: 'simple-icon-social-pinterest',
+        label: 'menu.plivo',
+        to: `${adminRoot}/chef/requests`,
+      },
+      {
+        icon: 'simple-icon-credit-card',
+        label: 'menu.razorpay',
+        to: `${adminRoot}/chef/requests`,
+      },
+      {
+        icon: 'simple-icon-basket-loaded',
+        label: 'menu.dunzo',
+        to: `${adminRoot}/chef/requests`,
+      }
+    ],
   },
 ];
 export default data;

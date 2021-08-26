@@ -6,7 +6,24 @@ import ListPageHeading from 'containers/pages/ListPageHeading';
 import AddNewModal from 'containers/pages/AddNewModal';
 import ListPageListing from 'containers/pages/ListPageListing';
 import useMousetrap from 'hooks/use-mousetrap';
-
+import {
+  Row,
+  Card,
+  CardBody,
+  CardTitle,
+  Nav,
+  NavItem,
+  NavLink,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Breadcrumb,
+  BreadcrumbItem,
+} from 'reactstrap';
 const getIndex = (value, arr, prop) => {
   for (let i = 0; i < arr.length; i += 1) {
     if (arr[i][prop] === value) {
@@ -16,11 +33,9 @@ const getIndex = (value, arr, prop) => {
   return -1;
 };
 
-
 const orderOptions = [
   { column: 'name', label: 'Name' },
   { column: 'chef_type', label: 'Chef Type' },
- 
 ];
 const pageSizes = [4, 8, 12, 20];
 
@@ -30,7 +45,7 @@ const categories = [
   { label: 'Desserts', value: 'Desserts', key: 2 },
 ];
 
-const List = ({ match,currentUser }) => {
+const List = ({ match, currentUser }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [displayMode, setDisplayMode] = useState('thumblist');
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,21 +71,22 @@ const List = ({ match,currentUser }) => {
     async function fetchData() {
       api
         .get(
-         // `${apiUrl}?pageSize=${selectedPageSize}&currentPage=${currentPage}&orderBy=${selectedOrderOption.column}&search=${search}`
-         axiosURLS.USERS,{params:{limit:selectedPageSize,page:currentPage,sortBy:(selectedOrderOption.column+':asc')},headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-type': 'application/json',
-            Authorization: 'Bearer ' + currentUser.tokens.access.token,
-          }}
+          // `${apiUrl}?pageSize=${selectedPageSize}&currentPage=${currentPage}&orderBy=${selectedOrderOption.column}&search=${search}`
+          axiosURLS.USERS,
+          {
+            params: {
+              limit: selectedPageSize,
+              page: currentPage,
+              sortBy: selectedOrderOption.column + ':asc',
+            }
+          }
         )
         .then((res) => {
           return res.data;
         })
         .then((data) => {
           setTotalPage(data.totalPages);
-          setItems(
-            data.results
-          );
+          setItems(data.results);
           setSelectedItems([]);
           setTotalItemCount(data.totalResults);
           setIsLoaded(true);
@@ -202,14 +218,49 @@ const List = ({ match,currentUser }) => {
           onContextMenu={onContextMenu}
           onChangePage={setCurrentPage}
         />
+        <Pagination
+          size="sm"
+          aria-label="Page navigation example"
+          listClassName="justify-content-center"
+        >
+          <PaginationItem>
+            <PaginationLink className="first" href="#">
+              <i className="simple-icon-control-start" />
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink className="prev" href="#">
+              <i className="simple-icon-arrow-left" />
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">1</PaginationLink>
+          </PaginationItem>
+          <PaginationItem active>
+            <PaginationLink href="#">2</PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">3</PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink className="next" href="#">
+              <i className="simple-icon-arrow-right" />
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink className="last" href="#">
+              <i className="simple-icon-control-end" />
+            </PaginationLink>
+          </PaginationItem>
+        </Pagination>
       </div>
     </>
   );
 };
 
 const mapStateToProps = ({ authUser }) => {
-    const { currentUser } = authUser;
-    return { currentUser };
-  };
-  
-  export default connect(mapStateToProps)(List);
+  const { currentUser } = authUser;
+  return { currentUser };
+};
+
+export default connect(mapStateToProps)(List);

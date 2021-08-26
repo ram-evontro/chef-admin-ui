@@ -145,11 +145,11 @@
     }
 
     @include respond-below(sm) {
-      width: 80px;
+      width: 228px;
     }
 
     @include respond-below(xxs) {
-      width: 20px;
+      width: 192px;
     }
   }
 
