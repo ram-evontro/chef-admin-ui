@@ -310,6 +310,7 @@ module.exports = {
   'pages.are_you_sure': 'Are you sure?',
   'pages.yes': 'Yes',
   'pages.no': 'No',
+  'pages.clear_search':'Clear Search',
   /* 06.Applications */
 
   /* 06.01.Chat */

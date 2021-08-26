@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Button,
   Modal,
@@ -13,9 +13,22 @@ import IntlMessages from 'helpers/IntlMessages';
 import api from 'helpers/api';
 import * as axiosURLS from 'helpers/endpoints';
 import toast from 'react-hot-toast';
-const Addmodal = ({ modalOpen, toggleModal,fetchData }) => {
+const Addmodal = ({
+  modalOpen,
+  toggleModal,
+  fetchData,
+  editformdata,
+  modalFor,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [id, setId] = useState('');
   const [formdata, setFormdata] = useState({});
+  useEffect(()=>{
+    setId(editformdata['id']);
+    let temp ={...editformdata}
+    delete temp['id'];
+    setFormdata(temp);
+  },[editformdata])
   const handleChange = (e) => {
     let tempdata = { ...formdata };
     let val = e.target.value;
@@ -27,15 +40,21 @@ const Addmodal = ({ modalOpen, toggleModal,fetchData }) => {
     setIsLoading(true);
     let newformdata;
     try {
-      await api.post(axiosURLS.CHEF_TYPES, formdata);
-      setIsLoading(false);
-      toast.success('Chef Type Added successfully');
+      if (modalFor === 'edit') {
+        await api.patch(axiosURLS.CHEF_TYPES+'/'+id, formdata);
+        toast.success('Chef Type Edited successfully');
+      } else {
+        await api.post(axiosURLS.CHEF_TYPES, formdata);
+        toast.success('Chef Type Added successfully');
+      }    
+     
       fetchData();
     } catch (err) {
       console.log(err);
       console.log(err.response);
       // toast.error(err.response.data.message);
     }
+    setIsLoading(false);
     toggleModal();
   };
   return (

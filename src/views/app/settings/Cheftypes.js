@@ -16,39 +16,38 @@ import toast from 'react-hot-toast';
 import IntlMessages from 'helpers/IntlMessages';
 import { Colxx, Separator } from 'components/common/CustomBootstrap';
 import Breadcrumb from 'containers/navs/Breadcrumb';
-import Datatable from '../elements/Datatable';
+import Datatable from './cheftypes/Datatable';
 import Addmodal from './cheftypes/Addmodal';
-import Deletealert from './cheftypes/Deletealert';
+import Deletealert from '../elements/Deletealert';
 const Cheftypes = ({ match }) => {
-  const [isLoading ,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
     column: 'name',
     order: 'asc',
-
   });
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalFor, setModalFor] = useState('');
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [totalItemCount, setTotalItemCount] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [search, setSearch] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
+  const [formdata, setFormdata] = useState({});
   const [items, setItems] = useState([]);
   const [lastChecked, setLastChecked] = useState(null);
   const [dropdownSplitOpen, setDropdownSplitOpen] = useState(false);
-
   const onCheckItem = (event, id) => {
-    if (
-      event.target.tagName === 'A' ||
-      (event.target.parentElement && event.target.parentElement.tagName === 'A')
-    ) {
-      return true;
-    }
+    // if (
+    //   event.target.tagName === 'A' ||
+    //   (event.target.parentElement && event.target.parentElement.tagName === 'A')
+    // ) {
+    //   return true;
+    // }
     if (lastChecked === null) {
       setLastChecked(id);
     }
-
     let selectedList = [...selectedItems];
     if (selectedList.includes(id)) {
       selectedList = selectedList.filter((x) => x !== id);
@@ -56,7 +55,6 @@ const Cheftypes = ({ match }) => {
       selectedList.push(id);
     }
     setSelectedItems(selectedList);
-
     if (event.shiftKey) {
       let newItems = [...items];
       const start = getIndex(id, newItems, 'id');
@@ -73,7 +71,6 @@ const Cheftypes = ({ match }) => {
     document.activeElement.blur();
     return false;
   };
-
   const handleChangeSelectAll = (isToggle) => {
     if (selectedItems.length >= items.length) {
       if (isToggle) {
@@ -92,25 +89,39 @@ const Cheftypes = ({ match }) => {
         await api.delete(axiosURLS.CHEF_TYPES + '/' + item);
       });
       setSelectedItems([]);
-      fetchData();      
+      fetchData();
       toast.success('Chef Type Deleted successfully');
     }
     setIsLoading(false);
   };
-  const showDeleteAlert = () => {
-    if(selectedItems.length>0){
-      setDeleteAlert(!deleteAlert);
-    }    
+  const deleteSingle = (id) => {
+    setSelectedItems([id]);
+    showDeleteAlert();
   };
-  const editSelected = () => {};
-  const fetchData = async ()=> {
+  const showDeleteAlert = () => {
+    // if (selectedItems.length > 0) {
+    setDeleteAlert(!deleteAlert);
+    // }
+  };
+  const editSelected = (data) => {
+    setModalFor('edit');
+    setFormdata(data);
+    setModalOpen(!modalOpen);
+  };
+  const fetchData = async () => {
+    let senddata =  {
+      limit: selectedPageSize,
+      page: currentPage,
+      sortBy: selectedOrderOption.column + ':' + selectedOrderOption.order,
+      
+    }
+    if(search&&search!='')
+    {
+      senddata['name'] =search;
+    }
     api
       .get(axiosURLS.CHEF_TYPES, {
-        params: {
-          limit: selectedPageSize,
-          page: currentPage,
-          sortBy: selectedOrderOption.column + ':'+selectedOrderOption.order,
-        },
+        params:senddata,
       })
       .then((res) => {
         return res.data;
@@ -122,72 +133,92 @@ const Cheftypes = ({ match }) => {
         setTotalItemCount(data.totalResults);
         setIsLoading(false);
       });
-  }
+  };
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPageSize, selectedOrderOption]);
+  }, [selectedPageSize, selectedOrderOption,search]);
   useEffect(() => {
-    setIsLoading(true);    
+    setIsLoading(true);
     fetchData();
   }, [selectedPageSize, currentPage, selectedOrderOption, search]);
   return (
     <>
       <Row>
         <Colxx xxs="12">
+          <Breadcrumb heading="menu.chef_types" match={match} />
+          <Separator className="mb-1" />
+        </Colxx>
+      </Row>
+      <Row>
+        <Colxx xxs="12">
+          <ButtonDropdown
+            isOpen={dropdownSplitOpen}
+            toggle={() => setDropdownSplitOpen(!dropdownSplitOpen)}
+          >
+            <div className="btn btn-primary btn-lg pl-4 pr-0 check-button check-all">
+              <CustomInput
+                className="custom-checkbox mb-0 d-inline-block"
+                type="checkbox"
+                id="checkAll"
+                checked={selectedItems.length >= items.length}
+                onChange={() => handleChangeSelectAll(true)}
+                label={
+                  <span
+                    className={`custom-control-label ${
+                      selectedItems.length > 0 &&
+                      selectedItems.length < items.length
+                        ? 'indeterminate'
+                        : ''
+                    }`}
+                  />
+                }
+              />
+            </div>
+            <DropdownToggle
+              caret
+              color="primary"
+              className="dropdown-toggle-split btn-lg"
+            />
+            <DropdownMenu right>
+              <DropdownItem onClick={showDeleteAlert}>
+                <IntlMessages id="pages.delete" />
+              </DropdownItem>
+            </DropdownMenu>
+          </ButtonDropdown>
+          <div className="search-sm d-inline-block  ml-1 mb-1 ">
+            <input
+              type="text"
+              name="keyword"
+              id="search"
+              placeholder={'Search'}
+              onChange={(e) => {                
+                  setSearch(e.target.value.toLowerCase());                
+              }}
+              value={search}
+            />
+          </div>
+          <Button
+              color="primary"
+              size="lg"
+              className="top-left-button ml-3"
+              onClick={()=>{setSearch('')}}
+            >
+              <IntlMessages id="pages.clear_search" />
+            </Button>
           <div className="text-zero top-right-button-container">
             <Button
               color="primary"
               size="lg"
               className="top-right-button"
-              onClick={() => setModalOpen(!modalOpen)}
+              onClick={() => {
+                setModalFor('add');
+                setModalOpen(!modalOpen);
+              }}
             >
               <IntlMessages id="pages.add-new" />
             </Button>
-
-            <ButtonDropdown
-              isOpen={dropdownSplitOpen}
-              toggle={() => setDropdownSplitOpen(!dropdownSplitOpen)}
-            >
-              <div className="btn btn-primary btn-lg pl-4 pr-0 check-button check-all">
-                <CustomInput
-                  className="custom-checkbox mb-0 d-inline-block"
-                  type="checkbox"
-                  id="checkAll"
-                  checked={selectedItems.length >= items.length}
-                  onChange={() => handleChangeSelectAll(true)}
-                  label={
-                    <span
-                      className={`custom-control-label ${
-                        selectedItems.length > 0 &&
-                        selectedItems.length < items.length
-                          ? 'indeterminate'
-                          : ''
-                      }`}
-                    />
-                  }
-                />
-              </div>
-              <DropdownToggle
-                caret
-                color="primary"
-                className="dropdown-toggle-split btn-lg"
-              />
-              <DropdownMenu right>
-                <DropdownItem onClick={showDeleteAlert}>
-                  <IntlMessages id="pages.delete" />
-                </DropdownItem>
-                <DropdownItem>
-                  <IntlMessages onClick={editSelected} id="pages.edit" />
-                </DropdownItem>
-              </DropdownMenu>
-            </ButtonDropdown>
           </div>
-          <Breadcrumb heading="menu.chef_types" match={match} />
-          <Separator className="mb-5" />
-        </Colxx>
-      </Row>
-      <Row>
-        <Colxx xxs="12">
+
           <Datatable
             onCheckItem={onCheckItem}
             selectedItems={selectedItems}
@@ -200,6 +231,9 @@ const Cheftypes = ({ match }) => {
             setSelectedPageSize={setSelectedPageSize}
             setSelectedOrderOption={setSelectedOrderOption}
             selectedOrderOption={selectedOrderOption}
+            editSelected={editSelected}
+            deleteSingle={deleteSingle}
+            
           />
         </Colxx>
       </Row>
@@ -207,6 +241,8 @@ const Cheftypes = ({ match }) => {
         modalOpen={modalOpen}
         toggleModal={() => setModalOpen(!modalOpen)}
         fetchData={fetchData}
+        editformdata={formdata}
+        modalFor={modalFor}
       />
       <Deletealert
         modalOpen={deleteAlert}
