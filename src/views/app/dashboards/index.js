@@ -2,17 +2,17 @@ import React, { Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 // import { ProtectedRoute, UserRole } from 'helpers/authHelper';
 
-const EcommerceDefault = React.lazy(() =>
-  import(/* webpackChunkName: "dashboard-ecommerce" */ './ecommerce')
+const Dashboarddetails = React.lazy(() =>
+  import(/* webpackChunkName: "dashboard-ecommerce" */ './details')
 );
 
 const Dashboards = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
-      <Redirect exact from={`${match.url}/`} to={`${match.url}/ecommerce`} />
+      <Redirect exact from={`${match.url}/`} to={`${match.url}/details`} />
       <Route
-        path={`${match.url}/ecommerce`}
-        render={(props) => <EcommerceDefault {...props} />}
+        path={`${match.url}/details`}
+        render={(props) => <Dashboarddetails {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

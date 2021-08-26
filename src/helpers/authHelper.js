@@ -1,8 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { isAuthGuardActive } from 'constants/defaultValues';
-import { getCurrentUser } from './Utils';
-
+import { store } from '../redux/store';
 const ProtectedRoute = ({
   component: Component,
   roles = undefined,
@@ -10,7 +9,8 @@ const ProtectedRoute = ({
 }) => {
   const setComponent = (props) => {
     if (isAuthGuardActive) {
-      const currentUser = getCurrentUser();
+      const state = store.getState();
+      const currentUser =state.authUser.currentUser;
       if (currentUser&&currentUser.name!='') {
         // if (roles) {
         //   if (roles.includes(currentUser.role)) {

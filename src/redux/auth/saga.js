@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
 import { auth } from 'helpers/Firebase';
-import * as axiosURLS from "helpers/endpoints";
-import axios from "helpers/api";
+import * as axiosURLS from 'helpers/endpoints';
+import axios from 'helpers/api';
 import { adminRoot, currentUser } from 'constants/defaultValues';
 import { setCurrentUser } from 'helpers/Utils';
 import {
@@ -28,27 +28,27 @@ export function* watchLoginUser() {
   yield takeEvery(LOGIN_USER, loginWithEmailPassword);
 }
 
-const loginWithEmailPasswordAsync = async (email, password) =>
-{
+const loginWithEmailPasswordAsync = async (email, password) => {
   // eslint-disable-next-line no-return-await
   const user = await axios({
     method: 'POST',
-    url: axiosURLS.LOGIN ,
-    data: {email:email,password:password},
+    url: axiosURLS.LOGIN,
+    data: { email: email, password: password },
     headers: {
-       'Access-Control-Allow-Origin': '*',
-       'Content-type': 'application/json',
-    }
-}).then(({ data }) => {
-      console.log(data);
-  return data;
+      'Access-Control-Allow-Origin': '*',
+      'Content-type': 'application/json',
+    },
   })
-  .catch(function (error) {
-    return error
-  });
+    .then(({ data }) => {
+      console.log(data);
+      return data;
+    })
+    .catch(function (error) {
+      return error;
+    });
   console.log(user);
-    return user;
-}
+  return user;
+};
 
 function* loginWithEmailPassword({ payload }) {
   const { email, password } = payload.user;
@@ -56,7 +56,11 @@ function* loginWithEmailPassword({ payload }) {
   try {
     const loginUser = yield call(loginWithEmailPasswordAsync, email, password);
     if (!loginUser.message) {
-      const item = { uid: loginUser.user.id,name:loginUser.user.name, ...currentUser };
+      const item = {
+        uid: loginUser.user.id,
+        name: loginUser.user.name,
+        ...currentUser,
+      };
       setCurrentUser(item);
       yield put(loginUserSuccess(loginUser));
       history.push(adminRoot);
@@ -108,16 +112,22 @@ export function* watchLogoutUser() {
 }
 
 const logoutAsync = async (history) => {
-  await auth
-    .signOut()
-    .then((user) => user)
-    .catch((error) => error);
+  // await axios({
+  //   method: 'POST',
+  //   url: axiosURLS.LOGOUT,
+  // })
+  //   .then(({ data }) => {
+  //     console.log(data);
+  //     return data;
+  //   })
+  //   .catch(function (error) {
+  //     return error;
+  //   });
   history.push(adminRoot);
 };
 
 function* logout({ payload }) {
   const { history } = payload;
-  setCurrentUser();
   yield call(logoutAsync, history);
 }
 

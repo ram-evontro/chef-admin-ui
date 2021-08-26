@@ -1,12 +1,12 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { configureStore } from './redux/store';
+import { store, persistor } from './redux/store';
 import reportWebVitals from './reportWebVitals';
 import { Toaster } from 'react-hot-toast';
 import { PersistGate } from "redux-persist/lib/integration/react";
 const App = React.lazy(() => import(/* webpackChunkName: "App" */ './App'));
-let { store, persistor } = configureStore();
+
 const Main = () => {
   return (
     <Provider store={store}>

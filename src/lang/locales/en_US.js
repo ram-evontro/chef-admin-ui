@@ -178,6 +178,7 @@ module.exports = {
   'menu.booking_settings':'Booking Settings',
   'menu.sms_templates':'SMS Templates',
   'menu.email_templates':'Email Templates',
+  'menu.chefs_list':'Chefs List',
   /* 04.Dashboards */
   'dashboards.pending-orders': 'Pending Orders',
   'dashboards.completed-orders': 'Completed Orders',
@@ -305,6 +306,10 @@ module.exports = {
   'pages.prices.featurecomparison': 'Feature Comparison',
   'pages.prices.pricecomparison': 'Price Comparison',
   'pages.meals': 'Meals',
+  'pages.edit': 'Edit',
+  'pages.are_you_sure': 'Are you sure?',
+  'pages.yes': 'Yes',
+  'pages.no': 'No',
   /* 06.Applications */
 
   /* 06.01.Chat */
@@ -555,6 +560,9 @@ module.exports = {
   'forms.menu_picture': 'Menu Picture',
   'forms.meals': 'Meals',
   'forms.meal_course': 'Meal Course',
+  'forms.price': 'Price',
+  'forms.icon': 'Icon',
+
 
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',

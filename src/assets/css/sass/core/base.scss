@@ -654,7 +654,14 @@ p {
     border-radius: $border-radius-rounded;
   }
 }
-.text-end
+.loading-table
 {
-  text-align: right !important;
+  opacity: 0.5;
+}
+.loading-table:after
+{
+  content: 'Loading..';
+  position: absolute;
+    top: 50%;
+    left: 50%;
 }

@@ -122,6 +122,11 @@ const DataTablePagination = ({
           listClassName="justify-content-center"
           aria-label="Page navigation example"
         >
+          <PaginationItem>
+            <PaginationLink className="first" onClick={() => changePage(0)}>
+              <i className="simple-icon-control-start" />
+            </PaginationLink>
+          </PaginationItem>
           <PaginationItem className={`${!canPrevious && 'disabled'}`}>
             <PaginationLink
               className="prev"
@@ -146,6 +151,14 @@ const DataTablePagination = ({
               disabled={!canNext}
             >
               <i className="simple-icon-arrow-right" />
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              className="last"
+              onClick={() => changePage(pages)}
+            >
+              <i className="simple-icon-control-end" />
             </PaginationLink>
           </PaginationItem>
         </Pagination>

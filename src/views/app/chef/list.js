@@ -175,7 +175,7 @@ const List = ({ match, currentUser }) => {
     <>
       <div className="disable-text-selection">
         <ListPageHeading
-          heading="menu.data-list"
+          heading="menu.chefs_list"
           displayMode={displayMode}
           changeDisplayMode={setDisplayMode}
           handleChangeSelectAll={handleChangeSelectAll}

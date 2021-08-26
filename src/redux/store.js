@@ -14,7 +14,7 @@ const sagaMiddleware = createSagaMiddleware();
 const middlewares = [sagaMiddleware];
 
 // eslint-disable-next-line import/prefer-default-export
-export function configureStore(initialState) {
+let initialState;
   const store = createStore(
     persistedReducer,
     initialState,
@@ -30,6 +30,7 @@ export function configureStore(initialState) {
       store.replaceReducer(nextRootReducer);
     });
   }
-  let persistor = persistStore(store)
-  return {store,persistor};
-}
+  const persistor = persistStore(store)
+  export {store,persistor};
+  //return {store,persistor};
+

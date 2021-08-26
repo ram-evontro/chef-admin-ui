@@ -18,9 +18,9 @@ import { Colxx } from 'components/common/CustomBootstrap';
 import { adminRoot } from 'constants/defaultValues';
 
 const Register = ({ history }) => {
-  const [email] = useState('demo@gogo.com');
-  const [password] = useState('gogo123');
-  const [name] = useState('Sarah Kortney');
+  const [email] = useState('admin@admin.com');
+  const [password] = useState('As123456');
+  const [name] = useState('Chef User');
 
   const onUserRegister = () => {
     if (email !== '' && password !== '') {

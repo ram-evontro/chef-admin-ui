@@ -11,7 +11,7 @@ import Cakes from 'containers/dashboards/Cakes';
 import SalesChartCard from 'containers/dashboards/SalesChartCard';
 import ProductCategoriesDoughnut from 'containers/dashboards/ProductCategoriesDoughnut';
 
-const EcommerceDashboard = ({ match }) => {
+const DetailsDashboard = ({ match }) => {
   return (
     <>
       <Row>
@@ -44,4 +44,4 @@ const EcommerceDashboard = ({ match }) => {
     </>
   );
 };
-export default EcommerceDashboard;
+export default DetailsDashboard;

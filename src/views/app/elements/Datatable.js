@@ -3,44 +3,62 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/display-name */
-import React from 'react';
-import { Card, CardBody, CardTitle } from 'reactstrap';
-import { useTable, usePagination, useSortBy } from 'react-table';
+import React, { useEffect } from 'react';
+import { CustomInput } from 'reactstrap';
+import { useTable, usePagination, useSortBy, useFilters } from 'react-table';
 import classnames from 'classnames';
-
-import IntlMessages from 'helpers/IntlMessages';
 import DatatablePagination from './DataTablePagination';
 
-import products from 'data/products';
-
-const Table = ({ columns, data, divided = false, defaultPageSize = 6 }) => {
+const Table = ({
+  columns,
+  data,
+  divided = false,
+  currentPage,
+  totalPage,
+  onChangePage,
+  selectedPageSize,
+  isLoading,
+  setSelectedPageSize,
+  setSelectedOrderOption,
+  selectedOrderOption
+}) => {
   const {
     getTableProps,
     getTableBodyProps,
     prepareRow,
     headerGroups,
     page,
-    canPreviousPage,
-    canNextPage,
-    pageCount,
-    gotoPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { sortBy },
   } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: defaultPageSize },
+      initialState: { pageIndex: 0, pageSize: selectedPageSize,sortBy:[{id:selectedOrderOption.column,desc:(selectedOrderOption.order==="desc"?true:false)}] },
     },
+    useFilters,
     useSortBy,
-    usePagination
+    usePagination,
   );
-
+  useEffect(() => {
+    if(sortBy.length>0 && (sortBy[0].id!=selectedOrderOption.column || selectedOrderOption.order!=(sortBy[0].desc?'desc':'asc')) )
+    {
+      let data={};
+      data['column'] = sortBy[0].id;
+      data['order'] = sortBy[0].desc?'desc':'asc';
+      setSelectedOrderOption(data)
+    }
+    
+    console.log(sortBy);
+  }, [sortBy]);
   return (
     <>
       <table
         {...getTableProps()}
-        className={`r-table table ${classnames({ 'table-divided': divided })}`}
+        className={`r-table table ${classnames({
+          'table-divided': divided,
+          'loading-table': isLoading,
+        })}`}
       >
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -87,61 +105,100 @@ const Table = ({ columns, data, divided = false, defaultPageSize = 6 }) => {
       </table>
 
       <DatatablePagination
-        page={pageIndex}
-        pages={pageCount}
-        canPrevious={canPreviousPage}
-        canNext={canNextPage}
+        page={currentPage - 1}
+        pages={totalPage}
+        canPrevious={currentPage > 0 ? true : false}
+        canNext={currentPage < totalPage ? true : false}
         pageSizeOptions={[4, 10, 20, 30, 40, 50]}
         showPageSizeOptions={true}
         showPageJump={true}
-        defaultPageSize={pageSize}
-        onPageChange={(p) => gotoPage(p)}
-        onPageSizeChange={(s) => setPageSize(s)}
-        paginationMaxSize={pageCount}
+        defaultPageSize={selectedPageSize}
+        onPageChange={(p) => onChangePage(p + 1)}
+        onPageSizeChange={(s) => {
+          setSelectedPageSize(s);
+          setPageSize(s);
+        }}
+        paginationMaxSize={10}
       />
     </>
   );
 };
 
-const Datatable = () => {
+const Datatable = ({
+  items,
+  selectedItems,
+  onCheckItem,
+  currentPage,
+  totalPage,
+  onChangePage,
+  selectedPageSize,
+  isLoading,
+  setSelectedPageSize,
+  setSelectedOrderOption,
+  selectedOrderOption
+}) => {
   const cols = React.useMemo(
     () => [
       {
         Header: 'Name',
-        accessor: 'title',
+        accessor: 'name',
         cellClass: 'list-item-heading w-40',
         Cell: (props) => <>{props.value}</>,
       },
       {
-        Header: 'Name',
-        accessor: 'title',
-        cellClass: 'list-item-heading w-40',
-        Cell: (props) => <>{props.value}</>,
+        Header: 'Icon',
+        accessor: 'icon',
+        cellClass: 'text-muted  w-10',
+        Cell: (props) => (
+          <>
+            <div className={`glyph-icon ${props.value}`} />
+          </>
+        ),
       },
       {
-        Header: 'Sales',
-        accessor: 'sales',
+        Header: 'Price',
+        accessor: 'price',
         cellClass: 'text-muted  w-10',
         Cell: (props) => <>{props.value}</>,
       },
       {
-        Header: 'Stock',
-        accessor: 'stock',
+        Header: 'Actions',
+        accessor: 'id',
         cellClass: 'text-muted  w-10',
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: 'Category',
-        accessor: 'category',
-        cellClass: 'text-muted  w-40',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => (
+          <>
+            {' '}
+            <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
+              <CustomInput
+                className="mb-0"
+                type="checkbox"
+                id={`check_${props.value}`}
+                checked={selectedItems.includes(props.value)}
+                onChange={(event) => onCheckItem(event, props.value)}
+                label=""
+              />
+            </div>
+          </>
+        ),
       },
     ],
-    []
+    [selectedItems]
   );
   return (
     <div className="mb-4">
-      <Table columns={cols} data={products} divided />
+      <Table
+        currentPage={currentPage}
+        totalPage={totalPage}
+        onChangePage={onChangePage}
+        columns={cols}
+        selectedPageSize={selectedPageSize}
+        data={items}
+        isLoading={isLoading}
+        setSelectedPageSize={setSelectedPageSize}
+        setSelectedOrderOption={setSelectedOrderOption}
+        selectedOrderOption={selectedOrderOption}
+        divided
+      />
     </div>
   );
 };
