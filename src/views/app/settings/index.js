@@ -4,6 +4,18 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 const Cheftypes = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './Cheftypes')
 );
+const Feedbackparams = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './Feedbackparams')
+);
+const Mealcourses = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './Mealcourses')
+);
+const Cuisines = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './Cuisines')
+);
+const Vouchers = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './Vouchers')
+);
 const Settings = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
@@ -12,7 +24,22 @@ const Settings = ({ match }) => (
         path={`${match.url}/chef_types`}
         render={(props) => <Cheftypes {...props} />}
       />
-      
+      <Route
+        path={`${match.url}/feedback_parameters`}
+        render={(props) => <Feedbackparams {...props} />}
+      />
+      <Route
+        path={`${match.url}/meal_courses`}
+        render={(props) => <Mealcourses {...props} />}
+      />
+      <Route
+        path={`${match.url}/cuisine`}
+        render={(props) => <Cuisines {...props} />}
+      />
+      <Route
+        path={`${match.url}/vouchers`}
+        render={(props) => <Vouchers {...props} />}
+      />
       <Redirect to="/error" />
     </Switch>
   </Suspense>

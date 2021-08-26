@@ -169,7 +169,8 @@ module.exports = {
   'menu.website_settings':'Website Settings',
   'menu.taxonomy':'Taxonomy',
   'menu.chef_types':'Chef Tyes',
-  'menu.feedback_parameters':'Feedback Params',
+  'menu.feedback_parameters':'Feedback Parameters',
+  'menu.feedback_params':'Feedback Parameters',
   'menu.meal_courses':'Meal Courses',
   'menu.cuisine':'Cuisine Types',
   'menu.vouchers':'Vouchers',
@@ -563,6 +564,13 @@ module.exports = {
   'forms.meal_course': 'Meal Course',
   'forms.price': 'Price',
   'forms.icon': 'Icon',
+  'forms.feedback_param':'Feedback Parameter',
+  'forms.booking_type':'Booking Type',
+  'forms.code': 'Code',
+  'forms.expiry': 'Expiry',
+  'forms.type': 'Type',
+  'forms.value':'Value',
+  'forms.max_uses':'Max Uses',
 
 
   /* 07.11.Form Components */
