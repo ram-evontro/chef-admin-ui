@@ -18,7 +18,7 @@ import IntlMessages from 'helpers/IntlMessages';
 import api from 'helpers/api';
 import * as axiosURLS from 'helpers/endpoints';
 import { NotificationManager } from 'components/common/react-notifications';
-const Mailchimp = ({ match }) => {
+const WebsiteSettings = ({ match }) => {
   const [formdata, setFormdata] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
@@ -30,9 +30,9 @@ const Mailchimp = ({ match }) => {
   };
   const handleClick = async () => {
     setIsLoading(true);
-    let newfomdata = { key_name: 'mailchimp', key_value: { ...formdata } };
+    let newfomdata = { key_name: 'website_settings', key_value: { ...formdata } };
     try {
-      await api.patch(axiosURLS.INTEGRATION + '/mailchimp', newfomdata);
+      await api.patch(axiosURLS.INTEGRATION + '/website_settings', newfomdata);
       NotificationManager.success('Saved successfully', 'Saved', 3000, null, null, '');
     } catch (err) {
       console.log(err);
@@ -46,13 +46,14 @@ const Mailchimp = ({ match }) => {
   };
   useEffect( async ()=>{
     try {
-        let {data} = await api.get(axiosURLS.INTEGRATION + '/mailchimp');
+        let {data} = await api.get(axiosURLS.INTEGRATION + '/website_settings');
         setFormdata(data.key_value);
       } catch (err) {
         console.log(err);
         console.log(err.response);
         if (err.response) {
           NotificationManager.error(err.response.data.message, 'Fetch Error', 3000, null, null, '');
+          
         }
     }
   },[]);
@@ -60,7 +61,7 @@ const Mailchimp = ({ match }) => {
     <>
       <Row>
         <Colxx xxs="12">
-          <Breadcrumb heading="menu.mailchimp" match={match} />
+          <Breadcrumb heading="menu.website_settings" match={match} />
           <Separator className="mb-5" />
         </Colxx>
       </Row>
@@ -71,58 +72,67 @@ const Mailchimp = ({ match }) => {
               <Form>
                 <Row>
                   <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="forms.api_key" />
+                  <Label className="mt-4">
+                    <IntlMessages id="forms.logo" />
                     </Label>
                     <Input
                       type="text"
-                      name="api_key"
-                      value={formdata.api_key ? formdata.api_key : ''}
+                      name="logo"
+                      value={formdata.logo ? formdata.logo : ''}
                       onChange={handleChange}
                     />
                     <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_host" />
+                      <IntlMessages id="forms.address" />
                     </Label>
                     <Input
                       type="text"
-                      name="smtp_host"
-                      value={formdata.smtp_host ? formdata.smtp_host : ''}
+                      name="address"
+                      value={formdata.address ? formdata.address : ''}
                       onChange={handleChange}
                     />
                     <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_port" />
+                      <IntlMessages id="forms.email" />
                     </Label>
                     <Input
                       type="text"
-                      name="smtp_port"
-                      value={formdata.smtp_port ? formdata.smtp_port : ''}
+                      name="email"
+                      value={formdata.email ? formdata.email : ''}
                       onChange={handleChange}
                     />
                     <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_username" />
+                      <IntlMessages id="forms.phone" />
                     </Label>
                     <Input
                       type="text"
-                      name="smtp_username"
-                      value={formdata.smtp_username ? formdata.smtp_username : ''}
+                      name="phone"
+                      value={formdata.phone ? formdata.phone : ''}
                       onChange={handleChange}
                     />
                     <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_password" />
+                      <IntlMessages id="forms.facebook_link" />
                     </Label>
                     <Input
                       type="text"
-                      name="smtp_password"
-                      value={formdata.smtp_password ? formdata.smtp_password : ''}
+                      name="facebook_link"
+                      value={formdata.facebook_link ? formdata.facebook_link : ''}
                       onChange={handleChange}
                     />
                     <Label className="mt-4">
-                      <IntlMessages id="forms.email_from" />
+                      <IntlMessages id="forms.instagram_link" />
                     </Label>
                     <Input
                       type="text"
-                      name="email_from"
-                      value={formdata.email_from ? formdata.email_from : ''}
+                      name="instagram_link"
+                      value={formdata.instagram_link ? formdata.instagram_link : ''}
+                      onChange={handleChange}
+                    />
+                    <Label className="mt-4">
+                      <IntlMessages id="forms.twitter_link" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="twitter_link"
+                      value={formdata.twitter_link ? formdata.twitter_link : ''}
                       onChange={handleChange}
                     />
                     <center>
@@ -154,4 +164,4 @@ const Mailchimp = ({ match }) => {
   );
 };
 
-export default Mailchimp;
+export default WebsiteSettings;

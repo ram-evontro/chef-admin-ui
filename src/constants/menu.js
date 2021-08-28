@@ -9,7 +9,7 @@ const data = [
   },
   {
     id: 'booking',
-    icon: 'iconsminds-money-bag',
+    icon: 'iconsminds-calendar-4',
     label: 'menu.bookings',
     to: `${adminRoot}/booking`,
     subs: [],
@@ -22,24 +22,18 @@ const data = [
     // roles: [UserRole.Admin, UserRole.Editor],
     subs: [
       {
-        icon: 'simple-icon-plus',
-        label: 'menu.chefadd',
-        to: `${adminRoot}/chef/add`,
-      },
-      {
         icon: 'simple-icon-list',
         label: 'menu.chefviewall',
         to: `${adminRoot}/chef/list`,
-      },
-      {
-        icon: 'simple-icon-note',
-        label: 'menu.chef_join_requests',
-        to: `${adminRoot}/chef/chefrequests`,
-      },
+      },      
       {
         icon: 'simple-icon-cup',
         label: 'menu.chef_menus',
         to: `${adminRoot}/chef/allmenus`,
+      },{
+        icon: 'simple-icon-note',
+        label: 'menu.chef_join_requests',
+        to: `${adminRoot}/chef/chefrequests`,
       },
     ],
   },
@@ -138,6 +132,11 @@ const data = [
         icon: 'simple-icon-event',
         label: 'menu.calendly',
         to: `${adminRoot}/integrations/calendly`,
+      } ,
+      {
+        icon: 'simple-icon-cloud-upload',
+        label: 'menu.s3_bucket',
+        to: `${adminRoot}/integrations/s3`,
       }
     ],
   },

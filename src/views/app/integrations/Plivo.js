@@ -17,8 +17,8 @@ import Breadcrumb from 'containers/navs/Breadcrumb';
 import IntlMessages from 'helpers/IntlMessages';
 import api from 'helpers/api';
 import * as axiosURLS from 'helpers/endpoints';
-import { NotificationManager } from 'components/common/react-notifications';
-const Mailchimp = ({ match }) => {
+import toast from 'react-hot-toast';
+const Plivo = ({ match }) => {
   const [formdata, setFormdata] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
@@ -30,29 +30,29 @@ const Mailchimp = ({ match }) => {
   };
   const handleClick = async () => {
     setIsLoading(true);
-    let newfomdata = { key_name: 'mailchimp', key_value: { ...formdata } };
+    let newfomdata = { key_name: 'plivo', key_value: { ...formdata } };
     try {
-      await api.patch(axiosURLS.INTEGRATION + '/mailchimp', newfomdata);
-      NotificationManager.success('Saved successfully', 'Saved', 3000, null, null, '');
+      await api.patch(axiosURLS.INTEGRATION + '/plivo', newfomdata);
+      toast.success('Data saved successfully');
     } catch (err) {
       console.log(err);
       console.log(err.response);
       setIsLoading(false);
       if (err.response) {
-        NotificationManager.error(err.response.data.message, 'Update Error', 3000, null, null, '');
+        toast.error(err.response.data.message);
       }
     }
     setIsLoading(false);
   };
   useEffect( async ()=>{
     try {
-        let {data} = await api.get(axiosURLS.INTEGRATION + '/mailchimp');
+        let {data} = await api.get(axiosURLS.INTEGRATION + '/plivo');
         setFormdata(data.key_value);
       } catch (err) {
         console.log(err);
         console.log(err.response);
         if (err.response) {
-          NotificationManager.error(err.response.data.message, 'Fetch Error', 3000, null, null, '');
+          toast.error(err.response.data.message);
         }
     }
   },[]);
@@ -60,7 +60,7 @@ const Mailchimp = ({ match }) => {
     <>
       <Row>
         <Colxx xxs="12">
-          <Breadcrumb heading="menu.mailchimp" match={match} />
+          <Breadcrumb heading="menu.plivo" match={match} />
           <Separator className="mb-5" />
         </Colxx>
       </Row>
@@ -71,7 +71,7 @@ const Mailchimp = ({ match }) => {
               <Form>
                 <Row>
                   <Colxx xxs="12">
-                    <Label className="mt-4">
+                    <Label>
                       <IntlMessages id="forms.api_key" />
                     </Label>
                     <Input
@@ -79,52 +79,7 @@ const Mailchimp = ({ match }) => {
                       name="api_key"
                       value={formdata.api_key ? formdata.api_key : ''}
                       onChange={handleChange}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_host" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="smtp_host"
-                      value={formdata.smtp_host ? formdata.smtp_host : ''}
-                      onChange={handleChange}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_port" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="smtp_port"
-                      value={formdata.smtp_port ? formdata.smtp_port : ''}
-                      onChange={handleChange}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_username" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="smtp_username"
-                      value={formdata.smtp_username ? formdata.smtp_username : ''}
-                      onChange={handleChange}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="forms.smtp_password" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="smtp_password"
-                      value={formdata.smtp_password ? formdata.smtp_password : ''}
-                      onChange={handleChange}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="forms.email_from" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="email_from"
-                      value={formdata.email_from ? formdata.email_from : ''}
-                      onChange={handleChange}
-                    />
+                    />                   
                     <center>
                       <Button
                         color="primary"
@@ -154,4 +109,4 @@ const Mailchimp = ({ match }) => {
   );
 };
 
-export default Mailchimp;
+export default Plivo;

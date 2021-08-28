@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-
 const Cheftypes = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './Cheftypes')
 );
@@ -18,6 +17,15 @@ const Vouchers = React.lazy(() =>
 );
 const SmsTemplates = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './SmsTemplates')
+);
+const EmailTemplates = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './EmailTemplates')
+);
+const WebsiteSettings = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './WebsiteSettings')
+);
+const BookingSettings = React.lazy(() =>
+  import(/* webpackChunkName: "BookingSettings" */ './BookingSettings')
 );
 const Settings = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
@@ -40,12 +48,24 @@ const Settings = ({ match }) => (
         render={(props) => <Cuisines {...props} />}
       />
       <Route
+        path={`${match.url}/website_settings`}
+        render={(props) => <WebsiteSettings {...props} />}
+      />
+       <Route
+        path={`${match.url}/booking_settings`}
+        render={(props) => <BookingSettings {...props} />}
+      />
+      <Route
         path={`${match.url}/vouchers`}
         render={(props) => <Vouchers {...props} />}
       />
       <Route
         path={`${match.url}/sms_templates`}
         render={(props) => <SmsTemplates {...props} />}
+      />
+       <Route
+        path={`${match.url}/email_templates`}
+        render={(props) => <EmailTemplates {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

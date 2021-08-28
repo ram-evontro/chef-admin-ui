@@ -16,6 +16,12 @@ const Calendly = React.lazy(() =>
 const Razorpay = React.lazy(() =>
   import(/* webpackChunkName: "Razorpay" */ './Razorpay')
 );
+const S3 = React.lazy(() =>
+  import(/* webpackChunkName: "S3" */ './S3')
+);
+const Plivo = React.lazy(() =>
+  import(/* webpackChunkName: "Plivo" */ './Plivo')
+);
 const Integrations = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
@@ -39,6 +45,14 @@ const Integrations = ({ match }) => (
       <Route
         path={`${match.url}/calendly`}
         render={(props) => <Calendly {...props} />}
+      />
+       <Route
+        path={`${match.url}/s3`}
+        render={(props) => <S3 {...props} />}
+      />
+      <Route
+        path={`${match.url}/plivo`}
+        render={(props) => <Plivo {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

@@ -12,13 +12,15 @@ import {
   CustomInput,
   Collapse,
 } from 'reactstrap';
-import { NotificationManager } from 'components/common/react-notifications';
+import toast from 'react-hot-toast';
 import IntlMessages from 'helpers/IntlMessages';
 import { Colxx, Separator } from 'components/common/CustomBootstrap';
 import Breadcrumb from 'containers/navs/Breadcrumb';
-import Datatable from './chefrequests/Datatable';
+import Datatable from './emailtemplates/Datatable';
+import Addmodal from './emailtemplates/Addmodal';
+import Previewmodal from './emailtemplates/Previewmodal';
 import Deletealert from '../elements/Deletealert';
-const Chefrequests = ({ match }) => {
+const EmailTemplates = ({ match }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
@@ -26,15 +28,26 @@ const Chefrequests = ({ match }) => {
     column: 'name',
     order: 'asc',
   });
-  const [action, setAction] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const [bodyHtml, setBodyHtml] = useState(false);
+  const [modalFor, setModalFor] = useState('');
   const [deleteAlert, setDeleteAlert] = useState(false);
+  const [totalItemCount, setTotalItemCount] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [search, setSearch] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
+  const [formdata, setFormdata] = useState({});
   const [items, setItems] = useState([]);
   const [lastChecked, setLastChecked] = useState(null);
   const [dropdownSplitOpen, setDropdownSplitOpen] = useState(false);
   const onCheckItem = (event, id) => {
+    // if (
+    //   event.target.tagName === 'A' ||
+    //   (event.target.parentElement && event.target.parentElement.tagName === 'A')
+    // ) {
+    //   return true;
+    // }
     if (lastChecked === null) {
       setLastChecked(id);
     }
@@ -72,36 +85,34 @@ const Chefrequests = ({ match }) => {
     document.activeElement.blur();
     return false;
   };
-  const changeSelected = async (res) => {
+  const deleteSelected = async (res) => {
     setIsLoading(true);
-    try {
-      if (res && action != '') {
-        await Promise.all(
-          selectedItems.map(async (item) => {
-            await api.get(
-              axiosURLS.USER_JOIN_REQUESTS + '/' + item + '/' + action
-            );
-          })
-        );
-        setSelectedItems([]);
-        fetchData();
-        NotificationManager.success(`Join Request ${action}ed successfully`, 'Saved', 3000, null, null, '');
-      }
-    } catch (err) {
-      NotificationManager.error(`Some error occured`, 'Update Error', 3000, null, null, '');
+    if (res) {
+      await Promise.all(
+        selectedItems.map(async (item) => {
+          await api.delete(axiosURLS.EMAIL_TEMPLATES + '/' + item);
+        })
+      );
+      setSelectedItems([]);
+      fetchData();
+      toast.success('Email Template Deleted successfully');
     }
-    setAction('');
     setIsLoading(false);
   };
-  const updateAction = (action, id) => {
+  const deleteSingle = (id) => {
     setSelectedItems([id]);
-    setAction(action);
     showDeleteAlert();
   };
   const showDeleteAlert = () => {
+    // if (selectedItems.length > 0) {
     setDeleteAlert(!deleteAlert);
+    // }
   };
-
+  const editSelected = (data) => {
+    setModalFor('edit');
+    setFormdata(data);
+    setModalOpen(!modalOpen);
+  };
   const fetchData = async () => {
     let senddata = {
       limit: selectedPageSize,
@@ -109,10 +120,10 @@ const Chefrequests = ({ match }) => {
       sortBy: selectedOrderOption.column + ':' + selectedOrderOption.order,
     };
     if (search && search != '') {
-      senddata['name'] = search;
+      senddata['code'] = search;
     }
     api
-      .get(axiosURLS.USER_JOIN_REQUESTS, {
+      .get(axiosURLS.EMAIL_TEMPLATES, {
         params: senddata,
       })
       .then((res) => {
@@ -122,9 +133,15 @@ const Chefrequests = ({ match }) => {
         setTotalPage(data.totalPages);
         setItems(data.results);
         setSelectedItems([]);
+        setTotalItemCount(data.totalResults);
         setIsLoading(false);
       });
   };
+
+  const previewTemplate = (html) =>{
+    setBodyHtml(html);
+    setPreview(!preview);
+  }
 
   useEffect(() => {
     setCurrentPage(1);
@@ -137,7 +154,7 @@ const Chefrequests = ({ match }) => {
     <>
       <Row>
         <Colxx xxs="12">
-          <Breadcrumb heading="menu.chefrequests" match={match} />
+          <Breadcrumb heading="menu.email_templates" match={match} />
           <Separator className="mb-1" />
         </Colxx>
       </Row>
@@ -172,21 +189,8 @@ const Chefrequests = ({ match }) => {
               className="dropdown-toggle-split btn-lg"
             />
             <DropdownMenu right>
-              <DropdownItem
-                onClick={() => {
-                  setAction('approve');
-                  showDeleteAlert();
-                }}
-              >
-                <IntlMessages id="pages.approve" />
-              </DropdownItem>
-              <DropdownItem
-                onClick={() => {
-                  setAction('reject');
-                  showDeleteAlert();
-                }}
-              >
-                <IntlMessages id="pages.reject" />
+              <DropdownItem onClick={showDeleteAlert}>
+                <IntlMessages id="pages.delete" />
               </DropdownItem>
             </DropdownMenu>
           </ButtonDropdown>
@@ -212,6 +216,19 @@ const Chefrequests = ({ match }) => {
           >
             <IntlMessages id="pages.clear_search" />
           </Button>
+          <div className="text-zero top-right-button-container">
+            <Button
+              color="primary"
+              size="lg"
+              className="top-right-button"
+              onClick={() => {
+                setModalFor('add');
+                setModalOpen(!modalOpen);
+              }}
+            >
+              <IntlMessages id="pages.add-new" />
+            </Button>
+          </div>
 
           <Datatable
             onCheckItem={onCheckItem}
@@ -225,16 +242,30 @@ const Chefrequests = ({ match }) => {
             setSelectedPageSize={setSelectedPageSize}
             setSelectedOrderOption={setSelectedOrderOption}
             selectedOrderOption={selectedOrderOption}
-            updateAction={updateAction}
+            editSelected={editSelected}
+            deleteSingle={deleteSingle}
+            previewTemplate={previewTemplate}
           />
         </Colxx>
       </Row>
+      <Addmodal
+        modalOpen={modalOpen}
+        toggleModal={() => setModalOpen(!modalOpen)}
+        fetchData={fetchData}
+        editformdata={formdata}
+        modalFor={modalFor}
+      />
       <Deletealert
         modalOpen={deleteAlert}
         toggleModal={() => setDeleteAlert(!deleteAlert)}
-        setSureDelete={changeSelected}
+        setSureDelete={deleteSelected}
+      />
+      <Previewmodal
+        modalOpen={preview}
+        toggleModal={() => setPreview(!preview)}
+        bodyHtml={bodyHtml}
       />
     </>
   );
 };
-export default Chefrequests;
+export default EmailTemplates;
