@@ -16,6 +16,9 @@ const Cuisines = React.lazy(() =>
 const Vouchers = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './Vouchers')
 );
+const SmsTemplates = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './SmsTemplates')
+);
 const Settings = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
@@ -39,6 +42,10 @@ const Settings = ({ match }) => (
       <Route
         path={`${match.url}/vouchers`}
         render={(props) => <Vouchers {...props} />}
+      />
+      <Route
+        path={`${match.url}/sms_templates`}
+        render={(props) => <SmsTemplates {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

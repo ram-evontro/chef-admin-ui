@@ -16,6 +16,9 @@ const Chef = React.lazy(() =>
 const Settings = React.lazy(() =>
   import(/* webpackChunkName: "viwes-second-menu" */ './settings')
 );
+const Integrations = React.lazy(() =>
+  import(/* webpackChunkName: "viwes-second-menu" */ './integrations')
+);
 const App = ({ match }) => {
   return (
     <AppLayout>
@@ -38,6 +41,10 @@ const App = ({ match }) => {
             <Route
               path={`${match.url}/settings`}
               render={(props) => <Settings {...props} />}
+            />
+             <Route
+              path={`${match.url}/integrations`}
+              render={(props) => <Integrations {...props} />}
             />
             {/* <ProtectedRoute
                     path={`${match.url}/second-menu`}

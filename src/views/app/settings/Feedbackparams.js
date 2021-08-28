@@ -82,12 +82,12 @@ const Feedbackparams = ({ match }) => {
     document.activeElement.blur();
     return false;
   };
-  const deleteSelected = (res) => {
+  const deleteSelected = async (res) => {
     setIsLoading(true);
     if (res) {
-      selectedItems.map(async (item) => {
+      await Promise.all(selectedItems.map(async (item) => {
         await api.delete(axiosURLS.FEEDBACK_PRAMS + '/' + item);
-      });
+      }));
       setSelectedItems([]);
       fetchData();
       toast.success('Feedback Parameter Deleted successfully');

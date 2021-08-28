@@ -35,7 +35,8 @@ const data = [
         icon: 'simple-icon-note',
         label: 'menu.chef_join_requests',
         to: `${adminRoot}/chef/chefrequests`,
-      },{
+      },
+      {
         icon: 'simple-icon-cup',
         label: 'menu.chef_menus',
         to: `${adminRoot}/chef/allmenus`,
@@ -67,7 +68,7 @@ const data = [
             icon: 'simple-icon-arrow-right',
             label: 'menu.meal_courses',
             to: `${adminRoot}/settings/meal_courses`,
-          } ,
+          },
           {
             icon: 'simple-icon-arrow-right',
             label: 'menu.cuisine',
@@ -79,16 +80,16 @@ const data = [
         icon: 'simple-icon-screen-desktop',
         label: 'menu.website_settings',
         to: `${adminRoot}/settings/website_settings`,
-      },      
-      {
-        icon: 'simple-icon-present',
-        label: 'menu.vouchers',
-        to: `${adminRoot}/settings/vouchers`,
       },
       {
         icon: 'simple-icon-handbag',
         label: 'menu.booking_settings',
         to: `${adminRoot}/settings/booking_settings`,
+      },
+      {
+        icon: 'simple-icon-present',
+        label: 'menu.vouchers',
+        to: `${adminRoot}/settings/vouchers`,
       },
       {
         icon: 'simple-icon-speech',
@@ -106,32 +107,37 @@ const data = [
     id: 'integrations',
     icon: 'iconsminds-three-arrow-fork',
     label: 'menu.integrations',
-    to: `${adminRoot}/blank-page`,
+    to: `${adminRoot}/integrations`,
     subs: [
       {
         icon: 'simple-icon-map',
-        label: 'menu.google_map',
-        to: `${adminRoot}/chef/add`,
+        label: 'menu.google_maps',
+        to: `${adminRoot}/integrations/google_maps`,
       },
       {
         icon: 'simple-icon-envelope-open',
         label: 'menu.mailchimp',
-        to: `${adminRoot}/chef/list`,
+        to: `${adminRoot}/integrations/mailchimp`,
       },
       {
         icon: 'simple-icon-social-pinterest',
         label: 'menu.plivo',
-        to: `${adminRoot}/chef/requests`,
+        to: `${adminRoot}/integrations/plivo`,
       },
       {
         icon: 'simple-icon-credit-card',
         label: 'menu.razorpay',
-        to: `${adminRoot}/chef/requests`,
+        to: `${adminRoot}/integrations/razorpay`,
       },
       {
         icon: 'simple-icon-basket-loaded',
         label: 'menu.dunzo',
-        to: `${adminRoot}/chef/requests`,
+        to: `${adminRoot}/integrations/dunzo`,
+      },
+      {
+        icon: 'simple-icon-event',
+        label: 'menu.calendly',
+        to: `${adminRoot}/integrations/calendly`,
       }
     ],
   },

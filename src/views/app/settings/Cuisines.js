@@ -82,12 +82,12 @@ const Cuisines = ({ match }) => {
     document.activeElement.blur();
     return false;
   };
-  const deleteSelected = (res) => {
+  const deleteSelected = async (res) => {
     setIsLoading(true);
     if (res) {
-      selectedItems.map(async (item) => {
+      await Promise.all(selectedItems.map(async (item) => {
         await api.delete(axiosURLS.CUISINES + '/' + item);
-      });
+      }));
       setSelectedItems([]);
       fetchData();
       toast.success('Cuisine Deleted successfully');

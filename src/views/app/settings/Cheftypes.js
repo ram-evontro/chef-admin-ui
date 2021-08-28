@@ -82,12 +82,12 @@ const Cheftypes = ({ match }) => {
     document.activeElement.blur();
     return false;
   };
-  const deleteSelected = (res) => {
+  const deleteSelected = async (res) => {
     setIsLoading(true);
     if (res) {
-      selectedItems.map(async (item) => {
+      await Promise.all(selectedItems.map(async (item) => {
         await api.delete(axiosURLS.CHEF_TYPES + '/' + item);
-      });
+      }));
       setSelectedItems([]);
       fetchData();
       toast.success('Chef Type Deleted successfully');

@@ -159,7 +159,7 @@ module.exports = {
   'menu.name': 'Name',
   'menu.dashboard': 'Dashboard',
   'menu.integrations': 'Integrations',
-  'menu.google_map': 'Google Maps',
+  'menu.google_maps': 'Google Maps',
   'menu.dunzo': 'Dunzo',
   'menu.razorpay': 'Razorpay',
   'menu.mailchimp': 'Mailchimp',
@@ -180,6 +180,7 @@ module.exports = {
   'menu.sms_templates':'SMS Templates',
   'menu.email_templates':'Email Templates',
   'menu.chefs_list':'Chefs List',
+  'menu.calendly':'Calendly',
   /* 04.Dashboards */
   'dashboards.pending-orders': 'Pending Orders',
   'dashboards.completed-orders': 'Completed Orders',
@@ -312,6 +313,8 @@ module.exports = {
   'pages.yes': 'Yes',
   'pages.no': 'No',
   'pages.clear_search':'Clear Search',
+  'pages.activate': 'Activate',
+  'pages.deactivate':'Deactivate',
   /* 06.Applications */
 
   /* 06.01.Chat */
@@ -571,8 +574,15 @@ module.exports = {
   'forms.type': 'Type',
   'forms.value':'Value',
   'forms.max_uses':'Max Uses',
-
-
+  'forms.url':'URL',
+  'forms.message':'Message',
+  'forms.mailchimp':'Mailchimp',
+  'forms.api_key':'Api Key',
+  'forms.client_id':'Client Id',
+  'forms.client_secret':'Client Secret',
+  'forms.dunzo':'Dunzo',
+  'forms.key_id':'Key ID',
+  'forms.key_secret':'Key Secret',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',

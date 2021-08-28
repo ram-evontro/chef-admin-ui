@@ -9,4 +9,6 @@ export const FEEDBACK_PRAMS = 'feedback_types';
 export const MEAL_COURSES = 'courses';
 export const CUISINES = 'cuisines';
 export const VOUCHER = 'voucher';
+export const SMS_TEMPLATES = 'sms_template';
+export const INTEGRATION = 'integrations';
 export const FILEUPLOAD = 'util/fileupload';

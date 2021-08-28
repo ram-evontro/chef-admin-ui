@@ -82,12 +82,12 @@ const Mealcourses = ({ match }) => {
     document.activeElement.blur();
     return false;
   };
-  const deleteSelected = (res) => {
+  const deleteSelected = async (res) => {
     setIsLoading(true);
     if (res) {
-      selectedItems.map(async (item) => {
+      await Promise.all(selectedItems.map(async (item) => {
         await api.delete(axiosURLS.MEAL_COURSES + '/' + item);
-      });
+      }));
       setSelectedItems([]);
       fetchData();
       toast.success('Course Deleted successfully');

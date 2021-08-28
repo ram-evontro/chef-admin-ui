@@ -16,10 +16,10 @@ import toast from 'react-hot-toast';
 import IntlMessages from 'helpers/IntlMessages';
 import { Colxx, Separator } from 'components/common/CustomBootstrap';
 import Breadcrumb from 'containers/navs/Breadcrumb';
-import Datatable from './vouchers/Datatable';
-import Addmodal from './vouchers/Addmodal';
+import Datatable from './smstemplates/Datatable';
+import Addmodal from './smstemplates/Addmodal';
 import Deletealert from '../elements/Deletealert';
-const Vouchers = ({ match }) => {
+const SmsTemplates = ({ match }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
@@ -87,12 +87,12 @@ const Vouchers = ({ match }) => {
     if (res) {
       await Promise.all(
         selectedItems.map(async (item) => {
-          await api.delete(axiosURLS.VOUCHER + '/' + item);
+          await api.delete(axiosURLS.SMS_TEMPLATES + '/' + item);
         })
       );
       setSelectedItems([]);
       fetchData();
-      toast.success('Voucher Deleted successfully');
+      toast.success('Sms Template Deleted successfully');
     }
     setIsLoading(false);
   };
@@ -120,7 +120,7 @@ const Vouchers = ({ match }) => {
       senddata['code'] = search;
     }
     api
-      .get(axiosURLS.VOUCHER, {
+      .get(axiosURLS.SMS_TEMPLATES, {
         params: senddata,
       })
       .then((res) => {
@@ -139,20 +139,20 @@ const Vouchers = ({ match }) => {
     let formdata = { status: status };
     await Promise.all(
       selectedItems.map(async (item) => {
-        await api.patch(axiosURLS.VOUCHER + '/' + item, formdata);
+        await api.patch(axiosURLS.SMS_TEMPLATES + '/' + item, formdata);
       })
     );
     setSelectedItems([]);
     fetchData();
-    toast.success('Voucher status changed successfully');
+    toast.success('Sms Template status changed successfully');
     setIsLoading(false);
   };
   const toggleStatusSingle = async (id, setto) => {
     setIsLoading(true);
     let formdata = { status: setto };
-    await api.patch(axiosURLS.VOUCHER + '/' + id, formdata);
+    await api.patch(axiosURLS.SMS_TEMPLATES + '/' + id, formdata);
     fetchData();
-    toast.success('Voucher status changed successfully');
+    toast.success('Sms Template status changed successfully');
     setIsLoading(false);
   };
   useEffect(() => {
@@ -166,7 +166,7 @@ const Vouchers = ({ match }) => {
     <>
       <Row>
         <Colxx xxs="12">
-          <Breadcrumb heading="menu.vouchers" match={match} />
+          <Breadcrumb heading="menu.sms_templates" match={match} />
           <Separator className="mb-1" />
         </Colxx>
       </Row>
@@ -289,4 +289,4 @@ const Vouchers = ({ match }) => {
     </>
   );
 };
-export default Vouchers;
+export default SmsTemplates;

@@ -7,9 +7,10 @@ import {
   ModalFooter,
   Input,
   Label,
-  CustomInput
+  CustomInput,
+  Badge,
 } from 'reactstrap';
-import DatePicker from 'react-datepicker';
+import smsTemplateVariables from 'data/sms_template_variables';
 import 'react-datepicker/dist/react-datepicker.css';
 import IntlMessages from 'helpers/IntlMessages';
 import api from 'helpers/api';
@@ -24,13 +25,12 @@ const Addmodal = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [id, setId] = useState('');
+  const [badges, setBadges] = useState([]);
   const [formdata, setFormdata] = useState({});
   useEffect(() => {
     setId(editformdata['id']);
     let temp = { ...editformdata };
     delete temp['id'];
-    delete temp['status'];
-    delete temp['times_used'];
     setFormdata(temp);
   }, [editformdata]);
   const handleChange = (e) => {
@@ -40,42 +40,48 @@ const Addmodal = ({
     tempdata[name] = val;
     setFormdata(tempdata);
   };
+  const setSlug = (e) => {
+    let tempdata = { ...formdata };
+    let val = e.target.value;
+    tempdata['slug'] = val;
+    setFormdata(tempdata);
+    if(val!=''){
+      setBadges([...smsTemplateVariables[val]]);
+    } else {
+      setBadges([]);
+    }
+  };
+  const insertTag = (tag) => {
+    let tempdata = { ...formdata };
+    if (tempdata['message']) {
+      tempdata['message'] = tempdata['message'] + tag;
+    } else {
+      tempdata['message'] = tag;
+    }
+    setFormdata(tempdata);
+  };
   const handleClick = async () => {
     setIsLoading(true);
     let newformdata;
     try {
       if (modalFor === 'edit') {
-        await api.patch(axiosURLS.VOUCHER + '/' + id, formdata);
-        toast.success('Voucher Edited successfully');
+        await api.patch(axiosURLS.SMS_TEMPLATES + '/' + id, formdata);
+        toast.success('Sms Template Edited successfully');
       } else {
-        await api.post(axiosURLS.VOUCHER, formdata);
-        toast.success('Voucher Added successfully');
+        await api.post(axiosURLS.SMS_TEMPLATES, formdata);
+        toast.success('Sms Template Added successfully');
       }
 
       fetchData();
     } catch (err) {
       console.log(err);
       console.log(err.response);
-      toast.error(err.response.data.message);
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
     }
     setIsLoading(false);
     toggleModal();
-  };
-  function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i)
-      result += chars[Math.floor(Math.random() * chars.length)];
-    return result;
-  }
-  const setExpiry = (val) => {
-    let temp = { ...formdata };
-    temp['expiry'] = val;
-    setFormdata(temp);
-  };
-  const shuffleCode = () => {
-    let temp = { ...formdata };
-    temp['code'] = randomString(7, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-    setFormdata(temp);
   };
   return (
     <Modal
@@ -89,64 +95,65 @@ const Addmodal = ({
       </ModalHeader>
       <ModalBody>
         <Label>
-          <IntlMessages id="forms.code" />
-          <a onClick={shuffleCode} href="javascript:;">
-            <i className="glyph-icon simple-icon-shuffle"></i>
-          </a>
+          <IntlMessages id="forms.name" />
         </Label>
         <Input
           type="text"
-          name="code"
-          value={formdata.code ? formdata.code : ''}
+          name="name"
+          value={formdata.name ? formdata.name : ''}
           onChange={handleChange}
         />
         <Label className="mt-4">
-          <IntlMessages id="forms.expiry" />
+          <IntlMessages id="forms.url" />
         </Label>
-        <DatePicker
-         selected={Date.parse(formdata.expiry)}
-          onChange={(val) => setExpiry(val)}
-          shouldCloseOnSelect
+        <Input
+          type="textarea"
+          name="url"
+          value={formdata.url ? formdata.url : ''}
+          onChange={handleChange}
+          placeholder="Enter API URL from SMS provider. with [MOBILE NUMBER] and [MESSAGE] as dynamic fields"
+        />
+        <Label className="mt-4">
+          <IntlMessages id="forms.message" />
+        </Label>
+        <Input
+          type="textarea"
+          name="message"
+          value={formdata.message ? formdata.message : ''}
+          onChange={handleChange}
         />
         <Label className="mt-4">
           <IntlMessages id="forms.type" />
         </Label>
-        <CustomInput
-          type="radio"
-          id="exCustomRadio"
-          name="type"
-          label="PERCENTAGE"
-          onChange={handleChange}
-          value="Percentage"
-          checked={formdata.type==="Percentage"?true:false}
-        />
-        <CustomInput
-          type="radio"
-          id="extype2"
-          name="type"
-          label="AMOUNT"
-          onChange={handleChange}
-          value="Amount"
-          checked={formdata.type==="Amount"?true:false}
-        />
-        <Label className="mt-4">
-          <IntlMessages id="forms.value" />
-        </Label>
-        <Input
-          type="number"
-          name="value"
-          value={formdata.value ? formdata.value : ''}
-          onChange={handleChange}
-        />
-        <Label className="mt-4">
-          <IntlMessages id="forms.max_uses" />
-        </Label>
-        <Input
-          type="number"
-          name="max_uses"
-          value={formdata.max_uses ? formdata.max_uses : ''}
-          onChange={handleChange}
-        />
+        <select
+          className="form-control"
+          name="slug"
+          value={formdata.slug ? formdata.slug : ''}
+          onChange={setSlug}
+          id="slug"
+        >
+          <option key={'slugs_select-1'} value="">
+            Select Template
+          </option>
+          {Object.keys(smsTemplateVariables).map((data, index) => {
+            return (
+              <option key={data} value={data}>
+                {(data.split('_').join(' ').toUpperCase())}
+              </option>
+            );
+          })}
+        </select>
+        {badges.map((data, index) => (
+          <Badge
+            onClick={() => {
+              insertTag(data.val);
+            }}
+            key={data.key}
+            color="primary"
+          >
+            {data.title}
+          </Badge>
+        ))}
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" outline onClick={toggleModal}>
