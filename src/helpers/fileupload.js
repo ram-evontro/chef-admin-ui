@@ -1,24 +1,11 @@
 import * as axiosURLS from "./endpoints";
+import api from "./api";
 const fileapi= ()=> {
-    async function getSignedURI(file,headers) {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      var requestOptions = {
-        method: "GET",
-        headers: headers,
-        redirect: "follow",
-      };
+    async function getSignedURI(file) {
       try {
-        const response = await fetch(
-          `${axiosURLS.BASE_URL+axiosURLS.FILEUPLOAD}?name=${file.name}&type=${file.type}`,
-          requestOptions
-        );
-        const result = await response.json();
-        console.log(result);
-        if (!response.ok) {
-          throw new Error(result.message);
-        }
-        return result.signedRequest;
+        const {data} = await api.get(`${axiosURLS.BASE_URL+axiosURLS.FILEUPLOAD}?name=${file.name}&type=${file.type}`);
+      
+        return data.signedRequest;
       } catch (error) {
         throw error;
       }

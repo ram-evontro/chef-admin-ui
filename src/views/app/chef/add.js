@@ -1,36 +1,24 @@
-import React, { useRef, useState } from 'react';
-import {
-  Row,
-  Card,
-  CardBody,
-  Input,
-  CardTitle,
-  FormGroup,
-  Label,
-  CustomInput,
-  Button,
-  FormText,
-  Form,
-} from 'reactstrap';
-import DatePicker from 'react-datepicker';
-import TagsInput from 'react-tagsinput';
-import 'react-tagsinput/react-tagsinput.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import toast from 'react-hot-toast';
-import DropzoneComponent from 'react-dropzone-component';
-import 'dropzone/dist/min/dropzone.min.css';
+import React, { useRef, useState } from "react";
+import { Row, Card, CardBody, Input, CardTitle, FormGroup, Label, CustomInput, Button, FormText, Form } from "reactstrap";
+import DatePicker from "react-datepicker";
+import TagsInput from "react-tagsinput";
+import "react-tagsinput/react-tagsinput.css";
+import "react-datepicker/dist/react-datepicker.css";
+import toast from "react-hot-toast";
+import DropzoneComponent from "react-dropzone-component";
+import "dropzone/dist/min/dropzone.min.css";
 
-import IntlMessages from 'helpers/IntlMessages';
-import { Colxx, Separator } from 'components/common/CustomBootstrap';
-import Breadcrumb from 'containers/navs/Breadcrumb';
-import api from 'helpers/api';
-import * as axiosURLS from 'helpers/endpoints';
+import IntlMessages from "helpers/IntlMessages";
+import { Colxx, Separator } from "components/common/CustomBootstrap";
+import Breadcrumb from "containers/navs/Breadcrumb";
+import api from "helpers/api";
+import * as axiosURLS from "helpers/endpoints";
 import fileapi from "helpers/fileupload";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 const Add = ({ match, currentUser }) => {
-  const ReactDOMServer = require('react-dom/server');
+  const ReactDOMServer = require("react-dom/server");
   const { upload } = fileapi();
-  let componentConfig = { postUrl: 'no-url' };
+  let componentConfig = { postUrl: "no-url" };
   let eventHandlers = { addedfile: (file) => setPicture(file) };
   const djsConfig = {
     thumbnailHeight: 160,
@@ -74,14 +62,14 @@ const Add = ({ match, currentUser }) => {
         </a>
       </div>
     ),
-    headers: { 'My-Awesome-Header': 'header value' },
+    headers: { "My-Awesome-Header": "header value" },
   };
   const [tagsLO, setTagsLO] = useState([]);
   const [formdata, setFormdata] = useState({});
   const [picture, setPicture] = useState(null);
   const setDob = (val) => {
     let tempdata = { ...formdata };
-    tempdata['dob'] = val;
+    tempdata["dob"] = val;
     setFormdata(tempdata);
   };
   const handleChange = (e) => {
@@ -94,21 +82,17 @@ const Add = ({ match, currentUser }) => {
   const handleClick = async () => {
     let data;
     try {
-      let fileurl = await upload(picture, {
-        'Access-Control-Allow-Origin': '*',
-        'Content-type': 'application/json',
-        Authorization: 'Bearer ' + currentUser.tokens.access.token,
-      });
+      let fileurl = await upload(picture);
       // await api.get(axiosURLS.FILEUPLOAD,{
       //   params:{name:picture.name,type:picture.type},
       //   ,
       // });
-      formdata['picture'] = fileurl;
+      formdata["picture"] = fileurl;
       data = await api.post(axiosURLS.USERS, formdata, {
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-type': 'application/json',
-          Authorization: 'Bearer ' + currentUser.tokens.access.token,
+          "Access-Control-Allow-Origin": "*",
+          "Content-type": "application/json",
+          Authorization: "Bearer " + currentUser.tokens.access.token,
         },
       });
       // if(data.code === 401)
@@ -118,7 +102,7 @@ const Add = ({ match, currentUser }) => {
       // else
       // {
       console.log(data);
-      toast.success('User Added successfully');
+      toast.success("User Added successfully");
       // }
     } catch (err) {
       console.log(err);
@@ -145,32 +129,19 @@ const Add = ({ match, currentUser }) => {
                 <Row>
                   <Colxx xxs="12" md="6">
                     <Label className="form-group has-float-label">
-                      <Input
-                        name="name"
-                        onChange={handleChange}
-                        value={formdata.name}
-                      />
+                      <Input name="name" onChange={handleChange} value={formdata.name} />
                       <span>
                         <IntlMessages id="forms.name" />
                       </span>
                     </Label>
                     <Label className="form-group has-float-label">
-                      <Input
-                        name="mobile"
-                        onChange={handleChange}
-                        value={formdata.mobile}
-                      />
+                      <Input name="mobile" onChange={handleChange} value={formdata.mobile} />
                       <span>
                         <IntlMessages id="forms.mobile" />
                       </span>
                     </Label>
                     <Label className="form-group has-float-label">
-                      <DatePicker
-                        onChange={handleChange}
-                        selected={formdata.dob}
-                        onChange={(val) => setDob(val)}
-                        shouldCloseOnSelect
-                      />
+                      <DatePicker onChange={handleChange} selected={formdata.dob} onChange={(val) => setDob(val)} shouldCloseOnSelect />
                       <span>
                         <IntlMessages id="forms.date-u" />
                       </span>
@@ -178,11 +149,7 @@ const Add = ({ match, currentUser }) => {
                   </Colxx>
                   <Colxx xxs="12" md="6">
                     <Label className="form-group has-float-label">
-                      <DropzoneComponent
-                        config={componentConfig}
-                        eventHandlers={eventHandlers}
-                        djsConfig={djsConfig}
-                      />
+                      <DropzoneComponent config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig} />
                       <span>
                         <IntlMessages id="forms.picture" />
                       </span>
@@ -190,12 +157,7 @@ const Add = ({ match, currentUser }) => {
                   </Colxx>
                   <Colxx xxs="12" md="6">
                     <Label className="form-group has-float-label">
-                      <Input
-                        name="email"
-                        onChange={handleChange}
-                        value={formdata.email}
-                        type="email"
-                      />
+                      <Input name="email" onChange={handleChange} value={formdata.email} type="email" />
                       <span>
                         <IntlMessages id="forms.email" />
                       </span>
@@ -203,12 +165,7 @@ const Add = ({ match, currentUser }) => {
                   </Colxx>
                   <Colxx xxs="12" md="6">
                     <Label className="form-group has-float-label">
-                      <Input
-                        name="password"
-                        onChange={handleChange}
-                        value={formdata.password}
-                        type="password"
-                      />
+                      <Input name="password" onChange={handleChange} value={formdata.password} type="password" />
                       <span>
                         <IntlMessages id="forms.password" />
                       </span>
@@ -216,11 +173,7 @@ const Add = ({ match, currentUser }) => {
                   </Colxx>
                   <Colxx xxs="12">
                     <Label className="form-group has-float-label">
-                      <TagsInput
-                        value={tagsLO}
-                        onChange={(val) => setTagsLO(val)}
-                        inputProps={{ placeholder: '' }}
-                      />
+                      <TagsInput value={tagsLO} onChange={(val) => setTagsLO(val)} inputProps={{ placeholder: "" }} />
                       <span>
                         <IntlMessages id="forms.tags" />
                       </span>
@@ -229,12 +182,7 @@ const Add = ({ match, currentUser }) => {
 
                   <Colxx xxs="12">
                     <Label className="form-group has-float-label">
-                      <textarea
-                        name="address"
-                        onChange={handleChange}
-                        value={formdata.address}
-                        className="form-control"
-                      />
+                      <textarea name="address" onChange={handleChange} value={formdata.address} className="form-control" />
                       <span>
                         <IntlMessages id="forms.address" />
                       </span>
@@ -242,12 +190,7 @@ const Add = ({ match, currentUser }) => {
                   </Colxx>
                   <Colxx xxs="12">
                     <Label className="form-group has-float-label">
-                      <textarea
-                        name="bankdetails"
-                        onChange={handleChange}
-                        value={formdata.bankdetails}
-                        className="form-control"
-                      />
+                      <textarea name="bankdetails" onChange={handleChange} value={formdata.bankdetails} className="form-control" />
                       <span>
                         <IntlMessages id="forms.bankdetails" />
                       </span>
@@ -255,12 +198,7 @@ const Add = ({ match, currentUser }) => {
                   </Colxx>
                   <Colxx xxs="12">
                     <Label className="form-group has-float-label">
-                      <textarea
-                        name="intro"
-                        onChange={handleChange}
-                        value={formdata.intro}
-                        className="form-control"
-                      />
+                      <textarea name="intro" onChange={handleChange} value={formdata.intro} className="form-control" />
                       <span>
                         <IntlMessages id="forms.intro" />
                       </span>

@@ -1,42 +1,29 @@
-import React, { useState } from 'react';
-import {
-  Row,
-  Nav,
-  NavItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu,
-  TabContent,
-  TabPane,
-  } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import Details from './singleview/details';
-import Menu from './singleview/menu';
-import Feedback from './singleview/feedback';
-import classnames from 'classnames';
-import Breadcrumb from 'containers/navs/Breadcrumb';
-import { Colxx } from 'components/common/CustomBootstrap';
-import IntlMessages from 'helpers/IntlMessages';
+import React, { useState, useEffect } from "react";
+import { Row, Nav, NavItem, UncontrolledDropdown, DropdownToggle, DropdownItem, DropdownMenu, TabContent, TabPane } from "reactstrap";
+import { NavLink } from "react-router-dom";
+import Details from "./singleview/details";
+import Menu from "./singleview/menu";
+import Feedback from "./singleview/feedback";
+import classnames from "classnames";
+import Breadcrumb from "containers/navs/Breadcrumb";
+import { Colxx } from "components/common/CustomBootstrap";
+import IntlMessages from "helpers/IntlMessages";
 
-
-const Singleview = ({ match }) => {
- const [activeTab, setActiveTab] = useState('details');
-  
+const Singleview = ({ match, history }) => {
+  const [activeTab, setActiveTab] = useState("details");
+  const [id, setId] = useState('');
+  useEffect(async () => {
+   let id = history.location.search.replace("?p=", "");
+    setId(id);
+  },[]);
   return (
     <>
       <Row>
         <Colxx xxs="12">
-          <h1>Sarah Kortney</h1>
+          {/* <h1>{user.name}</h1> */}
           <div className="text-zero top-right-button-container">
             <UncontrolledDropdown>
-              <DropdownToggle
-                caret
-                color="primary"
-                size="lg"
-                outline
-                className="top-right-button top-right-button-single"
-              >
+              <DropdownToggle caret color="primary" size="lg" outline className="top-right-button top-right-button-single">
                 <IntlMessages id="pages.actions" />
               </DropdownToggle>
               <DropdownMenu>
@@ -56,11 +43,11 @@ const Singleview = ({ match }) => {
             <NavItem>
               <NavLink
                 className={classnames({
-                  active: activeTab === 'details',
-                  'nav-link': true,
+                  active: activeTab === "details",
+                  "nav-link": true,
                 })}
                 onClick={() => {
-                  setActiveTab('details');
+                  setActiveTab("details");
                 }}
                 location={{}}
                 to="#"
@@ -71,11 +58,11 @@ const Singleview = ({ match }) => {
             <NavItem>
               <NavLink
                 className={classnames({
-                  active: activeTab === 'menu',
-                  'nav-link': true,
+                  active: activeTab === "menu",
+                  "nav-link": true,
                 })}
                 onClick={() => {
-                  setActiveTab('menu');
+                  setActiveTab("menu");
                 }}
                 location={{}}
                 to="#"
@@ -86,11 +73,11 @@ const Singleview = ({ match }) => {
             <NavItem>
               <NavLink
                 className={classnames({
-                  active: activeTab === 'feedback',
-                  'nav-link': true,
+                  active: activeTab === "feedback",
+                  "nav-link": true,
                 })}
                 onClick={() => {
-                  setActiveTab('feedback');
+                  setActiveTab("feedback");
                 }}
                 location={{}}
                 to="#"
@@ -102,13 +89,13 @@ const Singleview = ({ match }) => {
 
           <TabContent activeTab={activeTab}>
             <TabPane tabId="details">
-                <Details />
-             </TabPane>
+              <Details id={id} />
+            </TabPane>
             <TabPane tabId="menu">
               <Menu />
-            </TabPane>            
+            </TabPane>
             <TabPane tabId="feedback">
-             <Feedback />
+              <Feedback />
             </TabPane>
           </TabContent>
         </Colxx>
