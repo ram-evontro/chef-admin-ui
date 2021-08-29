@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Chefs-a-Porter",
   "private": true,
+  "engines": {
+    "node": "12.16.0"
+  },
   "dependencies": {
     "@glidejs/glide": "^3.4.1",
     "@testing-library/jest-dom": "^5.13.0",

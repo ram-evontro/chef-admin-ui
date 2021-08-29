@@ -12,7 +12,9 @@ const Main = () => {
     <Provider store={store}>
        <PersistGate loading={null} persistor={persistor}>
       <Suspense fallback={<div className="loading" />}>
+      <React.StrictMode>
         <App />
+        </React.StrictMode>
         <Toaster />
       </Suspense>
       </PersistGate>
