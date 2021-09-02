@@ -13,7 +13,7 @@ import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
 import fileapi from "helpers/fileupload";
 import { images } from "helpers/images";
-const Details = ({ id,setUserName }) => {
+const Details = ({ id,setUserName,setChefTypesForView }) => {
   const [user, setUser] = useState({});
   const [chefTypes, setChefTypes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -111,6 +111,7 @@ const Details = ({ id,setUserName }) => {
       spreadUser(data);
       let response = await api.get(axiosURLS.CHEF_TYPES_ALL);
       setChefTypes(response.data);
+      setChefTypesForView(response.data);
     } catch (err) {
       console.log(err);
       console.log(err.response);

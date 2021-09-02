@@ -68,9 +68,10 @@ const Table = ({
     <>
       <table
         {...getTableProps()}
-        className={`r-table table ${classnames({
+        className={`r-table table table-responsive ${classnames({
           'table-divided': divided,
           'loading-table': isLoading,
+
         })}`}
       >
         <thead>
@@ -243,6 +244,7 @@ const Datatable = ({
         setSelectedOrderOption={setSelectedOrderOption}
         selectedOrderOption={selectedOrderOption}
         divided
+        responsive
       />
     </div>
   );

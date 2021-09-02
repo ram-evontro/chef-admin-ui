@@ -1,19 +1,10 @@
-import React from 'react';
-import {
-  Row,
-  Card,
-  CardBody,
-  CardSubtitle,
-  CardImg,
-  CardText,
-  CustomInput,
-  Badge,
-} from 'reactstrap';
-import { adminRoot } from 'constants/defaultValues';
-import { NavLink } from 'react-router-dom';
-import classnames from 'classnames';
-import { ContextMenuTrigger } from 'react-contextmenu';
-import { Colxx } from 'components/common/CustomBootstrap';
+import React from "react";
+import { Row, Card, CardBody, CardSubtitle, CardImg, CardText, CustomInput, Badge } from "reactstrap";
+import { adminRoot } from "constants/defaultValues";
+import { NavLink } from "react-router-dom";
+import classnames from "classnames";
+import { ContextMenuTrigger } from "react-contextmenu";
+import { Colxx } from "components/common/CustomBootstrap";
 
 const ImageListView = ({ menu, isSelect, collect, onCheckItem }) => {
   return (
@@ -27,33 +18,22 @@ const ImageListView = ({ menu, isSelect, collect, onCheckItem }) => {
         >
           <div className="position-relative">
             <NavLink to={`${adminRoot}/chef/menuview?p=${menu.id}`} className="w-40 w-sm-100">
-              <CardImg top alt={menu.title} src="https://chefassets.s3.ap-south-1.amazonaws.com/4101501.jpg" />
+              <CardImg top alt={menu.title} src={menu.cover_picture} />
             </NavLink>
-            <Badge
-              color={'primary'}
-              pill
-              className="position-absolute badge-top-left"
-            >
-              Active
+            <Badge color={menu.status ? "primary" : "secondary"} pill className="position-absolute badge-top-left">
+              {menu.status ? "Active" : "Inactive"}
             </Badge>
           </div>
           <CardBody>
             <Row>
               <Colxx xxs="2">
-                <CustomInput
-                  className="item-check mb-0"
-                  type="checkbox"
-                  id={`check_${menu.id}`}
-                  checked={isSelect}
-                  onChange={() => {}}
-                  label=""
-                />
+                <CustomInput className="item-check mb-0" type="checkbox" id={`check_${menu.id}`} checked={isSelect} onChange={() => {}} label="" />
               </Colxx>
-              <Colxx xxs="10" className="mb-3">
-                <CardSubtitle>{menu.title}</CardSubtitle>
-                <CardText className="text-muted text-small mb-0 font-weight-light">
-                  {menu.desc}
-                </CardText>
+              <Colxx xxs="10">
+                <CardSubtitle>{menu.title.substring(0, 25)}</CardSubtitle>
+              </Colxx>
+              <Colxx xxs="12">
+                <CardText className="text-muted text-small mb-0 font-weight-light">{menu.desc.padEnd(50).substring(0, 35)}...</CardText>
               </Colxx>
             </Row>
           </CardBody>

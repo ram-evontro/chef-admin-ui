@@ -6,6 +6,7 @@ export const USERS = 'users';
 export const USER_JOIN_REQUESTS = 'users/requestjoin';
 export const USER_DETAILS_UPDATE = 'users/updatedetails';
 export const USER_DETAILS_DELETE = 'users/deletedetails';
+export const USER_MENUS = 'menu/users';
 export const MENU = 'menu';
 export const CHEF_TYPES = 'chef_types';
 export const CHEF_TYPES_ALL = 'chef_types/all';

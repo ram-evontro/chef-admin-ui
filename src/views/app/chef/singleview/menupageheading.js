@@ -33,6 +33,7 @@ const Menupageheading = ({
   pageSizes,
   toggleModal,
   heading,
+  handleAction
 }) => {
   const [dropdownSplitOpen, setDropdownSplitOpen] = useState(false);
   const [displayOptionsIsOpen, setDisplayOptionsIsOpen] = useState(false);
@@ -149,11 +150,14 @@ const Menupageheading = ({
                     className="dropdown-toggle-split btn-lg"
                   />
                   <DropdownMenu right>
-                    <DropdownItem>
+                    <DropdownItem onClick={()=>{handleAction('delete')}}>
                       <IntlMessages id="pages.delete" />
                     </DropdownItem>
-                    <DropdownItem>
-                      <IntlMessages id="pages.another-action" />
+                    <DropdownItem onClick={()=>{handleAction('activate')}}>
+                      <IntlMessages id="pages.activate" />
+                    </DropdownItem>
+                    <DropdownItem onClick={()=>{handleAction('deactivate')}}>
+                      <IntlMessages id="pages.deactivate" />
                     </DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>

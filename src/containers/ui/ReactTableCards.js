@@ -40,7 +40,7 @@ function Table({ columns, data, divided = false, defaultPageSize = 6 }) {
     <>
       <table
         {...getTableProps()}
-        className={`r-table table ${classnames({ 'table-divided': divided })}`}
+        className={`r-table table table-responsive ${classnames({ 'table-divided': divided })}`}
       >
         <thead>
           {headerGroups.map((headerGroup) => (

@@ -33,12 +33,7 @@ const Menupagelisting = ({
             />
           );     
       })}
-      <p>Pagination</p>
-      <Pagination
-        currentPage={currentPage}
-        totalPage={totalPage}
-        onChangePage={(i) => onChangePage(i)}
-      />
+      
     </Row>
   );
 };

@@ -1,36 +1,30 @@
-import React, { useState } from 'react';
-import {
-  Row,
-  Card,
-  CardBody,
-  CardTitle,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-} from 'reactstrap';
-import DatePicker from 'react-datepicker';
-import TagsInput from 'react-tagsinput';
-import 'react-tagsinput/react-tagsinput.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import IntlMessages from 'helpers/IntlMessages';
-import { Colxx } from 'components/common/CustomBootstrap';
-import DropzoneComponent from 'react-dropzone-component';
-import 'dropzone/dist/min/dropzone.min.css';
-const Menuadd = (props) => {
-  const ReactDOMServer = require('react-dom/server');
+import React, { useState } from "react";
+import { Row, Card, CardBody, CardTitle, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Input, Label } from "reactstrap";
+import DatePicker from "react-datepicker";
+import TagsInput from "react-tagsinput";
+import "react-tagsinput/react-tagsinput.css";
+import "react-datepicker/dist/react-datepicker.css";
+import IntlMessages from "helpers/IntlMessages";
+import { Colxx } from "components/common/CustomBootstrap";
+import api from "helpers/api";
+import * as axiosURLS from "helpers/endpoints";
+import fileapi from "helpers/fileupload";
+import { NotificationManager } from "components/common/react-notifications";
+import DropzoneComponent from "react-dropzone-component";
+import "dropzone/dist/min/dropzone.min.css";
+const Menuadd = ({ modalOpen, toggleModal,chefTypes,id,fetchData }) => {
+  const { upload } = fileapi();
+  const ReactDOMServer = require("react-dom/server");
   const [formdata, setFormdata] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [tagsLO, setTagsLO] = useState([]);
-  let componentConfig = { postUrl: 'no-url' };
+  const [picture, setPicture] = useState(null);
+  let componentConfig = { postUrl: "no-url" };
   let eventHandlers = { addedfile: (file) => setPicture(file) };
   const djsConfig = {
     thumbnailHeight: 160,
     maxFilesize: 2,
+    maxFiles: 1,
     autoProcessQueue: false,
     previewTemplate: ReactDOMServer.renderToStaticMarkup(
       <div className="dz-preview dz-file-preview mb-3">
@@ -70,7 +64,6 @@ const Menuadd = (props) => {
         </a>
       </div>
     ),
-    headers: { 'My-Awesome-Header': 'header value' },
   };
 
   const handleChange = (e) => {
@@ -80,201 +73,111 @@ const Menuadd = (props) => {
     tempdata[name] = val;
     setFormdata(tempdata);
   };
-  const setStart = (val) => {};
-  const setEnd = (val) => {};
-  const handleClick = async () => {};
+  const handleClick = async () => {
+    let error = '';
+    if(!formdata['title']||formdata['title']==='')
+    {
+      error = 'Title Required'
+    }
+    if(!formdata['desc']||formdata['desc']==='')
+    {
+      error = 'Description Required'
+    }
+    if(error!='')
+    {
+      NotificationManager.error(error, "Error", 3000, null, null, "");
+      return false;
+    }
+    setIsLoading(true);
+    
+    let newformdata;
+    try {
+      if(picture)
+      {
+        let fileurl = await upload(picture);
+        formdata["cover_picture"] = fileurl;
+      }
+      formdata['user'] =id;
+      await api.post(axiosURLS.MENU, formdata);
+      NotificationManager.success("Menu Added successfully", "Added", 3000, null, null, "");
+
+      fetchData();
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+      }
+    }
+    setIsLoading(false);
+    toggleModal();
+  };
   return (
-    <Modal isOpen={props.modalOpen} size="lg" toggle={props.toggleModal}>
-      <ModalHeader>
-        <IntlMessages id="pages.add_menu" />
+    <Modal isOpen={modalOpen} toggle={toggleModal} wrapClassName="modal-right" backdrop="static">
+      <ModalHeader toggle={toggleModal}>
+        <IntlMessages id="pages.add-new-modal-title" />
       </ModalHeader>
       <ModalBody>
-        <Row>
-          <Colxx xxs="12" className="mb-4">
-            <Card className="mb-4">
-              <CardBody>
-                <Form>
-                  <Row>
-                    <Colxx xxs="12" md="12">
-                      <Label className="form-group has-float-label">
-                        <Input
-                          name="title"
-                          onChange={handleChange}
-                          value={formdata.title}
-                        />
-                        <span>
-                          <IntlMessages id="forms.title" />
-                        </span>
-                      </Label>
-                      <Label className="form-group has-float-label">
-                        <textarea
-                          name="desc"
-                          onChange={handleChange}
-                          value={formdata.desc}
-                          className="form-control"
-                        />
-                        <span>
-                          <IntlMessages id="forms.description" />
-                        </span>
-                      </Label>
-                    </Colxx>
-                    <Colxx xxs="12" md="12">
-                      <h3>
-                        <IntlMessages id="forms.meals" />
-                      </h3>
-                      <Row>
-                        <Colxx xxs="12" md="3">
-                          <Label className="form-group has-float-label">
-                            <select
-                              name="course"
-                              onChange={handleChange}
-                              value={formdata.course}
-                              className="form-control"
-                            >
-                              <option value="Beverages">Beverages</option>
-                              <option value="Course1">Course1</option>
-                              <option value="Course2">Course2</option>
-                              <option value="Course3">Course3</option>
-                            </select>
-                            <span>
-                              <IntlMessages id="forms.menu_type" />
-                            </span>
-                          </Label>
-                        </Colxx>
-                        <Colxx xxs="12" md="3">
-                          <Label className="form-group has-float-label">
-                            <Input
-                              name="heading"
-                              onChange={handleChange}
-                              value={formdata.heading}
-                            />
-                            <span>
-                              <IntlMessages id="forms.title" />
-                            </span>
-                          </Label>
-                        </Colxx>
-                        <Colxx xxs="12" md="5">
-                          <Label className="form-group has-float-label">
-                            <textarea
-                              name="info"
-                              onChange={handleChange}
-                              value={formdata.info}
-                              className="form-control"
-                              rows="1"
-                            />
-                            <span>
-                              <IntlMessages id="forms.info" />
-                            </span>
-                          </Label>
-                        </Colxx>
-                        <Colxx xxs="12" md="1">
-                          <div className={`glyph-icon simple-icon-trash`} />
-                        </Colxx>
-                      </Row>
-                      <Row>
-                        <Colxx xxs="12">
-                          <Button color="primary" className="mb-3">
-                            <IntlMessages id="forms.add_more" />
-                          </Button>
-                        </Colxx>
-                      </Row>
-                    </Colxx>
-                    <Colxx xxs="12" md="6">
-                      <Label className="form-group has-float-label">
-                        <select
-                          name="menu_type"
-                          onChange={handleChange}
-                          value={formdata.menu_type}
-                          className="form-control"
-                        >
-                          <option value="Vegetarian">Vegetarian</option>
-                          <option value="Non vegetarian">Non vegetarian</option>
-                        </select>
-                        <span>
-                          <IntlMessages id="forms.menu_type" />
-                        </span>
-                      </Label>
-                    </Colxx>
-                    <Colxx xxs="12" md="6">
-                      <Label className="form-group has-float-label">
-                        <select
-                          name="cuisine"
-                          onChange={handleChange}
-                          value={formdata.cuisine}
-                          className="form-control"
-                        >
-                          <option value="Thai">Thai</option>
-                          <option value="North Indian">North Indian</option>
-                          <option value="Italian">Italian</option>
-                        </select>
-                        <span>
-                          <IntlMessages id="forms.cuisine" />
-                        </span>
-                      </Label>
-                    </Colxx>
-                    <Colxx xxs="12" md="6">
-                      <Label className="form-group has-float-label">
-                        <DatePicker
-                          selected={formdata.activefrom}
-                          onChange={(val) => setStart(val)}
-                          shouldCloseOnSelect
-                        />
-                        <span>
-                          <IntlMessages id="forms.activefrom" />
-                        </span>
-                      </Label>
-                    </Colxx>
-                    <Colxx xxs="12" md="6">
-                      <Label className="form-group has-float-label">
-                        <DatePicker
-                          selected={formdata.activetill}
-                          onChange={(val) => setStart(val)}
-                          shouldCloseOnSelect
-                        />
-                        <span>
-                          <IntlMessages id="forms.activetill" />
-                        </span>
-                      </Label>
-                    </Colxx>
-                    <Colxx xxs="12">
-                      <Label className="form-group has-float-label">
-                        <TagsInput
-                          value={tagsLO}
-                          onChange={(val) => setTagsLO(val)}
-                          inputProps={{ placeholder: '' }}
-                        />
-                        <span>
-                          <IntlMessages id="forms.tags" />
-                        </span>
-                      </Label>
-                    </Colxx>
-                    <Colxx xxs="12">
-                      <Label className="form-group has-float-label">
-                        <DropzoneComponent
-                          config={componentConfig}
-                          eventHandlers={eventHandlers}
-                          djsConfig={djsConfig}
-                        />
-                        <span>
-                          <IntlMessages id="forms.menu_picture" />
-                        </span>
-                      </Label>
-                    </Colxx>
-                  </Row>                 
-                </Form>
-              </CardBody>
-            </Card>
-          </Colxx>
-        </Row>
-        <ModalFooter>
-        <Button color="secondary" outline onClick={props.toggleModal}>
+        <Label>
+          <IntlMessages id="forms.title" />
+        </Label>
+        <Input type="text" name="title" value={formdata.title ? formdata.title : ""} onChange={handleChange} />
+        <Label className="mt-3">
+          <IntlMessages id="forms.description" />
+        </Label>
+        <Input type="textarea" name="desc" value={formdata.desc ? formdata.desc : ""} onChange={handleChange} />
+        <Label className="mt-3">
+          <IntlMessages id="forms.menu_type" />
+        </Label>
+        <select
+          className="form-control"
+          onChange={handleChange}
+          name="menu_type"
+          value={formdata.menu_type ? formdata.menu_type : ""}
+          id="menu_type"
+        >
+          <option value="">Select Value</option>
+          <option value="Vegetarian">Vegetarian</option>
+          <option value="Non Vegetarian">Non Vegetarian</option>
+        </select>
+        <Label className="mt-3">
+          <IntlMessages id="forms.chef_type" />
+        </Label>
+        <select
+          className="form-control"
+          onChange={handleChange}
+          name="chef_type"
+          value={formdata && formdata.chef_type ? formdata.chef_type : ""}
+          id="chef_type"
+        >
+          <option value="">Select Value</option>
+          {chefTypes&&chefTypes.map((chefType) => (
+            <option key={chefType.id} value={chefType.name}>
+              {chefType.name}
+            </option>
+          ))}
+        </select>
+
+        <Label className="mt-3">
+          <IntlMessages id="forms.cover_picture" />
+        </Label>
+        <DropzoneComponent config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig} />
+      </ModalBody>
+      <ModalFooter>
+        <Button color="secondary" outline onClick={toggleModal}>
           <IntlMessages id="pages.cancel" />
         </Button>
-        <Button color="primary" onClick={props.toggleModal}>
-          <IntlMessages id="pages.submit" />
-        </Button>{' '}
+        <Button color="primary" className={`btn-shadow btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleClick}>
+          <span className="spinner d-inline-block">
+            <span className="bounce1" />
+            <span className="bounce2" />
+            <span className="bounce3" />
+          </span>
+          <span className="label">
+            <IntlMessages id="pages.submit" />
+          </span>
+        </Button>
       </ModalFooter>
-      </ModalBody>
     </Modal>
   );
 };
