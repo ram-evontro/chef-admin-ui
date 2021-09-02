@@ -84,12 +84,35 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor, c
     setFormdata(tempdata);
   };
   const handleClick = async () => {
+    let error = '';
+    if(!formdata['name']||formdata['name']==='')
+    {
+      error = 'Name Required'
+    }
+    if(!formdata['email']||formdata['email']==='')
+    {
+      error = 'Email Required'
+    }
+    if(!formdata['mobile']||formdata['mobile']==='')
+    {
+      error = 'Mobile Required'
+    }
+    if(error!='')
+    {
+      NotificationManager.error(error, "Error", 3000, null, null, "");
+      return false;
+    }
     setIsLoading(true);
+    
     let newformdata;
     try {
-      let fileurl = await upload(picture);
-      formdata["picture"] = fileurl;
-      formdata["password"] = 'CAP@'+formdata["mobile"];
+      if(picture)
+      {
+        let fileurl = await upload(picture);
+        formdata["picture"] = fileurl;
+      }
+      
+      formdata["password"] = 'CAP1@'+formdata["mobile"];
       await api.post(axiosURLS.USERS, formdata);
       NotificationManager.success("Chef Added successfully", "Added", 3000, null, null, "");
 
@@ -121,7 +144,7 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor, c
         <Label className="mt-3">
           <IntlMessages id="forms.mobile" />
         </Label>
-        <Input type="text" name="mobile" value={formdata.mobile ? formdata.mobile : ""} onChange={handleChange} />
+        <Input type="number" name="mobile" value={formdata.mobile ? formdata.mobile : ""} onChange={handleChange} />
 
         <Label className="mt-3">
           <IntlMessages id="forms.chef_type" />

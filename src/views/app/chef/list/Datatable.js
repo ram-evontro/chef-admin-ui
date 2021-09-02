@@ -182,7 +182,7 @@ const Datatable = ({
         Header: 'Picture',
         accessor: 'picture',
         cellClass: 'list-item-heading w-10',
-        Cell: (props) => <><img  className="list-thumbnail responsive border-0" src={props.value} alt="" /></>,
+        Cell: ({row,value}) => <><a href="javascript:;" onClick={()=>{updateAction('view',row.values.id)}} ><img  className="list-thumbnail responsive border-0" src={value} alt="" /></a></>,
       },
       {
         Header: 'Name',

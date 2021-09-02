@@ -12,6 +12,7 @@ import IntlMessages from "helpers/IntlMessages";
 const Singleview = ({ match, history }) => {
   const [activeTab, setActiveTab] = useState("details");
   const [id, setId] = useState('');
+  const [userName, setUserName] = useState('');
   useEffect(async () => {
    let id = history.location.search.replace("?p=", "");
     setId(id);
@@ -20,7 +21,7 @@ const Singleview = ({ match, history }) => {
     <>
       <Row>
         <Colxx xxs="12">
-          {/* <h1>{user.name}</h1> */}
+          <h1>{userName}</h1>
           <div className="text-zero top-right-button-container">
             <UncontrolledDropdown>
               <DropdownToggle caret color="primary" size="lg" outline className="top-right-button top-right-button-single">
@@ -50,7 +51,7 @@ const Singleview = ({ match, history }) => {
                   setActiveTab("details");
                 }}
                 location={{}}
-                to="#"
+                to={('?p='+id)}
               >
                 <IntlMessages id="pages.details" />
               </NavLink>
@@ -65,7 +66,7 @@ const Singleview = ({ match, history }) => {
                   setActiveTab("menu");
                 }}
                 location={{}}
-                to="#"
+                to={('?p='+id)}
               >
                 <IntlMessages id="pages.menu" />
               </NavLink>
@@ -80,7 +81,7 @@ const Singleview = ({ match, history }) => {
                   setActiveTab("feedback");
                 }}
                 location={{}}
-                to="#"
+                to={('?p='+id)}
               >
                 <IntlMessages id="pages.feedback" />
               </NavLink>
@@ -89,7 +90,7 @@ const Singleview = ({ match, history }) => {
 
           <TabContent activeTab={activeTab}>
             <TabPane tabId="details">
-              <Details id={id} />
+              <Details setUserName={setUserName} id={id} />
             </TabPane>
             <TabPane tabId="menu">
               <Menu />

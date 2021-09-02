@@ -611,6 +611,7 @@ module.exports = {
   'forms.ct_max_diners':'Chef\'s Table Max Diners',
   'forms.ct_min_diners':'Chef\'s Table Min Diners',
   'forms.max_distance':'Maximum delivery distance (Kms)',
+  'forms.upload':'Upload',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',

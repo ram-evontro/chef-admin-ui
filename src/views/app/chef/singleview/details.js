@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Row, Card, CardBody, Button, CardTitle } from "reactstrap";
 import { Colxx } from "components/common/CustomBootstrap";
 import IntlMessages from "helpers/IntlMessages";
-import GalleryDetail from "containers/pages/GalleryDetail";
+import GalleryDetail from "../../elements/GalleryDetail";
 import SingleLightbox from "components/pages/SingleLightbox";
 import DropzoneComponent from "react-dropzone-component";
 import "dropzone/dist/min/dropzone.min.css";
@@ -12,20 +12,46 @@ import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
 import fileapi from "helpers/fileupload";
-const Details = ({ id }) => {
+import { images } from "helpers/images";
+const Details = ({ id,setUserName }) => {
   const [user, setUser] = useState({});
   const [chefTypes, setChefTypes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tagsLO, setTagsLO] = useState([]);
   const ReactDOMServer = require("react-dom/server");
   const [userPicture, setUserPicture] = useState(null);
+  const [userGalleryPic, setUserGalleryPic] = useState([]);
+  const [tempFile, setTempFile] = useState([]);
+  const [fileAction, setFileAction] = useState("none");
+  const [imageToDelete, setImageToDelete] = useState(null);
+  const [dropZone, setDropZone] = useState(null);
   let componentConfig = { postUrl: "no-url" };
   const { upload } = fileapi();
   let eventHandlers = {
     addedfile: (file) => {
-      console.log(file);
+      setFileAction("add");
+      setTempFile(file);
+    },
+    removedfile: (file) => {
+      setFileAction("remove");
+      setTempFile(file);
+    },
+    init: (dropzone) => {
+      setDropZone(dropzone);
     },
   };
+  useEffect(async () => {
+    let allFiles = [...userGalleryPic];
+    if (fileAction === "add") {
+      allFiles.push(tempFile);
+    } else if (fileAction === "remove") {
+      const index = allFiles.findIndex((obj) => obj.upload.uuid === tempFile.upload.uuid);
+      if (index > -1) {
+        allFiles.splice(index, 1);
+      }
+    }
+    await setUserGalleryPic(allFiles);
+  }, [tempFile]);
   const djsConfig = {
     thumbnailHeight: 160,
     maxFilesize: 2,
@@ -69,17 +95,21 @@ const Details = ({ id }) => {
       </div>
     ),
   };
+  let spreadUser = (data) => {
+    let tempuser = data;
+    Object.assign(tempuser, tempuser.details);
+    setUser(tempuser);
+    if (tempuser.tags) {
+      setTagsLO(tempuser.tags);
+    }
+    setUserName(tempuser.name);
+  };
   useEffect(async () => {
     setLoading(true);
     try {
-      let response = await api.get(axiosURLS.USERS + "/" + id);
-      let tempuser = response.data;
-      Object.assign(tempuser, tempuser.details);
-      setUser(tempuser);
-      if(tempuser.tags){
-      setTagsLO(tempuser.tags)
-      }
-      response = await api.get(axiosURLS.CHEF_TYPES_ALL);
+      let { data } = await api.get(axiosURLS.USERS + "/" + id);
+      spreadUser(data);
+      let response = await api.get(axiosURLS.CHEF_TYPES_ALL);
       setChefTypes(response.data);
     } catch (err) {
       console.log(err);
@@ -108,10 +138,8 @@ const Details = ({ id }) => {
           formdata["picture"] = fileurl;
         }
 
-        let response = await api.patch(axiosURLS.USERS + "/" + id, formdata);
-        let tempuser = response.data;
-        Object.assign(tempuser, tempuser.details);
-        setUser(tempuser);
+        let { data } = await api.patch(axiosURLS.USERS + "/" + id, formdata);
+        spreadUser(data);
         NotificationManager.success("User updated successfully", "Success", 3000, null, null, "");
       } catch (err) {
         console.log(err);
@@ -130,20 +158,73 @@ const Details = ({ id }) => {
         delete temp["role"];
         delete temp["picture"];
         delete temp["details"];
+        delete temp["gallery_pictures"];
         delete temp["id"];
         delete temp["isEmailVerified"];
         delete temp["status"];
         temp["tags"] = tagsLO;
         let formdata = { details: temp };
         let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
-        console.log(data);
-        // setUser(data);
+        spreadUser(data);
         NotificationManager.success("User updated successfully", "Success", 3000, null, null, "");
       } catch (err) {
         console.log(err);
         console.log(err.response);
         if (err.response) {
           NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+    }
+    if (attr === "uploadimages") {
+      if (userGalleryPic.length > 0) {
+        try {
+          let temp = [];
+          if (user.gallery_pictures) {
+            temp = [...user.gallery_pictures];
+          }
+
+          await Promise.all(
+            userGalleryPic.map(async (item) => {
+              let fileurl = await upload(item);
+              temp.push(fileurl);
+            })
+          );
+          console.log(temp);
+          let formdata = { details: { gallery_pictures: temp } };
+          let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
+          spreadUser(data);
+          setUserGalleryPic([]);
+          setFileAction("none");
+          dropZone.removeAllFiles(true);
+          setTempFile(null);
+          NotificationManager.success("Picture uploaded successfully", "Success", 3000, null, null, "");
+        } catch (err) {
+          console.log(err);
+          console.log(err.response);
+          if (err.response) {
+            NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+          }
+        }
+      }
+    }
+    if (attr === "deleteimage") {
+      if (user.gallery_pictures) {
+        let temp = [...user.gallery_pictures];
+        const index = temp.indexOf(imageToDelete);
+        if (index > -1) {
+          temp.splice(index, 1);
+        }
+        try {
+          let formdata = { details: { gallery_pictures: temp } };
+          let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
+          spreadUser(data);
+          NotificationManager.success("Picture deleted successfully", "Success", 3000, null, null, "");
+        } catch (err) {
+          console.log(err);
+          console.log(err.response);
+          if (err.response) {
+            NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+          }
         }
       }
     }
@@ -170,8 +251,8 @@ const Details = ({ id }) => {
             </Button>
           </div>
           <SingleLightbox
-            thumb={userPicture ? URL.createObjectURL(userPicture) : user.picture}
-            large={userPicture ? URL.createObjectURL(userPicture) : user.picture}
+            thumb={userPicture ? URL.createObjectURL(userPicture) : user.picture ? user.picture : images.chefplaceholder.default}
+            large={userPicture ? URL.createObjectURL(userPicture) : user.picture ? user.picture : images.chefplaceholder.default}
             className="card-img-top"
           />
           <CardBody>
@@ -257,21 +338,21 @@ const Details = ({ id }) => {
                 <TagsInput value={tagsLO} onChange={(val) => setTagsLO(val)} inputProps={{ placeholder: "" }} />
               </div>
               <Button
-              color="primary"
-              className={`btn-shadow btn-multiple-state ${loading ? "show-spinner" : ""}`}
-              onClick={() => {
-                handleClick("details");
-              }}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="forms.update" />
-              </span>
-            </Button>
+                color="primary"
+                className={`btn-shadow btn-multiple-state ${loading ? "show-spinner" : ""}`}
+                onClick={() => {
+                  handleClick("details");
+                }}
+              >
+                <span className="spinner d-inline-block">
+                  <span className="bounce1" />
+                  <span className="bounce2" />
+                  <span className="bounce3" />
+                </span>
+                <span className="label">
+                  <IntlMessages id="forms.update" />
+                </span>
+              </Button>
             </div>
           </CardBody>
         </Card>
@@ -283,7 +364,7 @@ const Details = ({ id }) => {
             <CardTitle>
               <IntlMessages id="pages.gallery" />
             </CardTitle>
-            <GalleryDetail />
+            <GalleryDetail setImageToDelete={setImageToDelete} handleClick={handleClick} images={user.gallery_pictures} />
           </CardBody>
         </Card>
         <Card className="mb-4">
@@ -292,6 +373,22 @@ const Details = ({ id }) => {
               <IntlMessages id="pages.add_picture" />
             </CardTitle>
             <DropzoneComponent config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig} />
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${loading ? "show-spinner" : ""}`}
+              onClick={() => {
+                handleClick("uploadimages");
+              }}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.upload" />
+              </span>
+            </Button>
           </CardBody>
         </Card>
       </Colxx>
