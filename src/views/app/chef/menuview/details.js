@@ -1,20 +1,45 @@
-import React, { useState } from 'react';
-import { Row, Card, CardBody, Button, CardTitle } from 'reactstrap';
-import { Colxx } from 'components/common/CustomBootstrap';
-import IntlMessages from 'helpers/IntlMessages';
-import GalleryDetail from 'containers/pages/GalleryDetail';
-import SingleLightbox from 'components/pages/SingleLightbox';
-import DropzoneComponent from 'react-dropzone-component';
-import 'dropzone/dist/min/dropzone.min.css';
-import TagsInput from 'react-tagsinput';
-import 'react-tagsinput/react-tagsinput.css';
-const Details = () => {
-  const ReactDOMServer = require('react-dom/server');
-  const [tagsLO, setTagsLO] = useState(['Vegan', 'Vegetartian', 'Indian']);
-  let componentConfig = { postUrl: 'no-url' };
+import React, { useState, useRef, useEffect } from "react";
+import { Row, Card, CardBody, Button, CardTitle, Input } from "reactstrap";
+import { Colxx } from "components/common/CustomBootstrap";
+import IntlMessages from "helpers/IntlMessages";
+import GalleryDetail from "../../elements/GalleryDetail";
+import SingleLightbox from "components/pages/SingleLightbox";
+import DropzoneComponent from "react-dropzone-component";
+import api from "helpers/api";
+import * as axiosURLS from "helpers/endpoints";
+import fileapi from "helpers/fileupload";
+import { NotificationManager } from "components/common/react-notifications";
+import "dropzone/dist/min/dropzone.min.css";
+import TagsInput from "react-tagsinput";
+import "react-tagsinput/react-tagsinput.css";
+import { images } from "helpers/images";
+import MealsContainer from "./MealsContainer";
+const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => {
+  const { upload } = fileapi();
+  const ReactDOMServer = require("react-dom/server");
+  const [tagsLO, setTagsLO] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userPicture, setUserPicture] = useState(null);
+  const [userGalleryPic, setUserGalleryPic] = useState([]);
+  const [tempFile, setTempFile] = useState([]);
+  const [fileAction, setFileAction] = useState("none");
+  const [imageToDelete, setImageToDelete] = useState(null);
+  const [dropZone, setDropZone] = useState(null);
+  useEffect(() => {
+    setTagsLO(menu.tags);
+  }, [menu]);
+  let componentConfig = { postUrl: "no-url" };
   let eventHandlers = {
     addedfile: (file) => {
-      console.log(file);
+      setFileAction("add");
+      setTempFile(file);
+    },
+    removedfile: (file) => {
+      setFileAction("remove");
+      setTempFile(file);
+    },
+    init: (dropzone) => {
+      setDropZone(dropzone);
     },
   };
   const djsConfig = {
@@ -59,63 +84,269 @@ const Details = () => {
         </a>
       </div>
     ),
-    headers: { 'My-Awesome-Header': 'header value' },
   };
+  useEffect(async () => {
+    let allFiles = [...userGalleryPic];
+    if (fileAction === "add") {
+      allFiles.push(tempFile);
+    } else if (fileAction === "remove") {
+      const index = allFiles.findIndex((obj) => obj.upload.uuid === tempFile.upload.uuid);
+      if (index > -1) {
+        allFiles.splice(index, 1);
+      }
+    }
+    await setUserGalleryPic(allFiles);
+  }, [tempFile]);
+  useEffect(async () => {
+    setIsLoading(true);
+    if (imageToDelete) {
+      if (menu.pictures) {
+        let temp = [...menu.pictures];
+        const index = temp.indexOf(imageToDelete);
+        if (index > -1) {
+          temp.splice(index, 1);
+        }
+        try {
+          let formdata = { pictures: temp };
+          let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
+          setMenu(data);
+          setImageToDelete(null);
+          NotificationManager.success("Picture deleted successfully", "Success", 3000, null, null, "");
+        } catch (err) {
+          console.log(err);
+          console.log(err.response);
+          if (err.response) {
+            NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+          }
+        }
+      }
+    }
+    setIsLoading(false);
+  }, [imageToDelete]);
+  const changeImage = (e) => {
+    e.preventDefault();
+    setUserPicture(e.target.files[0]);
+  };
+  const handleChange = (e) => {
+    let tempdata = { ...menu };
+    let val = e.target.value;
+    let name = e.target.name;
+    tempdata[name] = val;
+    setMenu(tempdata);
+  };
+  const handleClick = async () => {
+    let error = "";
+    let formdata = { ...menu };
+    if (!formdata["title"] || formdata["title"] === "") {
+      error = "Title Required";
+    }
+    if (!formdata["desc"] || formdata["desc"] === "") {
+      error = "Description Required";
+    }
+    if (error != "") {
+      NotificationManager.error(error, "Error", 3000, null, null, "");
+      return false;
+    }
+    setIsLoading(true);
+    if (userPicture) {
+      let fileurl = await upload(userPicture);
+      formdata["cover_picture"] = fileurl;
+    }
+    formdata["tags"] = tagsLO;
+    delete formdata["id"];
+    delete formdata["user"];
+    try {
+      let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
+      NotificationManager.success("Menu updated successfully", "Success", 3000, null, null, "");
+      setMenu(data);
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
+    setIsLoading(false);
+  };
+  const inputFile = useRef(null);
+  const openFileInput = () => {
+    inputFile.current.click();
+  };
+  const deletePicture = () => {};
+  const uploadImages = async () => {
+    setIsLoading(true);
+    if (userGalleryPic.length > 0) {
+      try {
+        let temp = [];
+        if (menu.pictures) {
+          temp = [...menu.pictures];
+        }
+
+        await Promise.all(
+          userGalleryPic.map(async (item) => {
+            let fileurl = await upload(item);
+            temp.push(fileurl);
+          })
+        );
+        console.log(temp);
+        let formdata = { pictures: temp };
+        let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
+        setMenu(data);
+        setUserGalleryPic([]);
+        setFileAction("none");
+        dropZone.removeAllFiles(true);
+        setTempFile(null);
+        NotificationManager.success("Picture uploaded successfully", "Success", 3000, null, null, "");
+      } catch (err) {
+        console.log(err);
+        console.log(err.response);
+        if (err.response) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+    }
+    setIsLoading(false);
+  };
+  const addMealCard=()=>{
+    let tempmenu = {...menu};
+    let temparr = [];
+    if(tempmenu.meals&&tempmenu.meals.length>0)
+    {
+      temparr =[...tempmenu.meals]
+    }
+    let newMeal = {_id:(Math.floor(Math.random() * 1000000) + 1),course:'',heading:'',info:''}
+    temparr.push(newMeal);
+    tempmenu['meals']=temparr;
+    setMenu(tempmenu);
+  }
+  const handleMenuChange=(e,id)=> {
+    let tempmenu = {...menu};
+    let temparr = [];
+    let val = e.target.value;
+    let name = e.target.name;
+    
+    if(tempmenu.meals&&tempmenu.meals.length>0)
+    {
+      temparr =[...tempmenu.meals];
+      const mealindex = temparr.findIndex((meal)=>(meal._id===id?true:false));
+      temparr[mealindex][name]=val;
+      tempmenu['meals']=temparr;
+      setMenu(tempmenu);
+    }
+  }
+  const handleMenuDelete=(id)=> {
+    let tempmenu = {...menu};
+    let temparr = [];    
+    if(tempmenu.meals&&tempmenu.meals.length>0)
+    {
+      temparr =[...tempmenu.meals];
+      const mealindex = temparr.findIndex((meal)=>(meal._id===id?true:false));
+      if (mealindex > -1) {
+        temparr.splice(mealindex, 1);
+      }
+      tempmenu['meals']=temparr;
+      setMenu(tempmenu);
+    }
+  }
+  const handleMenuUpload= async()=> {
+    let tempmenu = {...menu};
+    let formdata = {};    
+    if(tempmenu.meals&&tempmenu.meals.length>0)
+    {
+      formdata['meals'] =tempmenu.meals.map((meal)=>{
+        let tempmeal = {...meal};
+        delete tempmeal['id'];
+        delete tempmeal['_id'];
+        return tempmeal;
+      });
+      setIsLoading(true);     
+      try {
+        let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
+        NotificationManager.success("Meal added successfully", "Success", 3000, null, null, "");
+        setMenu(data);
+      } catch (err) {
+        console.log(err);
+        console.log(err.response);
+        if (err.response) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+      setIsLoading(false);
+    }
+  }
   return (
     <Row>
       <Colxx xxs="12" lg="4" className="mb-4 col-left">
         <Card className="mb-4">
+          <div className="position-absolute card-top-buttons">
+            <Button onClick={openFileInput} outline color="white" className="icon-button">
+              <i className="simple-icon-pencil" />
+              <input type="file" ref={inputFile} className="d-none" onChange={changeImage} />
+            </Button>
+          </div>
+          <SingleLightbox
+            thumb={userPicture ? URL.createObjectURL(userPicture) : menu.cover_picture ? menu.cover_picture : images.chefplaceholder.default}
+            large={userPicture ? URL.createObjectURL(userPicture) : menu.cover_picture ? menu.cover_picture : images.chefplaceholder.default}
+            className="card-img-top"
+          />
           <CardBody>
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.title" />
             </p>
-            <input
-              type="text"
-              className="form-control mb-2"
-              value="Dish Name"
-            />
+            <input onChange={handleChange} type="text" name="title" className="form-control mb-2" value={menu.title} />
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.description" />
             </p>
-            <textarea
-              value="Some description about menu"
-              className="form-control mb-2"
-              name="desc"
-              id="desc"
-              cols="30"
-              rows="4"
-            ></textarea>
+            <Input onChange={handleChange} type="textarea" name="desc" className="form-control mb-2" value={menu.desc} />
             <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.menu_type" />
+              <IntlMessages id="forms.meal_type" />
             </p>
-            <select
-              className="form-control mb-2"
-              name="menu_type"
-              id="menu_type"
-            >
-              <option value="vegetarian">Vegetarian</option>
-              <option value="non vegetarian">non vegetarian</option>
+            <select onChange={handleChange} name="meal_type" className="form-control mb-2" value={menu.meal_type}>
+              {mealTypes &&
+                mealTypes.map((mealType) => (
+                  <option key={mealType.id} value={mealType.name}>
+                    {mealType.name}
+                  </option>
+                ))}
             </select>
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.cuisine" />
             </p>
-            <select className="form-control mb-2" name="cuisine" id="cuisine">
-              <option value="thai">Thai</option>
-              <option value="north indian">North Indian</option>
+            <select onChange={handleChange} name="cuisine" className="form-control mb-2" value={menu.cuisine}>
+              {cuisines &&
+                cuisines.map((cuisine) => (
+                  <option key={cuisine.id} value={cuisine.name}>
+                    {cuisine.name}
+                  </option>
+                ))}
+            </select>
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.chef_type" />
+            </p>
+            <select className="form-control mb-2" onChange={handleChange} name="chef_type" value={menu.chef_type} id="chef_type">
+              {chefTypes &&
+                chefTypes.map((chefType) => (
+                  <option key={chefType.id} value={chefType.name}>
+                    {chefType.name}
+                  </option>
+                ))}
             </select>
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.tags" />
             </p>
             <div className="mb-2">
-              <TagsInput
-                value={tagsLO}
-                onChange={(val) => setTagsLO(val)}
-                inputProps={{ placeholder: '' }}
-              />
+              <TagsInput value={tagsLO} onChange={(val) => setTagsLO(val)} inputProps={{ placeholder: "" }} />
             </div>
-            <button className="btn btn-primary">
-              <IntlMessages id="forms.update" />
-            </button>
+            <Button color="primary" className={`btn-shadow btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleClick}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.update" />
+              </span>
+            </Button>
           </CardBody>
         </Card>
         <Card className="mb-4">
@@ -123,7 +354,7 @@ const Details = () => {
             <CardTitle>
               <IntlMessages id="pages.gallery" />
             </CardTitle>
-            <GalleryDetail />
+            <GalleryDetail setImageToDelete={setImageToDelete} handleClick={deletePicture} images={menu.pictures} />
           </CardBody>
         </Card>
         <Card className="mb-4">
@@ -131,11 +362,17 @@ const Details = () => {
             <CardTitle>
               <IntlMessages id="pages.add_picture" />
             </CardTitle>
-            <DropzoneComponent
-              config={componentConfig}
-              eventHandlers={eventHandlers}
-              djsConfig={djsConfig}
-            />
+            <DropzoneComponent config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig} />
+            <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={uploadImages}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.upload" />
+              </span>
+            </Button>
           </CardBody>
         </Card>
       </Colxx>
@@ -145,128 +382,27 @@ const Details = () => {
             <CardTitle>
               <IntlMessages id="pages.meals" />
             </CardTitle>
-            <div className="border border-primary p-2 mb-4">
-              <div className="position-relative text-right mt-n4 mr-n4">
-                <Button color="primary" className="icon-button">
-                  <i className="simple-icon-trash" />
-                </Button>
-              </div>
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.meal_course" />
-              </p>
-              <select
-                className="form-control mb-2"
-                name="chef_type"
-                id="chef_type"
-              >
-                <option value="beverages">Beverages</option>
-                <option value="course1">Course 1</option>
-                <option value="course2">Course 2</option>
-              </select>
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.title" />
-              </p>
-              <input
-                type="text"
-                className="form-control mb-2"
-                value="Course title"
-              />
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.intro" />
-              </p>
-              <textarea
-                value="Some details about this course"
-                className="form-control mb-1"
-                name="intro"
-                id="intro"
-                cols="30"
-                rows="2"
-              ></textarea>
-            </div>
-            <div className="border border-primary p-2 mb-4">
-              <div className="position-relative text-right mt-n4 mr-n4">
-                <Button color="primary" className="icon-button">
-                  <i className="simple-icon-trash" />
-                </Button>
-              </div>
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.meal_course" />
-              </p>
-              <select
-                className="form-control mb-2"
-                name="chef_type"
-                id="chef_type"
-              >
-                <option value="beverages">Beverages</option>
-                <option selected value="course1">
-                  Course 1
-                </option>
-                <option value="course2">Course 2</option>
-              </select>
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.title" />
-              </p>
-              <input
-                type="text"
-                className="form-control mb-2"
-                value="Course 1"
-              />
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.intro" />
-              </p>
-              <textarea
-                value="Starter cvourse"
-                className="form-control mb-1"
-                name="intro"
-                id="intro"
-                cols="30"
-                rows="2"
-              ></textarea>
-            </div>
-            <div className="border border-primary p-2 mb-4">
-              <div className="position-relative text-right mt-n4 mr-n4">
-                <Button color="primary" className="icon-button">
-                  <i className="simple-icon-trash" />
-                </Button>
-              </div>
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.meal_course" />
-              </p>
-              <select
-                className="form-control mb-2"
-                name="chef_type"
-                id="chef_type"
-              >
-                <option value="beverages">Beverages</option>
-                <option value="course1">Course 1</option>
-                <option value="course2">Course 2</option>
-              </select>
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.title" />
-              </p>
-              <input
-                type="text"
-                className="form-control mb-2"
-                value="Course title"
-              />
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.intro" />
-              </p>
-              <textarea
-                value="Some details about this course"
-                className="form-control mb-1"
-                name="intro"
-                id="intro"
-                cols="30"
-                rows="2"
-              ></textarea>
-            </div>
-            <button className="btn btn-primary">
-              <IntlMessages id="forms.update" />
-            </button>
-            <button className="btn btn-primary">
-              <IntlMessages id="forms.add_more" />
-            </button>
+            {menu.meals && menu.meals.map((meal) => <MealsContainer handleMenuDelete={handleMenuDelete} handleMenuChange={handleMenuChange} mealcourses={courses} key={meal.id} item={meal} />)}
+            <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleMenuUpload}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.update" />
+              </span>
+            </Button>
+            <Button color="primary" className={`btn-shadow ml-3 mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={addMealCard}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.add_more" />
+              </span>
+            </Button>
           </CardBody>
         </Card>
       </Colxx>

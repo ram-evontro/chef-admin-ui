@@ -241,7 +241,9 @@ const Details = ({ id,setUserName,setChefTypesForView }) => {
   const openFileInput = () => {
     inputFile.current.click();
   };
-  return (
+  return loading ? (
+    <div className="loading" />
+  ) :(
     <Row>
       <Colxx xxs="12" lg="4" className="mb-4 col-left">
         <Card className="mb-4">

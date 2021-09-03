@@ -184,6 +184,7 @@ module.exports = {
   'menu.s3_bucket':'Amazon S3',
   'menu.s3':'Amazon S3',
   'menu.chefrequests':'Join Requests',
+  'menu.meal_types':'Meal Types',
   /* 04.Dashboards */
   'dashboards.pending-orders': 'Pending Orders',
   'dashboards.completed-orders': 'Completed Orders',
@@ -613,6 +614,8 @@ module.exports = {
   'forms.max_distance':'Maximum delivery distance (Kms)',
   'forms.upload':'Upload',
   'forms.cover_picture':'Cover Picture',
+  'forms.meal_type':'Meal Type',
+  'forms.chef':'Chef',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',

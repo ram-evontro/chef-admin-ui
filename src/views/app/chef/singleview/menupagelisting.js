@@ -18,6 +18,7 @@ const Menupagelisting = ({
   onContextMenuClick,
   onContextMenu,
   onChangePage,
+  id
 }) => {
   return (
     <Row>
@@ -30,6 +31,7 @@ const Menupagelisting = ({
               isSelect={selectedItems.includes(menu.id)}
               collect={collect}
               onCheckItem={onCheckItem}
+              id={id}
             />
           );     
       })}

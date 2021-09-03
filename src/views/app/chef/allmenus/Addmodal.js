@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label } from "reactstrap";
-import "react-tagsinput/react-tagsinput.css";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, CustomInput } from "reactstrap";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import IntlMessages from "helpers/IntlMessages";
 import api from "helpers/api";
@@ -9,21 +9,17 @@ import fileapi from "helpers/fileupload";
 import { NotificationManager } from "components/common/react-notifications";
 import DropzoneComponent from "react-dropzone-component";
 import "dropzone/dist/min/dropzone.min.css";
-const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) => {
-  const { upload } = fileapi();
+const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor, chefTypes }) => {
   const ReactDOMServer = require("react-dom/server");
-  const [formdata, setFormdata] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [mealTypes, setMealTypes] = useState([]);
-  const [cuisines, setCuisines] = useState([]);
-  const [picture, setPicture] = useState(null);
-  let componentConfig = { postUrl: "no-url" };
+  const { upload } = fileapi();
+  let componentConfig = { postUrl: "no-url", multiple: false };
   let eventHandlers = { addedfile: (file) => setPicture(file) };
   const djsConfig = {
     thumbnailHeight: 160,
     maxFilesize: 2,
     maxFiles: 1,
     autoProcessQueue: false,
+    multiple: false,
     previewTemplate: ReactDOMServer.renderToStaticMarkup(
       <div className="dz-preview dz-file-preview mb-3">
         <div className="d-flex flex-row ">
@@ -63,56 +59,60 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
       </div>
     ),
   };
-  useEffect(async () => {
-    try {
-      let response = await api.get(axiosURLS.MEAL_TYPES_ALL);
-      setMealTypes(response.data);
-      response = await api.get(axiosURLS.CUISINES_ALL);
-      setCuisines(response.data);
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
-      }
-    }
-  }, []);
+  const [picture, setPicture] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [id, setId] = useState("");
+  const [formdata, setFormdata] = useState({});
+  useEffect(() => {
+    setId(editformdata["id"]);
+    let temp = { ...editformdata };
+    delete temp["id"];
+    delete temp["status"];
+    delete temp["times_used"];
+    setFormdata(temp);
+  }, [editformdata]);
   const handleChange = (e) => {
     let tempdata = { ...formdata };
     let val = e.target.value;
     let name = e.target.name;
-    tempdata[name] = val;
+    if (name === "chef_type") {
+      tempdata["details"] = { chef_type: val };
+    } else {
+      tempdata[name] = val;
+    }
+
     setFormdata(tempdata);
   };
   const handleClick = async () => {
-    let error = "";
-    if (!id) {
-      if (!formdata["user"] || formdata["user"] === "") {
-        error = "Chef Required";
-      }
+    let error = '';
+    if(!formdata['name']||formdata['name']==='')
+    {
+      error = 'Name Required'
     }
-    if (!formdata["title"] || formdata["title"] === "") {
-      error = "Title Required";
+    if(!formdata['email']||formdata['email']==='')
+    {
+      error = 'Email Required'
     }
-    if (!formdata["desc"] || formdata["desc"] === "") {
-      error = "Description Required";
+    if(!formdata['mobile']||formdata['mobile']==='')
+    {
+      error = 'Mobile Required'
     }
-    if (error != "") {
+    if(error!='')
+    {
       NotificationManager.error(error, "Error", 3000, null, null, "");
       return false;
     }
     setIsLoading(true);
-
+    
     let newformdata;
     try {
-      if (picture) {
+      if(picture)
+      {
         let fileurl = await upload(picture);
-        formdata["cover_picture"] = fileurl;
+        formdata["picture"] = fileurl;
       }
-      if (id) {
-        formdata["user"] = id;
-      }
-
+      
+      formdata["password"] = 'CAP1@'+formdata["mobile"];
       await api.post(axiosURLS.MENU, formdata);
       NotificationManager.success("Menu Added successfully", "Added", 3000, null, null, "");
 
@@ -133,78 +133,38 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
         <IntlMessages id="pages.add-new-modal-title" />
       </ModalHeader>
       <ModalBody>
-        {!id ? (
-          <>
-            <Label>
-              <IntlMessages id="forms.chef" />
-            </Label>
-            <select className="form-control" onChange={handleChange} name="user" value={formdata.user ? formdata.user : ""} id="menu_type">
-              <option value="">Select Value</option>
-              {chefs &&
-                chefs.map((chef) => (
-                  <option key={chef.id} value={chef.id}>
-                    {chef.name}
-                  </option>
-                ))}
-            </select>
-          </>
-        ) : (
-          ""
-        )}
         <Label>
-          <IntlMessages id="forms.title" />
+          <IntlMessages id="forms.name" />
         </Label>
-        <Input type="text" name="title" value={formdata.title ? formdata.title : ""} onChange={handleChange} />
+        <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
         <Label className="mt-3">
-          <IntlMessages id="forms.description" />
+          <IntlMessages id="forms.email" />
         </Label>
-        <Input type="textarea" name="desc" value={formdata.desc ? formdata.desc : ""} onChange={handleChange} />
+        <Input type="text" name="email" value={formdata.email ? formdata.email : ""} onChange={handleChange} />
         <Label className="mt-3">
-          <IntlMessages id="forms.meal_type" />
+          <IntlMessages id="forms.mobile" />
         </Label>
-        <select className="form-control" onChange={handleChange} name="meal_type" value={formdata.meal_type ? formdata.meal_type : ""} id="menu_type">
-          <option value="">Select Value</option>
-          {mealTypes &&
-            mealTypes.map((mealType) => (
-              <option key={mealType.id} value={mealType.name}>
-                {mealType.name}
-              </option>
-            ))}
-        </select>
+        <Input type="number" name="mobile" value={formdata.mobile ? formdata.mobile : ""} onChange={handleChange} />
+
         <Label className="mt-3">
-          <IntlMessages id="forms.cuisine" />
-        </Label>
-        <select className="form-control" onChange={handleChange} name="cuisine" value={formdata.cuisine ? formdata.cuisine : ""} id="menu_type">
-          <option value="">Select Value</option>
-          {cuisines &&
-            cuisines.map((cuisine) => (
-              <option key={cuisine.id} value={cuisine.name}>
-                {cuisine.name}
-              </option>
-            ))}
-        </select>
-        <Label className="mt-3">
-          <IntlMessages id="forms.menu_type" />
+          <IntlMessages id="forms.chef_type" />
         </Label>
         <select
           className="form-control"
           onChange={handleChange}
           name="chef_type"
-          value={formdata && formdata.chef_type ? formdata.chef_type : ""}
+          value={formdata.details && formdata.details.chef_type ? formdata.details.chef_type : ""}
           id="chef_type"
         >
-          <option value="">Select Value</option>
-
-          {chefTypes &&
-            chefTypes.map((chefType) => (
-              <option key={chefType.id} value={chefType.name}>
-                {chefType.name}
-              </option>
-            ))}
+           <option value="">Select Value</option>
+          {chefTypes.map((chefType) => (
+            <option key={chefType.id} value={chefType.name}>
+              {chefType.name}
+            </option>
+          ))}
         </select>
-
         <Label className="mt-3">
-          <IntlMessages id="forms.cover_picture" />
+          <IntlMessages id="forms.picture" />
         </Label>
         <DropzoneComponent config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig} />
       </ModalBody>
@@ -227,4 +187,4 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
   );
 };
 
-export default Menuadd;
+export default Addmodal;

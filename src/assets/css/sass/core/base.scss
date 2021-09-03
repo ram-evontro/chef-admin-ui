@@ -665,3 +665,8 @@ p {
     top: 50%;
     left: 50%;
 }
+.row.social-image-row.gallery img {
+  height: 150px !important;
+  object-fit: cover;
+}
+

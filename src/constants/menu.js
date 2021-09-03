@@ -68,6 +68,11 @@ const data = [
             label: 'menu.cuisine',
             to: `${adminRoot}/settings/cuisine`,
           },
+          {
+            icon: 'simple-icon-arrow-right',
+            label: 'menu.meal_types',
+            to: `${adminRoot}/settings/meal_types`,
+          },
         ],
       },
       {

@@ -3,6 +3,9 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 const Cheftypes = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './Cheftypes')
 );
+const Mealtypes = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './Mealtypes')
+);
 const Feedbackparams = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './Feedbackparams')
 );
@@ -34,6 +37,10 @@ const Settings = ({ match }) => (
       <Route
         path={`${match.url}/chef_types`}
         render={(props) => <Cheftypes {...props} />}
+      />
+      <Route
+        path={`${match.url}/meal_types`}
+        render={(props) => <Mealtypes {...props} />}
       />
       <Route
         path={`${match.url}/feedback_parameters`}

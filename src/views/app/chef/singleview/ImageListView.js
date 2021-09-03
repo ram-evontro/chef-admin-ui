@@ -6,7 +6,7 @@ import classnames from "classnames";
 import { ContextMenuTrigger } from "react-contextmenu";
 import { Colxx } from "components/common/CustomBootstrap";
 
-const ImageListView = ({ menu, isSelect, collect, onCheckItem }) => {
+const ImageListView = ({ menu, isSelect, collect, onCheckItem,id }) => {
   return (
     <Colxx sm="6" lg="4" xl="3" className="mb-3" key={menu.id}>
       <ContextMenuTrigger id="menu_id" data={menu.id} collect={collect}>
@@ -17,7 +17,7 @@ const ImageListView = ({ menu, isSelect, collect, onCheckItem }) => {
           })}
         >
           <div className="position-relative">
-            <NavLink to={`${adminRoot}/chef/menuview?p=${menu.id}`} className="w-40 w-sm-100">
+            <NavLink to={`${adminRoot}/chef/menuview?p=${id}&menu=${menu.id}`} className="w-40 w-sm-100">
               <CardImg top alt={menu.title} src={menu.cover_picture} />
             </NavLink>
             <Badge color={menu.status ? "primary" : "secondary"} pill className="position-absolute badge-top-left">

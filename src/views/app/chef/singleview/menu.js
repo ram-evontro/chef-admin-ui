@@ -8,6 +8,7 @@ import Menupagelisting from "./menupagelisting";
 import useMousetrap from "hooks/use-mousetrap";
 import Menuadd from "./menuadd";
 import { NotificationManager } from "components/common/react-notifications";
+import Deletealert from "../../elements/Deletealert";
 const getIndex = (value, arr, prop) => {
   for (let i = 0; i < arr.length; i += 1) {
     if (arr[i][prop] === value) {
@@ -46,7 +47,8 @@ const Menu = ({ currentUser, chefTypes, id }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [items, setItems] = useState([]);
   const [lastChecked, setLastChecked] = useState(null);
-
+  const [deleteAlert, setDeleteAlert] = useState(false);
+  const [toAction, setToAction] = useState("");
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedPageSize, selectedOrderOption]);
@@ -132,9 +134,65 @@ const Menu = ({ currentUser, chefTypes, id }) => {
 
     return true;
   };
-  const handleAction = (action) =>{
+  const showDeleteAlert = () => {
+    // if (selectedItems.length > 0) {
+    setDeleteAlert(!deleteAlert);
+    // }
+  };
+  const triggerAction = async () => {
+    setIsLoaded(false);
+    if (toAction == "delete") {
+      try {
+        await Promise.all(
+          selectedItems.map(async (item) => {
+            await api.delete(axiosURLS.MENU + "/" + item);
+          })
+        );
+        setSelectedItems([]);
+        fetchData();
+        NotificationManager.success("Menu Deleted successfully", "Deleted", 3000, null, null, "");
+      } catch (err) {
+        console.log(err);
+        console.log(err.response);
+        if (err.response) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+    }
+    if (toAction === "activate"||toAction === "deactivate") {
+      try {
+        let formdata ={};
+        if(toAction === "activate")
+        {
+          formdata['status'] =true;
+        }
+        else
+        {
+          formdata['status'] =false;
+        }
+        await Promise.all(
+          selectedItems.map(async (item) => {
+            await api.patch(axiosURLS.MENU + "/" + item,formdata);
+          })
+        );
+        setSelectedItems([]);
+        fetchData();
+        NotificationManager.success("Menu Edited successfully", "Edited", 3000, null, null, "");
+      } catch (err) {
+        console.log(err);
+        console.log(err.response);
+        if (err.response) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+    }
+    setIsLoaded(false);
+  };
+  const handleAction = (action) => {
+    setToAction(action);
+    showDeleteAlert();
     console.log(action);
-  }
+  };
   useMousetrap(["ctrl+a", "command+a"], () => {
     handleChangeSelectAll(false);
   });
@@ -154,7 +212,6 @@ const Menu = ({ currentUser, chefTypes, id }) => {
       <div className="disable-text-selection">
         <Menupageheading
           heading="menu.data-list"
-          
           handleChangeSelectAll={handleChangeSelectAll}
           changeOrderBy={(column) => {
             setSelectedOrderOption(orderOptions.find((x) => x.column === column));
@@ -183,7 +240,6 @@ const Menu = ({ currentUser, chefTypes, id }) => {
           chefTypes={chefTypes}
           modalOpen={modalOpen}
           toggleModal={() => setModalOpen(!modalOpen)}
-          categories={categories}
         />
         <Menupagelisting
           items={items}
@@ -195,8 +251,10 @@ const Menu = ({ currentUser, chefTypes, id }) => {
           onContextMenuClick={onContextMenuClick}
           onContextMenu={onContextMenu}
           onChangePage={setCurrentPage}
+          id={id}
         />
       </div>
+      <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={triggerAction} />
     </>
   );
 };
