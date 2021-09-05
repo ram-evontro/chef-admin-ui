@@ -669,4 +669,6 @@ p {
   height: 150px !important;
   object-fit: cover;
 }
-
+table.r-table.table.table-responsive.table-divided td{
+  word-break: break-all;
+}

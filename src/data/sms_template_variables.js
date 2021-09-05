@@ -1,6 +1,7 @@
 import * as tagvariables from './tagvariables';
 const smsTemplateVariables = 
   {
+    number_verify_otp:[...tagvariables.otp],
     order_placed_virtual_dining_host:[...tagvariables.common,...tagvariables.order],
     order_placed_virtual_dining_diner:[...tagvariables.common,...tagvariables.order] ,
     order_placed_chefs_table:[...tagvariables.common,...tagvariables.order],

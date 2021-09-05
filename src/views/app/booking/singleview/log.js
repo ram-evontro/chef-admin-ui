@@ -12,7 +12,7 @@ import {
 } from 'reactstrap';
 import Logcard from './logcard';
 const renderComments = (data) => {
-  return data.comments.map((item, index) => {
+  return data.map((item, index) => {
     return <Logcard data={item} key={index} />;
   });
 };

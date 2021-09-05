@@ -9,6 +9,7 @@ export const USER_DETAILS_DELETE = 'users/deletedetails';
 export const CHEFS_ALL = 'users/chefsall';
 export const USER_MENUS = 'menu/users';
 export const MENU = 'menu';
+export const BOOKING = 'booking';
 export const CHEF_TYPES = 'chef_types';
 export const CHEF_TYPES_ALL = 'chef_types/all';
 export const FEEDBACK_PRAMS = 'feedback_types';

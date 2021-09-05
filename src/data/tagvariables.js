@@ -14,3 +14,10 @@ export const common = [
     { title: 'Order Total', val: '{bookings.total}' },
     { title: 'Order Link', val: '{bookings.order_link}' },
   ];
+
+  export const otp =[
+    {title:'OTP',val:'{otp}'},
+    {title:'First Name',val:'{firstname}'},
+    {title:'Last Name',val:'{lastname}'},
+    {title:'Email',val:'{email}'}
+  ]

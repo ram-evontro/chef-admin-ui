@@ -616,6 +616,11 @@ module.exports = {
   'forms.cover_picture':'Cover Picture',
   'forms.meal_type':'Meal Type',
   'forms.chef':'Chef',
+  'forms.max_otp_resends':'Maximum OTP resend attempts',
+  'forms.mood_bag_cost':'Mood bag cost',
+  'forms.delivery_charges':'Delivery Charges',
+  'forms.tax':'Tax',
+  'forms.tax_amount':'Tax Amount in (%)',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',
