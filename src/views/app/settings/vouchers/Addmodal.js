@@ -147,6 +147,15 @@ const Addmodal = ({
           value={formdata.max_uses ? formdata.max_uses : ''}
           onChange={handleChange}
         />
+        <Label className="mt-4">
+          <IntlMessages id="forms.min_order_value" />
+        </Label>
+        <Input
+          type="number"
+          name="min_order_value"
+          value={formdata.min_order_value ? formdata.min_order_value : ''}
+          onChange={handleChange}
+        />
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" outline onClick={toggleModal}>

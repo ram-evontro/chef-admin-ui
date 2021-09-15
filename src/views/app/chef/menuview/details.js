@@ -323,10 +323,10 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.chef_type" />
             </p>
-            <select className="form-control mb-2" onChange={handleChange} name="chef_type" value={menu.chef_type} id="chef_type">
+            <select className="form-control mb-2" onChange={handleChange} name="chef_type" value={menu.chef_type.id} id="chef_type">
               {chefTypes &&
                 chefTypes.map((chefType) => (
-                  <option key={chefType.id} value={chefType.name}>
+                  <option key={chefType.id} value={chefType.id}>
                     {chefType.name}
                   </option>
                 ))}

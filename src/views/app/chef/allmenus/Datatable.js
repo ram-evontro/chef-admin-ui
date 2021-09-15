@@ -200,7 +200,7 @@ const Datatable = ({
       },
       {
         Header: 'Menu Type',
-        accessor: 'chef_type',
+        accessor: 'chef_type.name',
         cellClass: '  w-10',
         Cell: (props) => <>{props.value}</>,
       },

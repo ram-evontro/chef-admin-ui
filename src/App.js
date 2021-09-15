@@ -62,7 +62,7 @@ class App extends React.Component {
             <NotificationContainer />
             {isMultiColorActive && <ColorSwitcher />}
             <Suspense fallback={<div className="loading" />}>
-              <Router>
+              <Router>  {/*basename={'/admin'} */}
                 <Switch>
                   <ProtectedRoute
                     path={adminRoot}

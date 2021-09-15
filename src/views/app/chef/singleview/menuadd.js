@@ -190,14 +190,14 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
           className="form-control"
           onChange={handleChange}
           name="chef_type"
-          value={formdata && formdata.chef_type ? formdata.chef_type : ""}
+          value={formdata && formdata.chef_type ? formdata.chef_type.id : ""}
           id="chef_type"
         >
           <option value="">Select Value</option>
 
           {chefTypes &&
             chefTypes.map((chefType) => (
-              <option key={chefType.id} value={chefType.name}>
+              <option key={chefType.id} value={chefType.id}>
                 {chefType.name}
               </option>
             ))}

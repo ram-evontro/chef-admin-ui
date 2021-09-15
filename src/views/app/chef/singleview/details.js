@@ -13,7 +13,36 @@ import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
 import fileapi from "helpers/fileupload";
 import { images } from "helpers/images";
-const Details = ({ id,setUserName,setChefTypesForView }) => {
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+
+const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
+  const onMarkerDragEnd = (event) => {
+    console.log(event);
+    setLat(event.latLng.lat());
+    setLong(event.latLng.lng());
+  };
+  const mapClick = (event) => {
+    console.log(event);
+    setLat(event.latLng.lat());
+    setLong(event.latLng.lng());
+  };
+
+  const MapWithAMarker = withScriptjs(
+    withGoogleMap((map) => {
+      function zoomChanged() {
+        setZoom(this.getZoom());
+      }
+      return (
+        <GoogleMap zoom={zoom} onZoomChanged={zoomChanged} onClick={mapClick} defaultCenter={{ lat: mylat, lng: mylong }}>
+          <Marker draggable={true} onDragEnd={onMarkerDragEnd} position={{ lat: mylat, lng: mylong }} />
+        </GoogleMap>
+      );
+    })
+  );
+
+  const [zoom, setZoom] = useState(8);
+  const [mylat, setLat] = useState(12.959555780366589);
+  const [mylong, setLong] = useState(77.58477366143252);
   const [user, setUser] = useState({});
   const [chefTypes, setChefTypes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -108,8 +137,16 @@ const Details = ({ id,setUserName,setChefTypesForView }) => {
     setLoading(true);
     try {
       let { data } = await api.get(axiosURLS.USERS + "/" + id);
+      if (data.details.coordinates) {
+        setLong(data.details.coordinates.lng);
+        setLat(data.details.coordinates.lat);
+      }
       spreadUser(data);
+      if (data.feedbacks) {
+        setFeedbacks(data.feedbacks);
+      }
       let response = await api.get(axiosURLS.CHEF_TYPES_ALL);
+
       setChefTypes(response.data);
       setChefTypesForView(response.data);
     } catch (err) {
@@ -164,6 +201,9 @@ const Details = ({ id,setUserName,setChefTypesForView }) => {
         delete temp["isEmailVerified"];
         delete temp["status"];
         temp["tags"] = tagsLO;
+        temp["coordinates"] = {};
+        temp["coordinates"]["lat"] = mylat;
+        temp["coordinates"]["lng"] = mylong;
         let formdata = { details: temp };
         let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
         spreadUser(data);
@@ -243,7 +283,7 @@ const Details = ({ id,setUserName,setChefTypesForView }) => {
   };
   return loading ? (
     <div className="loading" />
-  ) :(
+  ) : (
     <Row>
       <Colxx xxs="12" lg="4" className="mb-4 col-left">
         <Card className="mb-4">
@@ -390,6 +430,47 @@ const Details = ({ id,setUserName,setChefTypesForView }) => {
               </span>
               <span className="label">
                 <IntlMessages id="forms.upload" />
+              </span>
+            </Button>
+          </CardBody>
+        </Card>
+        <Card className="mb-4">
+          <CardBody>
+            <CardTitle>
+              <IntlMessages id="maps.address" />
+            </CardTitle>
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.address" />
+            </p>
+            <input onChange={handleChange} type="text" name="address1" className="form-control mb-2" value={user.address1} />
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.address2" />
+            </p>
+            <input onChange={handleChange} type="text" name="address2" className="form-control mb-2" value={user.address2} />
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.pincode" />
+            </p>
+            <input onChange={handleChange} type="text" name="pincode" className="form-control mb-2" value={user.pincode} />
+            <MapWithAMarker
+              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeGvtCVnIAyMWAWdfTpYVjjvU7j9oOYSo&v=3.exp&libraries=geometry,drawing,places"
+              loadingElement={<div className="map-item" />}
+              containerElement={<div className="map-item" />}
+              mapElement={<div className="map-item" />}
+            />
+            <Button
+              color="primary"
+              className={`btn-shadow btn-multiple-state ${loading ? "show-spinner" : ""}`}
+              onClick={() => {
+                handleClick("details");
+              }}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.update" />
               </span>
             </Button>
           </CardBody>

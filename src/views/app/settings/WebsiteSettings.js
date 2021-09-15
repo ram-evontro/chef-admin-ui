@@ -135,6 +135,15 @@ const WebsiteSettings = ({ match }) => {
                       value={formdata.twitter_link ? formdata.twitter_link : ''}
                       onChange={handleChange}
                     />
+                    <Label className="mt-4">
+                      <IntlMessages id="forms.website_url" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="website_url"
+                      value={formdata.website_url ? formdata.website_url : ''}
+                      onChange={handleChange}
+                    />
                     <center>
                       <Button
                         color="primary"

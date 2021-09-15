@@ -10,6 +10,6 @@ const data = [
     icon: 'iconsminds-arrow-refresh',
     value: 74,
   },
-  { title: 'dashboards.sales', icon: 'iconsminds-mail-read', value: 25 },
+  { title: 'dashboards.sales', icon: 'iconsminds-mail-read', value: '2.5 Lakhs' },
 ];
 export default data;

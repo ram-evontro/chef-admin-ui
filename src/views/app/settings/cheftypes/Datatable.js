@@ -187,7 +187,7 @@ const Datatable = ({
       {
         Header: 'Icon',
         accessor: 'icon',
-        cellClass: 'text-muted  w-10',
+        cellClass: 'text-muted  w-20',
         Cell: (props) => (
           <>
             <div className={`glyph-icon ${props.value}`} />
@@ -197,7 +197,7 @@ const Datatable = ({
       {
         Header: 'Price',
         accessor: 'price',
-        cellClass: 'text-muted  w-10',
+        cellClass: 'text-muted  w-20',
         Cell: (props) => <>{props.value}</>,
       },
       {
@@ -215,6 +215,7 @@ const Datatable = ({
   );
   return (
     <div className="mb-4">
+      <center>
       <Table
         currentPage={currentPage}
         totalPage={totalPage}
@@ -228,6 +229,7 @@ const Datatable = ({
         selectedOrderOption={selectedOrderOption}
         divided
       />
+      </center>
     </div>
   );
 };

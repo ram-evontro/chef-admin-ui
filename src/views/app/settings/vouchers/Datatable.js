@@ -218,6 +218,12 @@ const Datatable = ({
         Cell: (props) => <>{props.value}</>,
       } ,
       {
+        Header: 'Min Order Value',
+        accessor: 'min_order_value',
+        cellClass: 'text-muted  w-10',
+        Cell: (props) => <>{props.value}</>,
+      } ,
+      {
         Header: 'Status',
         accessor: 'status',
         cellClass: 'text-muted  w-10',

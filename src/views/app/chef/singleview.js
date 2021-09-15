@@ -14,6 +14,7 @@ const Singleview = ({ match, history }) => {
   const [id, setId] = useState('');
   const [userName, setUserName] = useState('');
   const [chefTypes, setChefTypes] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
   useEffect(async () => {
    let id = history.location.search.replace("?p=", "");
     setId(id);
@@ -91,13 +92,13 @@ const Singleview = ({ match, history }) => {
 
           <TabContent activeTab={activeTab}>
             <TabPane tabId="details">
-              <Details setChefTypesForView={setChefTypes} setUserName={setUserName} id={id} />
+              <Details setFeedbacks={setFeedbacks} setChefTypesForView={setChefTypes} setUserName={setUserName} id={id} />
             </TabPane>
             <TabPane tabId="menu">
               <Menu id={id} chefTypes={chefTypes} />
             </TabPane>
             <TabPane tabId="feedback">
-              <Feedback />
+              <Feedback feedbacks={feedbacks}  />
             </TabPane>
           </TabContent>
         </Colxx>

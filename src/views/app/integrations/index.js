@@ -10,8 +10,8 @@ const Googlemaps = React.lazy(() =>
 const Dunzo = React.lazy(() =>
   import(/* webpackChunkName: "Dunzo" */ './Dunzo')
 );
-const Calendly = React.lazy(() =>
-  import(/* webpackChunkName: "Calendly" */ './Calendly')
+const GoogleCalendar = React.lazy(() =>
+  import(/* webpackChunkName: "GoogleCalendar" */ './GoogleCalendar')
 );
 const Razorpay = React.lazy(() =>
   import(/* webpackChunkName: "Razorpay" */ './Razorpay')
@@ -43,8 +43,8 @@ const Integrations = ({ match }) => (
         render={(props) => <Razorpay {...props} />}
       />
       <Route
-        path={`${match.url}/calendly`}
-        render={(props) => <Calendly {...props} />}
+        path={`${match.url}/google_calendar`}
+        render={(props) => <GoogleCalendar {...props} />}
       />
        <Route
         path={`${match.url}/s3`}

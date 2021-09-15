@@ -9,7 +9,7 @@ import { Card, CardBody, CardTitle } from 'reactstrap'; //
 import DatatablePagination from 'components/DatatablePagination';
 import IntlMessages from 'helpers/IntlMessages';
 
-import products from 'data/products';
+import {dinerData} from 'data/diners';
 
 function Table({ columns, data }) {
   const {
@@ -101,22 +101,29 @@ const BestSellers = () => {
   const cols = React.useMemo(
     () => [
       {
-        Header: 'Chef Name',
-        accessor: 'title',
+        Header: 'Name',
+        accessor: 'name',
         cellClass: 'text-muted w-50',
         Cell: (props) => <>{props.value}</>,
         sortType: 'basic',
       },
       {
-        Header: 'Menu',
-        accessor: 'sales',
+        Header: 'Mobile',
+        accessor: 'mobile',
         cellClass: 'text-muted w-25',
         Cell: (props) => <>{props.value}</>,
         sortType: 'basic',
       },
       {
-        Header: 'Rating',
-        accessor: 'stock',
+        Header: 'Email',
+        accessor: 'email',
+        cellClass: 'text-muted w-25',
+        Cell: (props) => <>{props.value}</>,
+        sortType: 'basic',
+      },
+      {
+        Header: 'Total Orders',
+        accessor: 'total_orders',
         cellClass: 'text-muted w-25',
         Cell: (props) => <>{props.value}</>,
         sortType: 'basic',
@@ -129,9 +136,9 @@ const BestSellers = () => {
     <Card className="h-100">
       <CardBody>
         <CardTitle>
-          <IntlMessages id="dashboards.best-sellers" />
+          <IntlMessages id="dashboards.regular_customers" />
         </CardTitle>
-        <Table columns={cols} data={products} />
+        <Table columns={cols} data={dinerData} />
       </CardBody>
     </Card>
   );

@@ -6,7 +6,7 @@
   "engines": {
     "node": "12.16.0"
   },
-  "dependencies": {
+ "dependencies": {
     "@glidejs/glide": "^3.4.1",
     "@testing-library/jest-dom": "^5.13.0",
     "@testing-library/react": "^11.2.7",
@@ -15,6 +15,7 @@
     "axios": "^0.21.1",
     "chart.js": "2.9.4",
     "classnames": "2.3.1",
+    "downloadjs": "^1.4.7",
     "firebase": "^8.6.5",
     "formik": "^2.2.9",
     "html-react-parser": "^1.2.8",

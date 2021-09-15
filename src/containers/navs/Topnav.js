@@ -28,7 +28,6 @@ import {
   searchPath,
   localeOptions,
   isDarkSwitchActive,
-  buyUrl,
   adminRoot,
 } from 'constants/defaultValues';
 
@@ -272,7 +271,7 @@ const TopNav = ({
               </span>
             </DropdownToggle>
             <DropdownMenu className="mt-3" right>
-              <DropdownItem>Account</DropdownItem>
+              <DropdownItem onClick={()=>{history.push(`${adminRoot}/account`)}}>Account</DropdownItem>
               <DropdownItem>Support</DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={() => handleLogout()}>

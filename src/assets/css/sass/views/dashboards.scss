@@ -143,7 +143,9 @@
 }
 
 .dashboard-list-with-thumbs .list-thumbnail {
-  max-width: 100px;
+  width: 100px !important;
+  height: 100px;
+  object-fit: cover;
 }
 
 .rounded {

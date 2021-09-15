@@ -72,14 +72,23 @@ const Plivo = ({ match }) => {
                 <Row>
                   <Colxx xxs="12">
                     <Label>
-                      <IntlMessages id="forms.api_key" />
+                      <IntlMessages id="forms.auth_id" />
                     </Label>
                     <Input
                       type="text"
-                      name="api_key"
-                      value={formdata.api_key ? formdata.api_key : ''}
+                      name="auth_id"
+                      value={formdata.auth_id ? formdata.auth_id : ''}
                       onChange={handleChange}
-                    />                   
+                    />    
+                     <Label>
+                      <IntlMessages id="forms.auth_token" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="auth_token"
+                      value={formdata.auth_token ? formdata.auth_token : ''}
+                      onChange={handleChange}
+                    />                  
                     <center>
                       <Button
                         color="primary"

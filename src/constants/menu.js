@@ -114,6 +114,11 @@ const data = [
         to: `${adminRoot}/integrations/google_maps`,
       },
       {
+        icon: 'simple-icon-event',
+        label: 'menu.google_calendar',
+        to: `${adminRoot}/integrations/google_calendar`,
+      },
+      {
         icon: 'simple-icon-envelope-open',
         label: 'menu.mailchimp',
         to: `${adminRoot}/integrations/mailchimp`,
@@ -133,11 +138,6 @@ const data = [
         label: 'menu.dunzo',
         to: `${adminRoot}/integrations/dunzo`,
       },
-      {
-        icon: 'simple-icon-event',
-        label: 'menu.calendly',
-        to: `${adminRoot}/integrations/calendly`,
-      } ,
       {
         icon: 'simple-icon-cloud-upload',
         label: 'menu.s3_bucket',

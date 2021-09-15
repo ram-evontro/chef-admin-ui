@@ -185,6 +185,7 @@ module.exports = {
   'menu.s3':'Amazon S3',
   'menu.chefrequests':'Join Requests',
   'menu.meal_types':'Meal Types',
+  'menu.google_calendar':'Google Calendar',
   /* 04.Dashboards */
   'dashboards.pending-orders': 'Pending Orders',
   'dashboards.completed-orders': 'Completed Orders',
@@ -229,7 +230,7 @@ module.exports = {
   'dashboards.pending-for-print': 'Pending for print',
   'dashboards.logs': 'Logs',
   'dashboards.gogo': 'GOGO',
-  'dashboards.magic-is-in-the-details': 'MAGIC IS IN THE DETAILS',
+  'dashboards.magic-is-in-the-details': 'People | Food | Experiences',
   'dashboards.yes-it-is-indeed': 'Yes, it is indeed!',
   'dashboards.advanced-search': 'Advanced Search',
   'dashboards.toppings': 'Toppings',
@@ -237,6 +238,8 @@ module.exports = {
   'dashboards.keyword': 'Keyword',
   'dashboards.search': 'Search',
   'dashboards.top-rated-items': 'Top Rated Items',
+  'dashboards.upcoming_orders': 'Upcoming Orders',
+  'dashboards.regular_customers': 'Regular Customers',
 
   /* 05.Pages */
   'pages.add-new': 'ADD NEW',
@@ -322,6 +325,12 @@ module.exports = {
   'pages.preview':'Preview',
   'pages.approve':'Approve',
   'pages.reject':'Reject',
+  'pages.download_details':'Download Details',
+  'pages.request_payment':'Request Payment',
+  'pages.mark_as_completed':'Mark as completed',
+  'pages.please_wait':'Please Wait...',
+  'pages.delivery_details':'Delivery details',
+  'pages.export_csv':'Export CSV',
   /* 06.Applications */
 
   /* 06.01.Chat */
@@ -621,6 +630,13 @@ module.exports = {
   'forms.delivery_charges':'Delivery Charges',
   'forms.tax':'Tax',
   'forms.tax_amount':'Tax Amount in (%)',
+  'forms.auth_id':'Auth ID',
+  'forms.auth_token':'Auth Token',
+  'forms.min_order_value':'Minimum order value',
+  'forms.pincode':'Pin code',
+  'forms.website_url':'Website URL',
+  'forms.credentials_json':'Credentials.json',
+  'forms.authorize':'Authorize',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',
@@ -737,7 +753,7 @@ module.exports = {
   'sortable.handles': 'Handles',
 
   /* 07.19.Maps */
-  'maps.google': 'Google',
+  'maps.address': 'Address',
   'maps.yandex': 'Yandex',
 
   /* 07.20.Tables */

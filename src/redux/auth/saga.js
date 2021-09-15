@@ -1,16 +1,9 @@
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-import { auth } from 'helpers/Firebase';
-import * as axiosURLS from 'helpers/endpoints';
-import axios from 'helpers/api';
-import { adminRoot, currentUser } from 'constants/defaultValues';
-import { setCurrentUser } from 'helpers/Utils';
-import {
-  LOGIN_USER,
-  REGISTER_USER,
-  LOGOUT_USER,
-  FORGOT_PASSWORD,
-  RESET_PASSWORD,
-} from '../actions';
+import { all, call, fork, put, takeEvery } from "redux-saga/effects";
+import * as axiosURLS from "helpers/endpoints";
+import axios from "helpers/api";
+import { adminRoot, currentUser } from "constants/defaultValues";
+import { setCurrentUser } from "helpers/Utils";
+import { LOGIN_USER, REGISTER_USER, LOGOUT_USER, FORGOT_PASSWORD, RESET_PASSWORD } from "../actions";
 
 import {
   loginUserSuccess,
@@ -21,7 +14,7 @@ import {
   forgotPasswordError,
   resetPasswordSuccess,
   resetPasswordError,
-} from './actions';
+} from "./actions";
 
 export function* watchLoginUser() {
   // eslint-disable-next-line no-use-before-define
@@ -31,12 +24,12 @@ export function* watchLoginUser() {
 const loginWithEmailPasswordAsync = async (email, password) => {
   // eslint-disable-next-line no-return-await
   const user = await axios({
-    method: 'POST',
+    method: "POST",
     url: axiosURLS.LOGIN,
     data: { email: email, password: password },
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-type': 'application/json',
+      "Access-Control-Allow-Origin": "*",
+      "Content-type": "application/json",
     },
   })
     .then(({ data }) => {
@@ -79,32 +72,24 @@ export function* watchRegisterUser() {
 
 const registerWithEmailPasswordAsync = async (email, password) =>
   // eslint-disable-next-line no-return-await
-  await auth
-    .createUserWithEmailAndPassword(email, password)
-    .then((user) => user)
-    .catch((error) => error);
 
-function* registerWithEmailPassword({ payload }) {
-  const { email, password } = payload.user;
-  const { history } = payload;
-  try {
-    const registerUser = yield call(
-      registerWithEmailPasswordAsync,
-      email,
-      password
-    );
-    if (!registerUser.message) {
-      const item = { uid: registerUser.user.uid, ...currentUser };
-      setCurrentUser(item);
-      yield put(registerUserSuccess(item));
-      history.push(adminRoot);
-    } else {
-      yield put(registerUserError(registerUser.message));
+  function* registerWithEmailPassword({ payload }) {
+    const { email, password } = payload.user;
+    const { history } = payload;
+    try {
+      const registerUser = yield call(registerWithEmailPasswordAsync, email, password);
+      if (!registerUser.message) {
+        const item = { uid: registerUser.user.uid, ...currentUser };
+        setCurrentUser(item);
+        yield put(registerUserSuccess(item));
+        history.push(adminRoot);
+      } else {
+        yield put(registerUserError(registerUser.message));
+      }
+    } catch (error) {
+      yield put(registerUserError(error));
     }
-  } catch (error) {
-    yield put(registerUserError(error));
-  }
-}
+  };
 
 export function* watchLogoutUser() {
   // eslint-disable-next-line no-use-before-define
@@ -138,10 +123,6 @@ export function* watchForgotPassword() {
 
 const forgotPasswordAsync = async (email) => {
   // eslint-disable-next-line no-return-await
-  return await auth
-    .sendPasswordResetEmail(email)
-    .then((user) => user)
-    .catch((error) => error);
 };
 
 function* forgotPassword({ payload }) {
@@ -149,7 +130,7 @@ function* forgotPassword({ payload }) {
   try {
     const forgotPasswordStatus = yield call(forgotPasswordAsync, email);
     if (!forgotPasswordStatus) {
-      yield put(forgotPasswordSuccess('success'));
+      yield put(forgotPasswordSuccess("success"));
     } else {
       yield put(forgotPasswordError(forgotPasswordStatus.message));
     }
@@ -165,22 +146,14 @@ export function* watchResetPassword() {
 
 const resetPasswordAsync = async (resetPasswordCode, newPassword) => {
   // eslint-disable-next-line no-return-await
-  return await auth
-    .confirmPasswordReset(resetPasswordCode, newPassword)
-    .then((user) => user)
-    .catch((error) => error);
 };
 
 function* resetPassword({ payload }) {
   const { newPassword, resetPasswordCode } = payload;
   try {
-    const resetPasswordStatus = yield call(
-      resetPasswordAsync,
-      resetPasswordCode,
-      newPassword
-    );
+    const resetPasswordStatus = yield call(resetPasswordAsync, resetPasswordCode, newPassword);
     if (!resetPasswordStatus) {
-      yield put(resetPasswordSuccess('success'));
+      yield put(resetPasswordSuccess("success"));
     } else {
       yield put(resetPasswordError(resetPasswordStatus.message));
     }
@@ -190,11 +163,5 @@ function* resetPassword({ payload }) {
 }
 
 export default function* rootSaga() {
-  yield all([
-    fork(watchLoginUser),
-    fork(watchLogoutUser),
-    fork(watchRegisterUser),
-    fork(watchForgotPassword),
-    fork(watchResetPassword),
-  ]);
+  yield all([fork(watchLoginUser), fork(watchLogoutUser), fork(watchRegisterUser), fork(watchForgotPassword), fork(watchResetPassword)]);
 }
