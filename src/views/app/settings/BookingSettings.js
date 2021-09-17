@@ -45,7 +45,7 @@ const BookingSettings = ({ match }) => {
     }
   }, []);
   return (
-    <>
+    <React.Fragment>
       <Row>
         <Colxx xxs="12">
           <Breadcrumb heading="menu.booking_settings" match={match} />
@@ -141,7 +141,7 @@ const BookingSettings = ({ match }) => {
           </Card>
         </Colxx>
       </Row>
-    </>
+    </React.Fragment>
   );
 };
 

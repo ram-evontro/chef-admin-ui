@@ -6,11 +6,11 @@ import { NotificationManager } from "components/common/react-notifications";
 import IntlMessages from "helpers/IntlMessages";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
-import Datatable from "./mealcourses/Datatable";
-import Addmodal from "./mealcourses/Addmodal";
+import Datatable from "./mealtimes/Datatable";
+import Addmodal from "./mealtimes/Addmodal";
 import Deletealert from "../elements/Deletealert";
 import download from "downloadjs";
-const Mealcourses = ({ match }) => {
+const Mealtimes = ({ match }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
@@ -67,12 +67,12 @@ const Mealcourses = ({ match }) => {
       if (res) {
         await Promise.all(
           selectedItems.map(async (item) => {
-            await api.delete(axiosURLS.MEAL_COURSES + "/" + item);
+            await api.delete(axiosURLS.MEAL_TIMES + "/" + item);
           })
         );
         setSelectedItems([]);
         fetchData();
-        NotificationManager.success("Course Deleted successfully", "Success", 3000, null, null, "");
+        NotificationManager.success("Meal Time Deleted successfully", "Success", 3000, null, null, "");
       }
     } catch (err) {
       if (err.response && err.response.data) NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
@@ -105,7 +105,7 @@ const Mealcourses = ({ match }) => {
       senddata["name"] = search;
     }
     try {
-      let { data } = await api.get(axiosURLS.MEAL_COURSES, { params: senddata });
+      let { data } = await api.get(axiosURLS.MEAL_TIMES, { params: senddata });
       setTotalPage(data.totalPages);
       setItems(data.results);
       setSelectedItems([]);
@@ -118,7 +118,7 @@ const Mealcourses = ({ match }) => {
   const exportCSV = async () => {
     setIsLoading(true);
     try {
-      let response = await api.post(axiosURLS.MEAL_COURSES + "/exportcsv", {
+      let response = await api.post(axiosURLS.MEAL_TIMES + "/exportcsv", {
         selected: selectedItems,
       });
       const content = response.headers["content-type"];
@@ -139,7 +139,7 @@ const Mealcourses = ({ match }) => {
     <React.Fragment>
       <Row>
         <Colxx xxs="12">
-          <Breadcrumb heading="menu.meal_courses" match={match} />
+          <Breadcrumb heading="menu.meal_times" match={match} />
           <Separator className="mb-1" />
         </Colxx>
       </Row>
@@ -214,4 +214,4 @@ const Mealcourses = ({ match }) => {
     </React.Fragment>
   );
 };
-export default Mealcourses;
+export default Mealtimes;

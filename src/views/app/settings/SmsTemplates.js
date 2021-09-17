@@ -1,38 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import api from 'helpers/api';
-import * as axiosURLS from 'helpers/endpoints';
-import {
-  Row,
-  Button,
-  ButtonDropdown,
-  UncontrolledDropdown,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  CustomInput,
-  Collapse,
-} from 'reactstrap';
-import toast from 'react-hot-toast';
-import IntlMessages from 'helpers/IntlMessages';
-import { Colxx, Separator } from 'components/common/CustomBootstrap';
-import Breadcrumb from 'containers/navs/Breadcrumb';
-import Datatable from './smstemplates/Datatable';
-import Addmodal from './smstemplates/Addmodal';
-import Deletealert from '../elements/Deletealert';
+import React, { useEffect, useState } from "react";
+import api from "helpers/api";
+import * as axiosURLS from "helpers/endpoints";
+import { Row, Button, ButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle, CustomInput } from "reactstrap";
+import { NotificationManager } from "components/common/react-notifications";
+import IntlMessages from "helpers/IntlMessages";
+import { Colxx, Separator } from "components/common/CustomBootstrap";
+import Breadcrumb from "containers/navs/Breadcrumb";
+import Datatable from "./smstemplates/Datatable";
+import Addmodal from "./smstemplates/Addmodal";
+import Deletealert from "../elements/Deletealert";
+import download from "downloadjs";
 const SmsTemplates = ({ match }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
-    column: 'name',
-    order: 'asc',
+    column: "",
+    order: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalFor, setModalFor] = useState('');
+  const [modalFor, setModalFor] = useState("");
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [totalItemCount, setTotalItemCount] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [formdata, setFormdata] = useState({});
   const [items, setItems] = useState([]);
@@ -55,19 +46,7 @@ const SmsTemplates = ({ match }) => {
       selectedList.push(id);
     }
     setSelectedItems(selectedList);
-    if (event.shiftKey) {
-      let newItems = [...items];
-      const start = getIndex(id, newItems, 'id');
-      const end = getIndex(lastChecked, newItems, 'id');
-      newItems = newItems.slice(Math.min(start, end), Math.max(start, end) + 1);
-      selectedItems.push(
-        ...newItems.map((item) => {
-          return item.id;
-        })
-      );
-      selectedList = Array.from(new Set(selectedItems));
-      setSelectedItems(selectedList);
-    }
+   
     document.activeElement.blur();
     return false;
   };
@@ -84,15 +63,19 @@ const SmsTemplates = ({ match }) => {
   };
   const deleteSelected = async (res) => {
     setIsLoading(true);
-    if (res) {
-      await Promise.all(
-        selectedItems.map(async (item) => {
-          await api.delete(axiosURLS.SMS_TEMPLATES + '/' + item);
-        })
-      );
-      setSelectedItems([]);
-      fetchData();
-      toast.success('Sms Template Deleted successfully');
+    try {
+      if (res) {
+        await Promise.all(
+          selectedItems.map(async (item) => {
+            await api.delete(axiosURLS.SMS_TEMPLATES + "/" + item);
+          })
+        );
+        setSelectedItems([]);
+        fetchData();
+        NotificationManager.success("SMS Template Deleted successfully", "Success", 3000, null, null, "");
+      }
+    } catch (err) {
+      if (err.response && err.response.data) NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
     }
     setIsLoading(false);
   };
@@ -106,7 +89,7 @@ const SmsTemplates = ({ match }) => {
     // }
   };
   const editSelected = (data) => {
-    setModalFor('edit');
+    setModalFor("edit");
     setFormdata(data);
     setModalOpen(!modalOpen);
   };
@@ -114,45 +97,64 @@ const SmsTemplates = ({ match }) => {
     let senddata = {
       limit: selectedPageSize,
       page: currentPage,
-      sortBy: selectedOrderOption.column + ':' + selectedOrderOption.order,
     };
-    if (search && search != '') {
-      senddata['code'] = search;
+    if (selectedOrderOption.column != "" && selectedOrderOption.order) {
+      senddata["sortBy"] = selectedOrderOption.column + ":" + selectedOrderOption.order;
     }
-    api
-      .get(axiosURLS.SMS_TEMPLATES, {
-        params: senddata,
-      })
-      .then((res) => {
-        return res.data;
-      })
-      .then((data) => {
-        setTotalPage(data.totalPages);
-        setItems(data.results);
-        setSelectedItems([]);
-        setTotalItemCount(data.totalResults);
-        setIsLoading(false);
+    if (search && search != "") {
+      senddata["name"] = search;
+    }
+    try {
+      let { data } = await api.get(axiosURLS.SMS_TEMPLATES, { params: senddata });
+      setTotalPage(data.totalPages);
+      setItems(data.results);
+      setSelectedItems([]);
+      setTotalItemCount(data.totalResults);
+      setIsLoading(false);
+    } catch (err) {
+      if (err.response && err.response.data) NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+    }
+  };
+  const exportCSV = async () => {
+    setIsLoading(true);
+    try {
+      let response = await api.post(axiosURLS.SMS_TEMPLATES + "/exportcsv", {
+        selected: selectedItems,
       });
+      const content = response.headers["content-type"];
+      download(response.data, "export.csv", content);
+    } catch (err) {
+      if (err.response && err.response.data) NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+    }
+    setIsLoading(false);
   };
   const setStatusSelected = async (status) => {
     setIsLoading(true);
-    let formdata = { status: status };
-    await Promise.all(
-      selectedItems.map(async (item) => {
-        await api.patch(axiosURLS.SMS_TEMPLATES + '/' + item, formdata);
-      })
-    );
-    setSelectedItems([]);
-    fetchData();
-    toast.success('Sms Template status changed successfully');
+    try {
+      let formdata = { status: status };
+      await Promise.all(
+        selectedItems.map(async (item) => {
+          await api.patch(axiosURLS.SMS_TEMPLATES + "/" + item, formdata);
+        })
+      );
+      setSelectedItems([]);
+      fetchData();
+      NotificationManager.success("Sms Template status changed successfully", "Success", 3000, null, null, "");
+    } catch (err) {
+      if (err.response && err.response.data) NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+    }
     setIsLoading(false);
   };
   const toggleStatusSingle = async (id, setto) => {
     setIsLoading(true);
-    let formdata = { status: setto };
-    await api.patch(axiosURLS.SMS_TEMPLATES + '/' + id, formdata);
-    fetchData();
-    toast.success('Sms Template status changed successfully');
+    try {
+      let formdata = { status: setto };
+      await api.patch(axiosURLS.SMS_TEMPLATES + "/" + id, formdata);
+      fetchData();
+      NotificationManager.success("Sms Template status changed successfully", "Success", 3000, null, null, "");
+    } catch (err) {
+      if (err.response && err.response.data) NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+    }
     setIsLoading(false);
   };
   useEffect(() => {
@@ -163,7 +165,7 @@ const SmsTemplates = ({ match }) => {
     fetchData();
   }, [selectedPageSize, currentPage, selectedOrderOption, search]);
   return (
-    <>
+    <React.Fragment>
       <Row>
         <Colxx xxs="12">
           <Breadcrumb heading="menu.sms_templates" match={match} />
@@ -172,10 +174,7 @@ const SmsTemplates = ({ match }) => {
       </Row>
       <Row>
         <Colxx xxs="12">
-          <ButtonDropdown
-            isOpen={dropdownSplitOpen}
-            toggle={() => setDropdownSplitOpen(!dropdownSplitOpen)}
-          >
+          <ButtonDropdown isOpen={dropdownSplitOpen} toggle={() => setDropdownSplitOpen(!dropdownSplitOpen)}>
             <div className="btn btn-primary btn-lg pl-4 pr-0 check-button check-all">
               <CustomInput
                 className="custom-checkbox mb-0 d-inline-block"
@@ -183,23 +182,10 @@ const SmsTemplates = ({ match }) => {
                 id="checkAll"
                 checked={selectedItems.length >= items.length}
                 onChange={() => handleChangeSelectAll(true)}
-                label={
-                  <span
-                    className={`custom-control-label ${
-                      selectedItems.length > 0 &&
-                      selectedItems.length < items.length
-                        ? 'indeterminate'
-                        : ''
-                    }`}
-                  />
-                }
+                label={<span className={`custom-control-label ${selectedItems.length > 0 && selectedItems.length < items.length ? "indeterminate" : ""}`} />}
               />
             </div>
-            <DropdownToggle
-              caret
-              color="primary"
-              className="dropdown-toggle-split btn-lg"
-            />
+            <DropdownToggle caret color="primary" className="dropdown-toggle-split btn-lg" />
             <DropdownMenu right>
               <DropdownItem onClick={showDeleteAlert}>
                 <IntlMessages id="pages.delete" />
@@ -218,6 +204,9 @@ const SmsTemplates = ({ match }) => {
               >
                 <IntlMessages id="pages.deactivate" />
               </DropdownItem>
+              <DropdownItem onClick={exportCSV}>
+                <IntlMessages id="pages.export_csv" />
+              </DropdownItem>
             </DropdownMenu>
           </ButtonDropdown>
           <div className="search-sm d-inline-block  ml-1 mb-1 ">
@@ -225,30 +214,20 @@ const SmsTemplates = ({ match }) => {
               type="text"
               name="keyword"
               id="search"
-              placeholder={'Search'}
+              placeholder={"Search"}
               onChange={(e) => {
                 setSearch(e.target.value.toLowerCase());
               }}
               value={search}
             />
           </div>
-          <Button
-            color="primary"
-            size="lg"
-            className="top-left-button ml-3"
-            onClick={() => {
-              setSearch('');
-            }}
-          >
-            <IntlMessages id="pages.clear_search" />
-          </Button>
           <div className="text-zero top-right-button-container">
             <Button
               color="primary"
               size="lg"
               className="top-right-button"
               onClick={() => {
-                setModalFor('add');
+                setModalFor("add");
                 setModalOpen(!modalOpen);
               }}
             >
@@ -274,19 +253,9 @@ const SmsTemplates = ({ match }) => {
           />
         </Colxx>
       </Row>
-      <Addmodal
-        modalOpen={modalOpen}
-        toggleModal={() => setModalOpen(!modalOpen)}
-        fetchData={fetchData}
-        editformdata={formdata}
-        modalFor={modalFor}
-      />
-      <Deletealert
-        modalOpen={deleteAlert}
-        toggleModal={() => setDeleteAlert(!deleteAlert)}
-        setSureDelete={deleteSelected}
-      />
-    </>
+      <Addmodal modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} fetchData={fetchData} editformdata={formdata} modalFor={modalFor} />
+      <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={deleteSelected} />
+    </React.Fragment>
   );
 };
 export default SmsTemplates;

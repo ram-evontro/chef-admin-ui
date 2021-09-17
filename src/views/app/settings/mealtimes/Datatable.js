@@ -3,11 +3,11 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/display-name */
-import React, { useEffect } from 'react';
-import { CustomInput } from 'reactstrap';
-import { useTable, usePagination, useSortBy, useFilters } from 'react-table';
-import classnames from 'classnames';
-import DatatablePagination from '../../elements/DataTablePagination';
+import React, { useEffect } from "react";
+import { CustomInput } from "reactstrap";
+import { useTable, usePagination, useSortBy, useFilters } from "react-table";
+import classnames from "classnames";
+import DatatablePagination from "../../elements/DataTablePagination";
 
 const Table = ({
   columns,
@@ -40,7 +40,7 @@ const Table = ({
         sortBy: [
           {
             id: selectedOrderOption.column,
-            desc: selectedOrderOption.order === 'desc' ? true : false,
+            desc: selectedOrderOption.order === "desc" ? true : false,
           },
         ],
       },
@@ -50,21 +50,16 @@ const Table = ({
     usePagination
   );
   useEffect(() => {
-    if (
-      sortBy.length > 0 &&
-      (sortBy[0].id != selectedOrderOption.column ||
-        selectedOrderOption.order != (sortBy[0].desc ? 'desc' : 'asc'))
-    ) {
+    if (sortBy.length > 0 && (sortBy[0].id != selectedOrderOption.column || selectedOrderOption.order != (sortBy[0].desc ? "desc" : "asc"))) {
       let data = {};
-      data['column'] = sortBy[0].id;
-      data['order'] = sortBy[0].desc ? 'desc' : 'asc';
+      data["column"] = sortBy[0].id;
+      data["order"] = sortBy[0].desc ? "desc" : "asc";
       setSelectedOrderOption(data);
     } else if (sortBy.length == 0) {
       data["column"] = "";
       data["order"] = "";
       setSelectedOrderOption(data);
     }
-
 
     console.log(sortBy);
   }, [sortBy]);
@@ -73,8 +68,8 @@ const Table = ({
       <table
         {...getTableProps()}
         className={`r-table table table-responsive ${classnames({
-          'table-divided': divided,
-          'loading-table': isLoading,
+          "table-divided": divided,
+          "loading-table": isLoading,
         })}`}
       >
         <thead>
@@ -84,15 +79,9 @@ const Table = ({
                 <th
                   key={`th_${columnIndex}`}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className={
-                    column.isSorted
-                      ? column.isSortedDesc
-                        ? 'sorted-desc'
-                        : 'sorted-asc'
-                      : ''
-                  }
+                  className={column.isSorted ? (column.isSortedDesc ? "sorted-desc" : "sorted-asc") : ""}
                 >
-                  {column.render('Header')}
+                  {column.render("Header")}
                   <span />
                 </th>
               ))}
@@ -112,7 +101,7 @@ const Table = ({
                       className: cell.column.cellClass,
                     })}
                   >
-                    {cell.render('Cell')}
+                    {cell.render("Cell")}
                   </td>
                 ))}
               </tr>
@@ -124,7 +113,7 @@ const Table = ({
       <DatatablePagination
         page={currentPage - 1}
         pages={totalPage}
-        canPrevious={currentPage >1 ? true : false}
+        canPrevious={currentPage > 1 ? true : false}
         canNext={currentPage < totalPage ? true : false}
         pageSizeOptions={[4, 10, 20, 30, 40, 50]}
         showPageSizeOptions={true}
@@ -156,17 +145,17 @@ const Datatable = ({
   deleteSingle,
   editSelected,
 }) => {
-  const editFunc = (data) =>{
-    let newData = {...data};
-    delete newData['Actions'];
+  const editFunc = (data) => {
+    let newData = { ...data };
+    delete newData["Actions"];
     editSelected(newData);
-  }
+  };
   const cols = React.useMemo(
     () => [
       {
-        Header: 'Select',
-        accessor: 'id',
-        cellClass: 'text-muted  w-10',
+        Header: "Select",
+        accessor: "id",
+        cellClass: "text-muted  w-10",
         disableSortBy: true,
         Cell: (props) => (
           <React.Fragment>
@@ -184,24 +173,36 @@ const Datatable = ({
         ),
       },
       {
-        Header: 'Name',
-        accessor: 'name',
-        cellClass: 'list-item-heading w-40',
+        Header: "Name",
+        accessor: "name",
+        cellClass: "list-item-heading w-60",
         Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
-        Header: 'Booking Type',
-        accessor: 'booking_type',
-        cellClass: 'text-muted  w-10',
-        Cell: (props) =>  <React.Fragment>{props.value}</React.Fragment>,
+        Header: "Time",
+        accessor: "time",
+        cellClass: "list-item-heading w-20",
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
-        Header: 'Actions',
-        cellClass: 'text-muted  w-10',
-        Cell: ({row}) => (
+        Header: "Actions",
+        cellClass: "text-muted  w-10",
+        Cell: ({ row }) => (
           <React.Fragment>
-            <a href="javascript:;" onClick={()=>{editFunc(row.values)}} class="glyph-icon simple-icon-pencil"></a>
-            <a href="javascript:;" onClick={() => {deleteSingle(row.values.id)}} class="ml-3 glyph-icon simple-icon-trash"></a>
+            <a
+              href="javascript:;"
+              onClick={() => {
+                editFunc(row.values);
+              }}
+              class="glyph-icon simple-icon-pencil"
+            ></a>
+            <a
+              href="javascript:;"
+              onClick={() => {
+                deleteSingle(row.values.id);
+              }}
+              class="ml-3 glyph-icon simple-icon-trash"
+            ></a>
           </React.Fragment>
         ),
       },

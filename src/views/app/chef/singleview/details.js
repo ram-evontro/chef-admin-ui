@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Row, Card, CardBody, Button, CardTitle } from "reactstrap";
 import { Colxx } from "components/common/CustomBootstrap";
 import IntlMessages from "helpers/IntlMessages";
@@ -14,6 +14,7 @@ import { NotificationManager } from "components/common/react-notifications";
 import fileapi from "helpers/fileupload";
 import { images } from "helpers/images";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+import Map from "./map";
 
 const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
   const onMarkerDragEnd = (event) => {
@@ -39,7 +40,20 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
       );
     })
   );
-
+  const map = useMemo(() => {
+    return withScriptjs(
+      withGoogleMap((map) => {
+        function zoomChanged() {
+          setZoom(this.getZoom());
+        }
+        return (
+          <GoogleMap zoom={zoom} onZoomChanged={zoomChanged} onClick={mapClick} defaultCenter={{ lat: mylat, lng: mylong }}>
+            <Marker draggable={true} onDragEnd={onMarkerDragEnd} position={{ lat: mylat, lng: mylong }} />
+          </GoogleMap>
+        );
+      })
+    );
+  }, []);
   const [zoom, setZoom] = useState(8);
   const [mylat, setLat] = useState(12.959555780366589);
   const [mylong, setLong] = useState(77.58477366143252);
@@ -451,12 +465,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
               <IntlMessages id="forms.pincode" />
             </p>
             <input onChange={handleChange} type="text" name="pincode" className="form-control mb-2" value={user.pincode} />
-            <MapWithAMarker
-              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeGvtCVnIAyMWAWdfTpYVjjvU7j9oOYSo&v=3.exp&libraries=geometry,drawing,places"
-              loadingElement={<div className="map-item" />}
-              containerElement={<div className="map-item" />}
-              mapElement={<div className="map-item" />}
-            />
+            <Map zoom={zoom} setLat={setLat} setLong={setLong} mylat={mylat} mylong={mylong} setZoom={setZoom} />
             <Button
               color="primary"
               className={`btn-shadow btn-multiple-state ${loading ? "show-spinner" : ""}`}

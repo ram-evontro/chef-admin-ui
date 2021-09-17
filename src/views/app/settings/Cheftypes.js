@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
-import { Row, Button, ButtonDropdown, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle, CustomInput, Collapse } from "reactstrap";
-import toast from "react-hot-toast";
+import { Row, Button, ButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle, CustomInput } from "reactstrap";
+import { NotificationManager } from "components/common/react-notifications";
 import IntlMessages from "helpers/IntlMessages";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
@@ -15,8 +15,8 @@ const Cheftypes = ({ match }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
-    column: "name",
-    order: "asc",
+    column: "",
+    order: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalFor, setModalFor] = useState("");
@@ -46,19 +46,7 @@ const Cheftypes = ({ match }) => {
       selectedList.push(id);
     }
     setSelectedItems(selectedList);
-    if (event.shiftKey) {
-      let newItems = [...items];
-      const start = getIndex(id, newItems, "id");
-      const end = getIndex(lastChecked, newItems, "id");
-      newItems = newItems.slice(Math.min(start, end), Math.max(start, end) + 1);
-      selectedItems.push(
-        ...newItems.map((item) => {
-          return item.id;
-        })
-      );
-      selectedList = Array.from(new Set(selectedItems));
-      setSelectedItems(selectedList);
-    }
+   
     document.activeElement.blur();
     return false;
   };
@@ -74,8 +62,9 @@ const Cheftypes = ({ match }) => {
     return false;
   };
   const deleteSelected = async (res) => {
-    setIsLoading(true);
+    setIsLoading(true);    
     if (res) {
+      try{
       await Promise.all(
         selectedItems.map(async (item) => {
           await api.delete(axiosURLS.CHEF_TYPES + "/" + item);
@@ -83,7 +72,13 @@ const Cheftypes = ({ match }) => {
       );
       setSelectedItems([]);
       fetchData();
-      toast.success("Chef Type Deleted successfully");
+      NotificationManager.success("Chef Type Deleted successfully", "Success", 3000, null, null, "");
+      }
+      catch(err)
+      {
+        if(err.response&&err.response.data)
+        NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+      }
     }
     setIsLoading(false);
   };
@@ -105,25 +100,26 @@ const Cheftypes = ({ match }) => {
     let senddata = {
       limit: selectedPageSize,
       page: currentPage,
-      sortBy: selectedOrderOption.column + ":" + selectedOrderOption.order,
     };
+    if (selectedOrderOption.column != "" && selectedOrderOption.order) {
+      senddata["sortBy"] = selectedOrderOption.column + ":" + selectedOrderOption.order;
+    }
     if (search && search != "") {
       senddata["name"] = search;
+    } else {
     }
-    api
-      .get(axiosURLS.CHEF_TYPES, {
-        params: senddata,
-      })
-      .then((res) => {
-        return res.data;
-      })
-      .then((data) => {
-        setTotalPage(data.totalPages);
-        setItems(data.results);
-        setSelectedItems([]);
-        setTotalItemCount(data.totalResults);
-        setIsLoading(false);
-      });
+    try {
+      let { data } = await api.get(axiosURLS.CHEF_TYPES, { params: senddata });
+      setTotalPage(data.totalPages);
+      setItems(data.results);
+      setSelectedItems([]);
+      setTotalItemCount(data.totalResults);
+      setIsLoading(false);
+    } catch (err) {
+      if (err.response&&err.response.data) {
+        NotificationManager.error(err.response.data.message, "Update Error", 3000, null, null, "");
+      }
+    }
   };
   const exportCSV = async () => {
     setIsLoading(true);
@@ -146,7 +142,7 @@ const Cheftypes = ({ match }) => {
     fetchData();
   }, [selectedPageSize, currentPage, selectedOrderOption, search]);
   return (
-    <>
+    <React.Fragment>
       <Row>
         <Colxx xxs="12">
           <Breadcrumb heading="menu.chef_types" match={match} />
@@ -188,16 +184,6 @@ const Cheftypes = ({ match }) => {
               value={search}
             />
           </div>
-          <Button
-            color="primary"
-            size="lg"
-            className="top-left-button ml-3"
-            onClick={() => {
-              setSearch("");
-            }}
-          >
-            <IntlMessages id="pages.clear_search" />
-          </Button>
           <div className="text-zero top-right-button-container">
             <Button
               color="primary"
@@ -231,7 +217,7 @@ const Cheftypes = ({ match }) => {
       </Row>
       <Addmodal modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} fetchData={fetchData} editformdata={formdata} modalFor={modalFor} />
       <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={deleteSelected} />
-    </>
+    </React.Fragment>
   );
 };
 export default Cheftypes;

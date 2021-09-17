@@ -6,6 +6,9 @@ const Cheftypes = React.lazy(() =>
 const Mealtypes = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './Mealtypes')
 );
+const Mealtimes = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './Mealtimes')
+);
 const Feedbackparams = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './Feedbackparams')
 );
@@ -41,6 +44,10 @@ const Settings = ({ match }) => (
       <Route
         path={`${match.url}/meal_types`}
         render={(props) => <Mealtypes {...props} />}
+      />
+      <Route
+        path={`${match.url}/meal_time`}
+        render={(props) => <Mealtimes {...props} />}
       />
       <Route
         path={`${match.url}/feedback_parameters`}

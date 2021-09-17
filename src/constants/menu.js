@@ -73,6 +73,11 @@ const data = [
             label: 'menu.meal_types',
             to: `${adminRoot}/settings/meal_types`,
           },
+          {
+            icon: 'simple-icon-arrow-right',
+            label: 'menu.meal_time',
+            to: `${adminRoot}/settings/meal_time`,
+          },
         ],
       },
       {

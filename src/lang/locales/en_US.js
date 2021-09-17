@@ -186,6 +186,8 @@ module.exports = {
   'menu.chefrequests':'Join Requests',
   'menu.meal_types':'Meal Types',
   'menu.google_calendar':'Google Calendar',
+  'menu.meal_times':'Meal Timing',
+  'menu.meal_time':'Meal Timing',
   /* 04.Dashboards */
   'dashboards.pending-orders': 'Pending Orders',
   'dashboards.completed-orders': 'Completed Orders',
@@ -637,6 +639,7 @@ module.exports = {
   'forms.website_url':'Website URL',
   'forms.credentials_json':'Credentials.json',
   'forms.authorize':'Authorize',
+  'forms.time':'Time',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',

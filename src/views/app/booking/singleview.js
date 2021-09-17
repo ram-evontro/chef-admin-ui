@@ -158,9 +158,14 @@ const Singleview = ({ match, history }) => {
               <DropdownItem onClick={downloadDetails}>
                 <IntlMessages id="pages.download_details" />
               </DropdownItem>
-              <DropdownItem>
-                <IntlMessages id="pages.request_payment" />
-              </DropdownItem>
+              {booking.type === "chefs_table" &&(booking.status==="Order Placed") ? (
+                <DropdownItem onClick={requestPayment}>
+                  <IntlMessages id="pages.request_payment" />
+                </DropdownItem>
+              ) : (
+                ""
+              )}
+
               <DropdownItem onClick={markAsCompleted}>
                 <IntlMessages id="pages.mark_as_completed" />
               </DropdownItem>
@@ -269,7 +274,9 @@ const Singleview = ({ match, history }) => {
                     </p>
                     {booking.feedbacks && booking.feedbacks[booking.user.id] ? (
                       <p>
-                        <b>Feedback:</b> <br />{booking.feedbacks[booking.user.id].message}<br />
+                        <b>Feedback:</b> <br />
+                        {booking.feedbacks[booking.user.id].message}
+                        <br />
                         {booking.feedbacks[booking.user.id].rating.map((rate) => (
                           <Row key={rate.id}>
                             <Colxx xss="12" md="4">

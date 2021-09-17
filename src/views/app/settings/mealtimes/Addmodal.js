@@ -4,6 +4,7 @@ import IntlMessages from "helpers/IntlMessages";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
+import TimePicker from 'react-time-picker';
 const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [id, setId] = useState("");
@@ -39,6 +40,9 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
     if (!formdata.name) {
       tempErrors.name = "Please enter value";
     }
+    if (!formdata.time) {
+      tempErrors.time = "Please select time";
+    }
     setErrors(tempErrors);
     if (tempErrors && Object.keys(tempErrors).length === 0) {
       return true;
@@ -54,20 +58,28 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
     let newformdata;
     try {
       if (modalFor === "edit") {
-        await api.patch(axiosURLS.MEAL_COURSES + "/" + id, formdata);
-        NotificationManager.success("Course Edited successfully", "Success", 3000, null, null, "");
+        await api.patch(axiosURLS.MEAL_TIMES + "/" + id, formdata);
+        NotificationManager.success("Meal Time Edited successfully", "Success", 3000, null, null, "");
       } else {
-        await api.post(axiosURLS.MEAL_COURSES, formdata);
-        NotificationManager.success("Course Added successfully", "Success", 3000, null, null, "");
+        await api.post(axiosURLS.MEAL_TIMES, formdata);
+        NotificationManager.success("Meal Time Added successfully", "Success", 3000, null, null, "");
       }
-      fetchData();
       toggleModal();
+      fetchData();
     } catch (err) {
       if (err.response && err.response.data) {
         NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
       }
     }
     setIsLoading(false);
+  };
+  const setTime = (val) => {
+    let temp = { ...formdata };
+    temp["time"] = val;
+    setFormdata(temp);
+    let tempErrors = { ...errors };
+    delete tempErrors["time"];
+    setErrors(tempErrors);
   };
   return (
     <Modal isOpen={modalOpen} toggle={toggleModal} wrapClassName="modal-right" backdrop="static">
@@ -77,10 +89,17 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
       <ModalBody>
         <FormGroup>
           <Label>
-            <IntlMessages id="forms.meal_course" />
+            <IntlMessages id="forms.name" />
           </Label>
           <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
           {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
+        </FormGroup>
+        <FormGroup>
+          <Label>
+            <IntlMessages id="forms.time" />
+          </Label>
+          <TimePicker value={formdata.time ? formdata.time : ""}  onChange={(val) => setTime(val)}/>
+         {errors.time && <div className="invalid-feedback d-block">{errors.time}</div>}
         </FormGroup>
       </ModalBody>
       <ModalFooter>

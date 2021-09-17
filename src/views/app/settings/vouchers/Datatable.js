@@ -60,13 +60,17 @@ const Table = ({
       data['column'] = sortBy[0].id;
       data['order'] = sortBy[0].desc ? 'desc' : 'asc';
       setSelectedOrderOption(data);
+    } else if (sortBy.length == 0) {
+      data["column"] = "";
+      data["order"] = "";
+      setSelectedOrderOption(data);
     }
 
 
     console.log(sortBy);
   }, [sortBy]);
   return (
-    <>
+    <React.Fragment>
       <table
         {...getTableProps()}
         className={`r-table table table-responsive ${classnames({
@@ -134,7 +138,7 @@ const Table = ({
         }}
         paginationMaxSize={10}
       />
-    </>
+    </React.Fragment>
   );
 };
 
@@ -165,8 +169,9 @@ const Datatable = ({
         Header: 'Select',
         accessor: 'id',
         cellClass: 'text-muted  w-10',
+        disableSortBy: true,
         Cell: (props) => (
-          <>
+          <React.Fragment>
             <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
               <CustomInput
                 className="mb-0"
@@ -177,66 +182,66 @@ const Datatable = ({
                 label=""
               />
             </div>
-          </>
+          </React.Fragment>
         ),
       },
       {
         Header: 'Code',
         accessor: 'code',
         cellClass: 'list-item-heading w-20',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
         Header: 'Expiry',
         accessor: 'expiry',
         cellClass: 'text-muted  w-20',
-        Cell: (props) => <>{moment(props.value).format("DD MMM YYYY")}</>,
+        Cell: (props) => <React.Fragment>{moment(props.value).format("DD MMM YYYY")}</React.Fragment>,
       },
       {
         Header: 'Type',
         accessor: 'type',
         cellClass: 'text-muted  w-10',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       ,
       {
         Header: 'Value',
         accessor: 'value',
         cellClass: 'text-muted  w-10',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
         Header: 'Max Uses',
         accessor: 'max_uses',
         cellClass: 'text-muted  w-10',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
         Header: 'Times Used',
         accessor: 'times_used',
         cellClass: 'text-muted  w-10',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       } ,
       {
         Header: 'Min Order Value',
         accessor: 'min_order_value',
         cellClass: 'text-muted  w-10',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       } ,
       {
         Header: 'Status',
         accessor: 'status',
         cellClass: 'text-muted  w-10',
-        Cell: ({row,value}) => <><a onClick={()=>{toggleStatusSingle(row.values.id,!(row.values.status))}} href="javascript:;">{value?(<Badge color="primary">Active</Badge>):(<Badge color="secondary">InActive</Badge>)}</a></>,
+        Cell: ({row,value}) => <React.Fragment><a onClick={()=>{toggleStatusSingle(row.values.id,!(row.values.status))}} href="javascript:;">{value?(<Badge color="primary">Active</Badge>):(<Badge color="secondary">InActive</Badge>)}</a></React.Fragment>,
       },
       {
         Header: 'Actions',
         cellClass: 'text-muted  w-10',
         Cell: ({row}) => (
-          <>
+          <React.Fragment>
             <a href="javascript:;" onClick={()=>{editFunc(row.values)}} class="glyph-icon simple-icon-pencil"></a>
             <a href="javascript:;" onClick={() => {deleteSingle(row.values.id)}} class="ml-3 glyph-icon simple-icon-trash"></a>
-          </>
+          </React.Fragment>
         ),
       },
     ],
