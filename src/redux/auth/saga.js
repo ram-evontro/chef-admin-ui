@@ -70,7 +70,7 @@ export function* watchRegisterUser() {
   yield takeEvery(REGISTER_USER, registerWithEmailPassword);
 }
 
-const registerWithEmailPasswordAsync = async (email, password) =>
+const registerWithEmailPasswordAsync = async (email, password) =>{}
   // eslint-disable-next-line no-return-await
 
   function* registerWithEmailPassword({ payload }) {

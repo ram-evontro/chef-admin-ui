@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, CustomInput } from "reactstrap";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, FormGroup } from "reactstrap";
 import IntlMessages from "helpers/IntlMessages";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
@@ -63,6 +61,7 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor, c
   const [isLoading, setIsLoading] = useState(false);
   const [id, setId] = useState("");
   const [formdata, setFormdata] = useState({});
+  const [errors, setErrors] = useState({});
   useEffect(() => {
     setId(editformdata["id"]);
     let temp = { ...editformdata };
@@ -71,6 +70,12 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor, c
     delete temp["times_used"];
     setFormdata(temp);
   }, [editformdata]);
+  useEffect(() => {
+    if (!modalOpen) {
+      setErrors({});
+      setFormdata({});
+    }
+  }, [modalOpen]);
   const handleChange = (e) => {
     let tempdata = { ...formdata };
     let val = e.target.value;
@@ -82,37 +87,50 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor, c
     }
 
     setFormdata(tempdata);
+    let tempErrors = { ...errors };
+    delete tempErrors[name];
+    setErrors(tempErrors);
+  };
+  const validate = (e) => {
+    let tempErrors = {};
+    if (!formdata.name) {
+      tempErrors.name = "Please enter chef name";
+    }
+    if (!formdata.email) {
+      tempErrors.email = "Please enter email";
+    }
+    if (formdata.email) {
+      var re = /\S+@\S+\.\S+/;
+      if (!re.test(formdata.email)) {
+        tempErrors.email = "Please enter valid email";
+      }
+    }
+    if (!formdata.mobile) {
+      tempErrors.mobile = "Please enter mobile";
+    }
+    if (!formdata.details || !formdata.details.chef_type) {
+      tempErrors.chef_type = "Please enter chef type";
+    }
+    setErrors(tempErrors);
+    if (tempErrors && Object.keys(tempErrors).length === 0) {
+      return true;
+    } else {
+      return false;
+    }
   };
   const handleClick = async () => {
-    let error = '';
-    if(!formdata['name']||formdata['name']==='')
-    {
-      error = 'Name Required'
-    }
-    if(!formdata['email']||formdata['email']==='')
-    {
-      error = 'Email Required'
-    }
-    if(!formdata['mobile']||formdata['mobile']==='')
-    {
-      error = 'Mobile Required'
-    }
-    if(error!='')
-    {
-      NotificationManager.error(error, "Error", 3000, null, null, "");
+    if (!validate()) {
       return false;
     }
     setIsLoading(true);
-    
     let newformdata;
     try {
-      if(picture)
-      {
+      if (picture) {
         let fileurl = await upload(picture);
         formdata["picture"] = fileurl;
       }
-      
-      formdata["password"] = 'CAP1@'+formdata["mobile"];
+
+      formdata["password"] = "CAP1@" + formdata["mobile"];
       await api.post(axiosURLS.USERS, formdata);
       NotificationManager.success("Chef Added successfully", "Added", 3000, null, null, "");
 
@@ -133,36 +151,47 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor, c
         <IntlMessages id="pages.add-new-modal-title" />
       </ModalHeader>
       <ModalBody>
-        <Label>
-          <IntlMessages id="forms.name" />
-        </Label>
-        <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
-        <Label className="mt-3">
-          <IntlMessages id="forms.email" />
-        </Label>
-        <Input type="text" name="email" value={formdata.email ? formdata.email : ""} onChange={handleChange} />
-        <Label className="mt-3">
-          <IntlMessages id="forms.mobile" />
-        </Label>
-        <Input type="number" name="mobile" value={formdata.mobile ? formdata.mobile : ""} onChange={handleChange} />
-
-        <Label className="mt-3">
-          <IntlMessages id="forms.chef_type" />
-        </Label>
-        <select
-          className="form-control"
-          onChange={handleChange}
-          name="chef_type"
-          value={formdata.details && formdata.details.chef_type ? formdata.details.chef_type : ""}
-          id="chef_type"
-        >
-           <option value="">Select Value</option>
-          {chefTypes.map((chefType) => (
-            <option key={chefType.id} value={chefType.name}>
-              {chefType.name}
-            </option>
-          ))}
-        </select>
+        <FormGroup>
+          <Label>
+            <IntlMessages id="forms.name" />
+          </Label>
+          <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
+          {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
+        </FormGroup>
+        <FormGroup className="mt-3">
+          <Label>
+            <IntlMessages id="forms.email" />
+          </Label>
+          <Input type="text" name="email" value={formdata.email ? formdata.email : ""} onChange={handleChange} />
+          {errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
+        </FormGroup>
+        <FormGroup className="mt-3">
+          <Label>
+            <IntlMessages id="forms.mobile" />
+          </Label>
+          <Input type="number" name="mobile" value={formdata.mobile ? formdata.mobile : ""} onChange={handleChange} />
+          {errors.mobile && <div className="invalid-feedback d-block">{errors.mobile}</div>}
+        </FormGroup>
+        <FormGroup className="mt-3">
+          <Label>
+            <IntlMessages id="forms.chef_type" />
+          </Label>
+          <select
+            className="form-control"
+            onChange={handleChange}
+            name="chef_type"
+            value={formdata.details && formdata.details.chef_type ? formdata.details.chef_type : ""}
+            id="chef_type"
+          >
+            <option value="">Select Value</option>
+            {chefTypes.map((chefType) => (
+              <option key={chefType.id} value={chefType.name}>
+                {chefType.name}
+              </option>
+            ))}
+          </select>
+          {errors.chef_type && <div className="invalid-feedback d-block">{errors.chef_type}</div>}
+        </FormGroup>
         <Label className="mt-3">
           <IntlMessages id="forms.picture" />
         </Label>

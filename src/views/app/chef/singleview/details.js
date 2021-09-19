@@ -68,6 +68,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
   const [fileAction, setFileAction] = useState("none");
   const [imageToDelete, setImageToDelete] = useState(null);
   const [dropZone, setDropZone] = useState(null);
+  const [mapKey, setMapKey] = useState('');
   let componentConfig = { postUrl: "no-url" };
   const { upload } = fileapi();
   let eventHandlers = {
@@ -159,10 +160,11 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
       if (data.feedbacks) {
         setFeedbacks(data.feedbacks);
       }
-      let response = await api.get(axiosURLS.CHEF_TYPES_ALL);
-
+      let response = await api.get(axiosURLS.CHEF_TYPES_ALL);     
       setChefTypes(response.data);
       setChefTypesForView(response.data);
+      response = await api.get(axiosURLS.INTEGRATIONS);
+      setMapKey(response.data.google_map.api_key);
     } catch (err) {
       console.log(err);
       console.log(err.response);
@@ -465,7 +467,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
               <IntlMessages id="forms.pincode" />
             </p>
             <input onChange={handleChange} type="text" name="pincode" className="form-control mb-2" value={user.pincode} />
-            <Map zoom={zoom} setLat={setLat} setLong={setLong} mylat={mylat} mylong={mylong} setZoom={setZoom} />
+            <Map zoom={zoom} setLat={setLat} mapKey={mapKey} setLong={setLong} mylat={mylat} mylong={mylong} setZoom={setZoom} />
             <Button
               color="primary"
               className={`btn-shadow btn-multiple-state ${loading ? "show-spinner" : ""}`}

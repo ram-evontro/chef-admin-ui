@@ -59,6 +59,10 @@ const Table = ({
       data['column'] = sortBy[0].id;
       data['order'] = sortBy[0].desc ? 'desc' : 'asc';
       setSelectedOrderOption(data);
+    } else if (sortBy.length == 0) {
+      data["column"] = "";
+      data["order"] = "";
+      setSelectedOrderOption(data);
     }
 
 
@@ -164,6 +168,7 @@ const Datatable = ({
         Header: 'Select',
         accessor: 'id',
         cellClass: '  w-10',
+        disableSortBy: true,
         Cell: (props) => (
           <>
             <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
@@ -183,6 +188,7 @@ const Datatable = ({
         Header: 'Picture',
         accessor: 'picture',
         cellClass: 'list-item-heading w-10',
+        disableSortBy: true,
         Cell: ({row,value}) => <><a href="javascript:;" onClick={()=>{updateAction('view',row.values.id)}} ><img  className="list-thumbnail responsive border-0" src={value} alt="" /></a></>,
       },
       {
@@ -218,6 +224,7 @@ const Datatable = ({
       {
         Header: 'Actions',
         accessor: 'details.is_featured',
+        disableSortBy: true,
         cellClass: '  w-10',
         Cell: ({row}) => (
           <>

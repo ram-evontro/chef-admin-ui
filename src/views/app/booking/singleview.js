@@ -34,6 +34,7 @@ import Rating from "components/common/Rating";
 import ThumbnailImage from "components/cards/ThumbnailImage";
 import download from "downloadjs";
 import Dunzodetails from "./singleview/dunzodetails";
+import RequestPayment from "./singleview/requestpayment";
 const Singleview = ({ match, history }) => {
   const [activeTab, setActiveTab] = useState("details");
   const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +44,7 @@ const Singleview = ({ match, history }) => {
   const [dropdownSplitOpen, setDropdownSplitOpen] = useState(false);
   const [bookingId, setBookingId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [dunzoDetails, setDunzoDetails] = useState({});
   const setBooking = (bookingdata) => {
     if (bookingdata.feedbacks) {
@@ -104,7 +106,7 @@ const Singleview = ({ match, history }) => {
 
       response = await api.post(axiosURLS.BOOKING_DOWNLOAD + "/" + booking.id, {}, { responseType: "blob" });
       const content = response.headers["content-type"];
-      download(response.data, booking.order_number + ".pdf", content);
+      download(response.data, booking.order_number + ".csv", content);
       console.log(response);
     } catch (err) {
       console.log(err);
@@ -143,6 +145,27 @@ const Singleview = ({ match, history }) => {
       }
     }
   };
+  const requestPaymentPopup = () => {
+    if (!booking.payment || (booking.payment && (!booking.payment.invoice_id || booking.payment.invoice_id === ""))) {
+      setPaymentModalOpen(true);
+    } else {
+      requestPayment({ amount: 1000, desc: "Some random desc" });
+    }
+  };
+  const requestPayment = async (data) => {
+    let response;
+    try {
+      response = await api.post(axiosURLS.BOOKING_REQUESTPAYMENT + "/" + booking.id, data);
+      setBooking(response.data);
+      setPaymentModalOpen(false);
+      NotificationManager.success("Payment requested", "Updated", 3000, null, null, "");
+    } catch (err) {
+      console.log(err);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
+  };
   return isLoading ? (
     <div className="loading" />
   ) : (
@@ -158,17 +181,20 @@ const Singleview = ({ match, history }) => {
               <DropdownItem onClick={downloadDetails}>
                 <IntlMessages id="pages.download_details" />
               </DropdownItem>
-              {booking.type === "chefs_table" &&(booking.status==="Order Placed") ? (
-                <DropdownItem onClick={requestPayment}>
+              {booking.type === "chef_table" && booking.status === "Order Placed" ? (
+                <DropdownItem onClick={requestPaymentPopup}>
                   <IntlMessages id="pages.request_payment" />
                 </DropdownItem>
               ) : (
                 ""
               )}
-
-              <DropdownItem onClick={markAsCompleted}>
-                <IntlMessages id="pages.mark_as_completed" />
-              </DropdownItem>
+              {booking.status === "Order Paid" ? (
+                <DropdownItem onClick={markAsCompleted}>
+                  <IntlMessages id="pages.mark_as_completed" />
+                </DropdownItem>
+              ) : (
+                ""
+              )}
             </DropdownMenu>
           </ButtonDropdown>
         </div>
@@ -301,29 +327,42 @@ const Singleview = ({ match, history }) => {
                     {booking.status === "Order Paid" || booking.status === "Order Completed" ? (
                       <>
                         <p>
-                          <b>Total:</b> {booking.payment.total}
+                          <b>Total:</b> {booking.total}
                         </p>
-                        <p>
-                          <b>Razorpay Order Number:</b> {booking.payment.order_number}
-                        </p>
-                        <p>
-                          <b>Meal Cost:</b> {booking.payment.meal}
-                        </p>
-                        <p>
-                          <b>Taxes:</b> {booking.payment.taxes}
-                        </p>
-                        <p>
-                          <b>Delivery Charges:</b> {booking.payment.delivery_charges}
-                        </p>
-                        <p>
-                          <b>Mood Bag:</b> {booking.payment.mood_bag}
-                        </p>
-                        <p>
-                          <b>Discount:</b> {booking.payment.discount}
-                        </p>
-                        <p>
-                          <b>Voucher:</b> {booking.payment.voucher}
-                        </p>{" "}
+                        {booking.type === "virtual_dining" ? (
+                          <>
+                            <p>
+                              <b>Razorpay Order Number:</b> {booking.payment.order_number}
+                            </p>
+                            <p>
+                              <b>Meal Cost:</b> {booking.payment.meal}
+                            </p>
+                            <p>
+                              <b>Taxes:</b> {booking.payment.taxes}
+                            </p>
+                            <p>
+                              <b>Delivery Charges:</b> {booking.payment.delivery_charges}
+                            </p>
+                            <p>
+                              <b>Mood Bag:</b> {booking.payment.mood_bag}
+                            </p>
+                            <p>
+                              <b>Discount:</b> {booking.payment.discount}
+                            </p>
+                            <p>
+                              <b>Voucher:</b> {booking.payment.voucher}
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <p>
+                              <b>Razorpay Invoice Id:</b> {booking.payment.invoice_id}
+                            </p>
+                            <p>
+                              <b>Razorpay Payment Id:</b> {booking.payment.payment_id}
+                            </p>
+                          </>
+                        )}
                       </>
                     ) : (
                       <p>
@@ -471,6 +510,7 @@ const Singleview = ({ match, history }) => {
         </TabContent>
       </Colxx>
       <Dunzodetails details={dunzoDetails} modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} />
+      <RequestPayment requestPayment={requestPayment} modalOpen={paymentModalOpen} toggleModal={() => setPaymentModalOpen(!paymentModalOpen)} />
     </Row>
   );
 };

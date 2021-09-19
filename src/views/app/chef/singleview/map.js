@@ -1,6 +1,6 @@
 import React from "react";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
-const Map = ({ zoom, mylat, mylong, setLat, setLong,setZoom }) => {
+const Map = ({ zoom, mylat, mylong, setLat, setLong, setZoom, mapKey }) => {
   const onMarkerDragEnd = (event) => {
     console.log(event);
     setLat(event.latLng.lat());
@@ -28,7 +28,7 @@ const Map = ({ zoom, mylat, mylong, setLat, setLong,setZoom }) => {
   return (
     <div>
       <MapWithAMarker
-        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeGvtCVnIAyMWAWdfTpYVjjvU7j9oOYSo&v=3.exp&libraries=geometry,drawing,places"
+        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${mapKey}&v=3.exp&libraries=geometry,drawing,places`}
         loadingElement={<div className="map-item" />}
         containerElement={<div className="map-item" />}
         mapElement={<div className="map-item" />}
@@ -37,18 +37,13 @@ const Map = ({ zoom, mylat, mylong, setLat, setLong,setZoom }) => {
   );
 };
 function shouldNotUpdate(props, nextProps) {
-  console.log("Old",props);
-  console.log("New",nextProps);
-  if(props.mylat===nextProps.mylat&&props.mylong===nextProps.mylong)
-  {
+  console.log("Old", props);
+  console.log("New", nextProps);
+  if (props.mapKey === nextProps.mapKey && props.mylat === nextProps.mylat && props.mylong === nextProps.mylong) {
     return true;
-  }
-  else
-  {
+  } else {
     return false;
   }
-  
-  
 }
 
 export default React.memo(Map, shouldNotUpdate);

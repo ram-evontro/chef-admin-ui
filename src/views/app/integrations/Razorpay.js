@@ -80,7 +80,7 @@ const Razorpay = ({ match }) => {
                       value={formdata.key_id ? formdata.key_id : ''}
                       onChange={handleChange}
                     />
-                    <Label>
+                    <Label className="mt-4">
                       <IntlMessages id="forms.key_secret" />
                     </Label>
                     <Input
@@ -89,7 +89,15 @@ const Razorpay = ({ match }) => {
                       value={formdata.key_secret ? formdata.key_secret : ''}
                       onChange={handleChange}
                     />
-                   
+                   <Label className="mt-4">
+                      <IntlMessages id="forms.webhook_secret" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="webhook_secret"
+                      value={formdata.webhook_secret ? formdata.webhook_secret : ''}
+                      onChange={handleChange}
+                    />
                     <center>
                       <Button
                         color="primary"

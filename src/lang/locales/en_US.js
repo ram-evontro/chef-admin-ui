@@ -188,6 +188,8 @@ module.exports = {
   'menu.google_calendar':'Google Calendar',
   'menu.meal_times':'Meal Timing',
   'menu.meal_time':'Meal Timing',
+  'menu.support':'Support',
+  'menu.account':'Account',
   /* 04.Dashboards */
   'dashboards.pending-orders': 'Pending Orders',
   'dashboards.completed-orders': 'Completed Orders',
@@ -640,6 +642,11 @@ module.exports = {
   'forms.credentials_json':'Credentials.json',
   'forms.authorize':'Authorize',
   'forms.time':'Time',
+  'forms.amount':'Amount',
+  'forms.desc':'Description',
+  'forms.change_password':'Change Password',
+  'forms.confirm_password':'Confirm Password',
+  'forms.webhook_secret':'Webhook Secret',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',

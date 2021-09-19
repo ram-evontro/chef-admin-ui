@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import AppLayout from 'layout/AppLayout';
 import Account from './Account';
+import Support from './Support';
 // import { ProtectedRoute, UserRole } from 'helpers/authHelper';
 const Dashboards = React.lazy(() =>
   import(/* webpackChunkName: "viwes-second-menu" */ './dashboards')
@@ -50,6 +51,10 @@ const App = ({ match }) => {
             <Route
               path={`${match.url}/account`}
               render={(props) => <Account {...props} />}
+            />
+            <Route
+              path={`${match.url}/support`}
+              render={(props) => <Support {...props} />}
             />
             <Redirect to="/error" />
           </Switch>
