@@ -22,6 +22,9 @@ const S3 = React.lazy(() =>
 const Plivo = React.lazy(() =>
   import(/* webpackChunkName: "Plivo" */ './Plivo')
 );
+const Quickbooks = React.lazy(() =>
+  import(/* webpackChunkName: "Quickbooks" */ './Quickbooks')
+);
 const Integrations = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
@@ -53,6 +56,10 @@ const Integrations = ({ match }) => (
       <Route
         path={`${match.url}/plivo`}
         render={(props) => <Plivo {...props} />}
+      />
+       <Route
+        path={`${match.url}/quickbooks`}
+        render={(props) => <Quickbooks {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

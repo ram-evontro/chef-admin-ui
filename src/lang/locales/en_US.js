@@ -190,6 +190,7 @@ module.exports = {
   'menu.meal_time':'Meal Timing',
   'menu.support':'Support',
   'menu.account':'Account',
+  'menu.quickbooks':'Quickbooks',
   /* 04.Dashboards */
   'dashboards.pending-orders': 'Pending Orders',
   'dashboards.completed-orders': 'Completed Orders',
@@ -647,6 +648,7 @@ module.exports = {
   'forms.change_password':'Change Password',
   'forms.confirm_password':'Confirm Password',
   'forms.webhook_secret':'Webhook Secret',
+  'forms.redirect_url':'Redirect URL',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',

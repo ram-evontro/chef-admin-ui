@@ -7,7 +7,7 @@ import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import toast from "react-hot-toast";
 import { NavLink } from "react-router-dom";
-const GoogleCalendar = ({ match }) => {
+const Quickbooks = ({ match }) => {
   const [formdata, setFormdata] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
@@ -19,9 +19,9 @@ const GoogleCalendar = ({ match }) => {
   };
   const handleClick = async () => {
     setIsLoading(true);
-    let newfomdata = { key_name: "google_calendar", key_value: { ...formdata } };
+    let newfomdata = { key_name: "quickbooks", key_value: { ...formdata } };
     try {
-      await api.patch(axiosURLS.INTEGRATION + "/google_calendar", newfomdata);
+      await api.patch(axiosURLS.INTEGRATION + "/quickbooks", newfomdata);
       toast.success("Data saved successfully");
     } catch (err) {
       console.log(err);
@@ -36,7 +36,7 @@ const GoogleCalendar = ({ match }) => {
   useEffect(async () => {
     window.location.hash = '';
     try {
-      let { data } = await api.get(axiosURLS.INTEGRATION + "/google_calendar");
+      let { data } = await api.get(axiosURLS.INTEGRATION + "/quickbooks");
       setFormdata(data.key_value);
     } catch (err) {
       console.log(err);
@@ -50,7 +50,7 @@ const GoogleCalendar = ({ match }) => {
     <>
       <Row>
         <Colxx xxs="12">
-          <Breadcrumb heading="menu.google_calendar" match={match} />
+          <Breadcrumb heading="menu.quickbooks" match={match} />
           <Separator className="mb-5" />
         </Colxx>
       </Row>
@@ -62,12 +62,24 @@ const GoogleCalendar = ({ match }) => {
                 <Row>
                   <Colxx xxs="12">
                     <Label>
-                      <IntlMessages id="forms.credentials_json" />
+                      <IntlMessages id="forms.client_id" />
                     </Label>
-                    <Input type="textarea" name="credentials" value={formdata.credentials ? formdata.credentials : ""} onChange={handleChange} />
+                    <Input type="text" name="client_id" value={formdata.client_id ? formdata.client_id : ""} onChange={handleChange} />
+                    <Label className="mt-3">
+                      <IntlMessages id="forms.client_secret" />
+                    </Label>
+                    <Input type="text" name="client_secret" value={formdata.client_secret ? formdata.client_secret : ""} onChange={handleChange} />
+                    <Label className="mt-3">
+                      <IntlMessages id="forms.redirect_url" />
+                    </Label>
+                    <Input type="text" name="redirect_url" value={formdata.redirect_url ? formdata.redirect_url : ""} onChange={handleChange} />
+                    <Label className="mt-3">
+                      <IntlMessages id="forms.url" />
+                    </Label>
+                    <Input type="text" name="url" value={formdata.url ? formdata.url : ""} onChange={handleChange} />
                     <center>
                       <a
-                        href={axiosURLS.BASE_URL + axiosURLS.GOOGLECALENDAR}
+                        href={axiosURLS.BASE_URL + axiosURLS.QUICKBOOKSAUTH}
                         className={`btn-shadow btn btn-primary mt-4 mr-3 btn-multiple-state`}
                         target="_blank"
                       >
@@ -97,4 +109,4 @@ const GoogleCalendar = ({ match }) => {
   );
 };
 
-export default GoogleCalendar;
+export default Quickbooks;

@@ -54,7 +54,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
       })
     );
   }, []);
-  const [zoom, setZoom] = useState(8);
+  const [zoom, setZoom] = useState(10);
   const [mylat, setLat] = useState(12.959555780366589);
   const [mylong, setLong] = useState(77.58477366143252);
   const [user, setUser] = useState({});

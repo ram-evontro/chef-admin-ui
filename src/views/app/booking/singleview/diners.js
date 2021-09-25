@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row,Card, CardBody, Badge, Alert } from "reactstrap";
+import { Row, Card, CardBody, Badge, Alert } from "reactstrap";
 import { NavLink } from "react-router-dom";
 import { Colxx } from "components/common/CustomBootstrap";
 import Rating from "components/common/Rating";
@@ -7,7 +7,7 @@ import moment from "moment";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import { adminRoot } from "constants/defaultValues";
-const DinerItem = ({ item, menu, delivery, deliveryObj, updateDunzo, viewDunzo, isLoadingDunzo, setDunzoDetails,message,booking }) => {
+const DinerItem = ({ item, menu, delivery, deliveryObj, updateDunzo, viewDunzo, isLoadingDunzo, setDunzoDetails, message, booking }) => {
   return (
     <Colxx xxs="12" md="4">
       <Card className="card mb-3">
@@ -30,10 +30,14 @@ const DinerItem = ({ item, menu, delivery, deliveryObj, updateDunzo, viewDunzo, 
             <b>Mood Bag requested:</b>
             {item.mood_bag ? "Yes" : "No"}
           </p>
-          <p>
-            <b>Allergic to:</b> {item.avoid.length > 0 ? item.avoid.join(",") : ""}
-          </p>
-          {menu ? (
+          {item.avoid.length > 0 ? (
+            <p>
+              <b>Allergic to:</b> {item.avoid.join(",")}
+            </p>
+          ) : (
+            ""
+          )}
+          {menu && item.menu ? (
             <p>
               <b>Menu Selected:</b>{" "}
               <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${item.menu.id}`}>
@@ -43,7 +47,7 @@ const DinerItem = ({ item, menu, delivery, deliveryObj, updateDunzo, viewDunzo, 
           ) : (
             ""
           )}
-          {delivery ? (
+          {delivery && item.address && item.address.address1 ? (
             <>
               <p>
                 <b>Address Selected:</b> {item.address.address1}
@@ -57,7 +61,7 @@ const DinerItem = ({ item, menu, delivery, deliveryObj, updateDunzo, viewDunzo, 
                 <b>Address Type:</b> {item.address.type}
                 <br />
               </p>
-              {deliveryObj&&Object.keys(deliveryObj).length > 0 ? (
+              {deliveryObj && Object.keys(deliveryObj).length > 0 ? (
                 deliveryObj[item._id] ? (
                   <>
                     <p>
@@ -89,29 +93,33 @@ const DinerItem = ({ item, menu, delivery, deliveryObj, updateDunzo, viewDunzo, 
                     {deliveryObj["error"]}
                   </Alert>
                 )
-              ) : (
+              ) : message ? (
                 <Alert color="warning" className="rounded">
                   {message}
                 </Alert>
+              ) : (
+                ""
               )}
             </>
           ) : (
             ""
           )}
           {booking.feedbacks && booking.feedbacks[item.user.id] ? (
-             <p>
-             <b>Feedback:</b> <br />{booking.feedbacks[item.user.id].message}<br />
-             {booking.feedbacks[item.user.id].rating.map((rate) => (
-               <Row key={rate.id}>
-                 <Colxx xss="12" md="4">
-                   {rate.param}
-                 </Colxx>
-                 <Colxx xss="12" md="8">
-                   <Rating total={5} rating={rate.value} interactive={false} />
-                 </Colxx>
-               </Row>
-             ))}
-           </p>
+            <p>
+              <b>Feedback:</b> <br />
+              {booking.feedbacks[item.user.id].message}
+              <br />
+              {booking.feedbacks[item.user.id].rating.map((rate) => (
+                <Row key={rate.id}>
+                  <Colxx xss="12" md="4">
+                    {rate.param}
+                  </Colxx>
+                  <Colxx xss="12" md="8">
+                    <Rating total={5} rating={rate.value} interactive={false} />
+                  </Colxx>
+                </Row>
+              ))}
+            </p>
           ) : (
             ""
           )}

@@ -35,3 +35,4 @@ export const GOOGLECALENDAR = 'util/googleauth';
 export const DASHBOARD = 'util/dashboardetails';
 export const BOOKING_BY_MONTH = 'util/bookingsbymonth';
 export const INTEGRATIONS = 'util/integration_keys';
+export const QUICKBOOKSAUTH = 'util/quickbooksauth';
