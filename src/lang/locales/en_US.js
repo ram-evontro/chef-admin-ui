@@ -336,6 +336,12 @@ module.exports = {
   'pages.please_wait':'Please Wait...',
   'pages.delivery_details':'Delivery details',
   'pages.export_csv':'Export CSV',
+  'pages.choose':'Choose',
+  'pages.make_featured':'Make Featured',
+  'pages.remove_featured':'Remove Featured',
+  'pages.cancel_order':'Cancel Order',
+  'pages.crop':'Crop',
+  'pages.edit_booking':'Edit Booking',
   /* 06.Applications */
 
   /* 06.01.Chat */
@@ -649,6 +655,10 @@ module.exports = {
   'forms.confirm_password':'Confirm Password',
   'forms.webhook_secret':'Webhook Secret',
   'forms.redirect_url':'Redirect URL',
+  'forms.status':'Status',
+  'forms.featured':'Featured',
+  'forms.refund_amount':'Refund Amount',
+  'forms.new_booking_time':'New Booking Time',
   /* 07.11.Form Components */
   'form-components.custom-inputs': 'Custom Inputs',
   'form-components.checkboxes': 'Checkboxes',

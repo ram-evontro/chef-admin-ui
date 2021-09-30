@@ -153,7 +153,7 @@ const Diners = ({ menu, delivery, diners, booking, updateDunzo, viewDunzo, isLoa
                 tempDeliveryObj[diner_id] = {
                   task_id: task.task_id,
                   state: step.state,
-                  details: task,
+                  details: data,
                 };
               }
             }

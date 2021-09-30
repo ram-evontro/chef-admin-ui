@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import Lightbox from 'react-image-lightbox';
+import React, { useState } from "react";
 
-const SingleLightbox = ({ thumb, className, large }) => {
+import Lightbox from "react-image-lightbox";
+import "react-image-crop/dist/ReactCrop.css";
+import Cropbox from "views/app/elements/Cropbox";
+const SingleLightbox = ({ thumb, className, large,ratio,setUserPicture,userPicture }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [crop, setCrop] = useState({ aspect: ratio,height:100,unit:'px' });
   return (
     <>
-      <NavLink to="#" location={{}} onClick={() => setIsOpen(true)}>
+      <div className="show-pointer" onClick={() => setIsOpen(true)}>
         <img src={thumb} alt="thumbnail" className={className} />
-      </NavLink>
-
-      {isOpen && (
-        <Lightbox mainSrc={large} onCloseRequest={() => setIsOpen(false)} />
-      )}
+      </div>
+      <Cropbox
+        modalOpen={isOpen}
+        toggleModal={() => {
+          setIsOpen(!isOpen);
+        }}
+        crop={crop}
+        file={large}
+        setCrop={setCrop}
+        setUserPicture={setUserPicture}
+        userPicture={userPicture}
+      />
     </>
   );
 };

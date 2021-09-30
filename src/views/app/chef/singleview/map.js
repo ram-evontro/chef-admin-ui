@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
-const Map = ({ zoom, mylat, mylong, setLat, setLong, setZoom, mapKey }) => {
+const Map = ({ zoom, mylat, mylong, setLat, setLong, setZoom, mapKey, autoComplete }) => {
   const onMarkerDragEnd = (event) => {
     console.log(event);
     setLat(event.latLng.lat());
@@ -14,13 +14,30 @@ const Map = ({ zoom, mylat, mylong, setLat, setLong, setZoom, mapKey }) => {
 
   const MapWithAMarker = withScriptjs(
     withGoogleMap((map) => {
+      useEffect(() => {
+        console.log("fetchin map", autoComplete);
+        if (!autoComplete ||!mapKey ) {
+          return;
+        }
+        const searchBox = new google.maps.places.SearchBox(autoComplete.current, { types: ["geocode"] });
+        searchBox.addListener("places_changed", () => {
+          const places = searchBox.getPlaces();
+          if (places.length > 0) {
+            const position = places[0].geometry.location;
+            setLat(position.lat());
+            setLong(position.lng());
+          }
+        });
+      }, [autoComplete, mapKey]);
       function zoomChanged() {
         setZoom(this.getZoom());
       }
       return (
-        <GoogleMap zoom={zoom} onZoomChanged={zoomChanged} onClick={mapClick} defaultCenter={{ lat: mylat, lng: mylong }}>
-          <Marker draggable={true} onDragEnd={onMarkerDragEnd} position={{ lat: mylat, lng: mylong }} />
-        </GoogleMap>
+        <>
+          <GoogleMap zoom={zoom} onZoomChanged={zoomChanged} onClick={mapClick} defaultCenter={{ lat: mylat, lng: mylong }}>
+            <Marker draggable={true} onDragEnd={onMarkerDragEnd} position={{ lat: mylat, lng: mylong }} />
+          </GoogleMap>
+        </>
       );
     })
   );
@@ -37,8 +54,6 @@ const Map = ({ zoom, mylat, mylong, setLat, setLong, setZoom, mapKey }) => {
   );
 };
 function shouldNotUpdate(props, nextProps) {
-  console.log("Old", props);
-  console.log("New", nextProps);
   if (props.mapKey === nextProps.mapKey && props.mylat === nextProps.mylat && props.mylong === nextProps.mylong) {
     return true;
   } else {

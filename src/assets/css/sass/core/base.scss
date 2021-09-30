@@ -754,3 +754,11 @@ p {
     transform: rotate(359deg);
   }
 }
+.show-pointer
+{
+  cursor: pointer;
+}
+.react-time-picker__clock
+{
+  display: none !important;
+}

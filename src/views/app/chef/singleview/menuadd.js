@@ -8,12 +8,15 @@ import * as axiosURLS from "helpers/endpoints";
 import fileapi from "helpers/fileupload";
 import { NotificationManager } from "components/common/react-notifications";
 import DropzoneComponent from "react-dropzone-component";
+import Select from "react-select";
+import CustomSelectInput from "components/common/CustomSelectInput";
 import "dropzone/dist/min/dropzone.min.css";
 const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) => {
   const { upload } = fileapi();
   const ReactDOMServer = require("react-dom/server");
   const [formdata, setFormdata] = useState({});
   const [errors, setErrors] = useState({});
+  const [selectedChef, setSelectedChef] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [mealTypes, setMealTypes] = useState([]);
   const [cuisines, setCuisines] = useState([]);
@@ -82,6 +85,7 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
     if (!modalOpen) {
       setErrors({});
       setFormdata({});
+      setSelectedChef({});
     }
   }, [modalOpen]);
   const handleChange = (e) => {
@@ -92,6 +96,13 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
     setFormdata(tempdata);
     let tempErrors = { ...errors };
     delete tempErrors[name];
+    setErrors(tempErrors);
+  };
+  const handleChefSelect = (val) => {
+    setFormdata({ ...formdata, user: val.value });
+    setSelectedChef(val);
+    let tempErrors = { ...errors };
+    delete tempErrors["user"];
     setErrors(tempErrors);
   };
   const validate = (e) => {
@@ -161,15 +172,17 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
             <Label>
               <IntlMessages id="forms.chef" />
             </Label>
-            <select className="form-control" onChange={handleChange} name="user" value={formdata.user ? formdata.user : ""} id="menu_type">
-              <option value="">Select Value</option>
-              {chefs &&
-                chefs.map((chef) => (
-                  <option key={chef.id} value={chef.id}>
-                    {chef.name}
-                  </option>
-                ))}
-            </select>
+            <Select
+              components={{ Input: CustomSelectInput }}
+              className="react-select"
+              classNamePrefix="react-select"
+              name="form-field-name"
+              options={chefs.map((chef, i) => {
+                return { label: chef.name, value: chef.id, key: chef.id };
+              })}
+              value={selectedChef}
+              onChange={handleChefSelect}
+            />
             {errors.user && <div className="invalid-feedback d-block">{errors.user}</div>}
           </FormGroup>
         ) : (

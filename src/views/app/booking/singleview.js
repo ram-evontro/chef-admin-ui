@@ -35,6 +35,9 @@ import ThumbnailImage from "components/cards/ThumbnailImage";
 import download from "downloadjs";
 import Dunzodetails from "./singleview/dunzodetails";
 import RequestPayment from "./singleview/requestpayment";
+import Cancelorder from "./singleview/cancelorder";
+import Deletealert from "../elements/Deletealert";
+import Editbooking from "./singleview/editbooking";
 const Singleview = ({ match, history }) => {
   const [activeTab, setActiveTab] = useState("details");
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +48,12 @@ const Singleview = ({ match, history }) => {
   const [bookingId, setBookingId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [dunzoDetails, setDunzoDetails] = useState({});
+  const [deleteAlert, setDeleteAlert] = useState(false);
+  const [actions, setActions] = useState({});
+  const [selectedTask, setSelectedTask] = useState();
   const setBooking = (bookingdata) => {
     if (bookingdata.feedbacks) {
       let temp = { ...bookingdata };
@@ -117,20 +125,36 @@ const Singleview = ({ match, history }) => {
     setIsLoadingForLog(false);
   };
   const updateDunzo = async (task_id) => {
+    setSelectedTask(task_id);
+    setEditModalOpen(true);
+    // setIsLoadingDunzo(true);
+    // try {
+    //   let { data } = await api.post(axiosURLS.DUNZO + "/" + task_id);
+    //   console.log(data);
+    //   NotificationManager.success("Status refreshed successfully", "Updated", 3000, null, null, "");
+    // } catch (err) {
+    //   if (err.response) {
+    //     NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+    //   }
+    // }
+    // setIsLoadingDunzo(false);
+  };
+  const viewDunzo = async () => {
+    setModalOpen(true);
+  };
+  const fetchAndViewDunzo = async (task_id) => {
     setIsLoadingDunzo(true);
     try {
       let { data } = await api.post(axiosURLS.DUNZO + "/" + task_id);
-      console.log(data);
-      NotificationManager.success("Status refreshed successfully", "Updated", 3000, null, null, "");
+      setDunzoDetails(data);
+      setModalOpen(true);
     } catch (err) {
-      if (err.response) {
+      console.log(err);
+      if (err.response&&err.response.data) {
         NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
       }
     }
     setIsLoadingDunzo(false);
-  };
-  const viewDunzo = async () => {
-    setModalOpen(true);
   };
   const markAsCompleted = async () => {
     let response;
@@ -166,6 +190,49 @@ const Singleview = ({ match, history }) => {
       }
     }
   };
+  const requestCancel = async (data) => {
+    let response;
+    try {
+      response = await api.post(axiosURLS.BOOKING_ACTION + "/cancel" + "/" + booking.id, data);
+      setBooking(response.data);
+      setCancelModalOpen(false);
+      NotificationManager.success("Cancel requested", "Cancelled", 3000, null, null, "");
+    } catch (err) {
+      console.log(err);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
+  };
+  const confirmAction = (action, data) => {
+    setActions({ action: action, data: data });
+    setDeleteAlert(true);
+  };
+  const performAction = async (res) => {
+    if (!res) {
+      return false;
+    }
+    console.log("in perfrom action", actions.action);
+    if (actions.action === "choose_chef") {
+      setIsLoadingForLog(true);
+      let formdata = {};
+      formdata["chosen_chef"] = actions.data;
+      try {
+        let { data } = await api.post(axiosURLS.BOOKING_ACTION + "/" + "choose_chef" + "/" + booking.id, formdata);
+        NotificationManager.success("Chef chosen successfully", "Sucess", 3000, null, null, "");
+        setBooking(data);
+      } catch (err) {
+        console.log(err);
+        if (err.response && err.response.data) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+      setIsLoadingForLog(false);
+    }
+  };
+  const cancelOrder = () => {
+    setCancelModalOpen(true);
+  };
   return isLoading ? (
     <div className="loading" />
   ) : (
@@ -191,6 +258,13 @@ const Singleview = ({ match, history }) => {
               {booking.status === "Order Paid" ? (
                 <DropdownItem onClick={markAsCompleted}>
                   <IntlMessages id="pages.mark_as_completed" />
+                </DropdownItem>
+              ) : (
+                ""
+              )}
+              {booking.status !== "Order Completed" && booking.status !== "Order Cancelled" ? (
+                <DropdownItem onClick={cancelOrder}>
+                  <IntlMessages id="pages.cancel_order" />
                 </DropdownItem>
               ) : (
                 ""
@@ -254,7 +328,7 @@ const Singleview = ({ match, history }) => {
                       <b>Diner Count:</b> {booking.diner_count}
                     </p>
                     <p>
-                      <b>Booking date:</b> {moment(booking.booking_date).format("MMM D, Y")}
+                      <b>Booking date:</b> {moment.utc(booking.booking_date).format("MMM D, Y HH:mm")}
                     </p>
                     <p>
                       <b>Meal:</b> {booking.meal}
@@ -324,16 +398,13 @@ const Singleview = ({ match, history }) => {
                     <CardTitle>
                       <h3>Payment Details</h3>
                     </CardTitle>
-                    {booking.status === "Order Paid" || booking.status === "Order Completed" ? (
+                    {(booking.status === "Order Paid" || booking.status === "Order Completed") && booking.payment ? (
                       <>
                         <p>
                           <b>Total:</b> {booking.total}
                         </p>
                         {booking.type === "virtual_dining" ? (
                           <>
-                            <p>
-                              <b>Razorpay Order Number:</b> {booking.payment.order_number}
-                            </p>
                             <p>
                               <b>Meal Cost:</b> {booking.payment.meal}
                             </p>
@@ -351,6 +422,12 @@ const Singleview = ({ match, history }) => {
                             </p>
                             <p>
                               <b>Voucher:</b> {booking.payment.voucher}
+                            </p>
+                            <p>
+                              <b>Razorpay Order Number:</b> {booking.payment.order_number}
+                            </p>
+                            <p>
+                              <b>Razorpay Payment Id:</b> {booking.payment.payment_id}
                             </p>
                           </>
                         ) : (
@@ -427,12 +504,13 @@ const Singleview = ({ match, history }) => {
                                 updateDunzo(taskid.task_id);
                               }}
                               className="btn btn-outline-primary"
+                              title="Edit delivery Time"
                             >
-                              <i className={` ${isLoadingDunzo ? "animate-spin" : ""}  simple-icon-refresh`} />
+                              <i className={` ${isLoadingDunzo ? "animate-spin" : ""}  simple-icon-pencil`} />
                             </button>
                             <button
                               onClick={() => {
-                                viewDunzo(taskid.task_id);
+                                fetchAndViewDunzo(taskid.task_id);
                               }}
                               className="btn btn-outline-primary"
                             >
@@ -467,22 +545,66 @@ const Singleview = ({ match, history }) => {
                   ""
                 )}
                 {booking.type === "chef_table" ? (
-                  <Card className="mb-2">
-                    <CardBody>
-                      <CardTitle>
-                        <h3>Chefs Requested</h3>
-                      </CardTitle>
-                      <Row>
-                        {booking.chefs.map((chef) => (
-                          <Colxx key={chef.id} xxs="12" md="6">
-                            <NavLink location={{}} to={`${adminRoot}/chef/view/?p=${chef.id}`}>
-                              <ThumbnailImage rounded small src={chef.picture} alt="profile" className="m-2" /> {chef.name},({chef.mobile})
-                            </NavLink>
-                          </Colxx>
-                        ))}
-                      </Row>
-                    </CardBody>
-                  </Card>
+                  <>
+                    {booking.chosen_chef ? (
+                      <Card className="mb-2">
+                        <CardBody>
+                          <CardTitle>
+                            <h3>Chef Chosen</h3>
+                          </CardTitle>
+                          <Row>
+                            <Colxx xxs="12">
+                              <NavLink location={{}} to={`${adminRoot}/chef/view/?p=${booking.chosen_chef.id}`}>
+                                <ThumbnailImage rounded small src={booking.chosen_chef.picture} alt="profile" className="m-2" /> {booking.chosen_chef.name},(
+                                {booking.chosen_chef.mobile})
+                              </NavLink>
+                            </Colxx>
+                          </Row>
+                        </CardBody>
+                      </Card>
+                    ) : (
+                      ""
+                    )}
+                    <Card className="mb-2">
+                      <CardBody>
+                        <CardTitle>
+                          <h3>Chefs Requested</h3>
+                        </CardTitle>
+                        <Row>
+                          {booking.chefs.map((chef) => (
+                            <React.Fragment key={chef.id}>
+                              <Colxx xxs="8">
+                                <NavLink location={{}} to={`${adminRoot}/chef/view/?p=${chef.id}`}>
+                                  <ThumbnailImage rounded small src={chef.picture} alt="profile" className="m-2" /> {chef.name},({chef.mobile})
+                                </NavLink>
+                                {!booking.chosen_chef && (booking.status === "Order Placed" || booking.status === "Order Paid") ? (
+                                  <Button
+                                    color="primary"
+                                    className={`btn-shadow btn-multiple-state ${isLoadingForLog ? "show-spinner" : ""}`}
+                                    onClick={() => {
+                                      confirmAction("choose_chef", chef.id);
+                                    }}
+                                  >
+                                    <span className="spinner d-inline-block">
+                                      <span className="bounce1" />
+                                      <span className="bounce2" />
+                                      <span className="bounce3" />
+                                    </span>
+                                    <span className="label">
+                                      <IntlMessages id="pages.choose" />
+                                    </span>
+                                  </Button>
+                                ) : (
+                                  ""
+                                )}
+                              </Colxx>
+                              <Colxx xxs="4"></Colxx>
+                            </React.Fragment>
+                          ))}
+                        </Row>
+                      </CardBody>
+                    </Card>
+                  </>
                 ) : (
                   ""
                 )}
@@ -511,6 +633,9 @@ const Singleview = ({ match, history }) => {
       </Colxx>
       <Dunzodetails details={dunzoDetails} modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} />
       <RequestPayment requestPayment={requestPayment} modalOpen={paymentModalOpen} toggleModal={() => setPaymentModalOpen(!paymentModalOpen)} />
+      <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={performAction} />
+      <Cancelorder requestCancel={requestCancel} modalOpen={cancelModalOpen} toggleModal={() => setCancelModalOpen(!cancelModalOpen)} />
+      <Editbooking modalOpen={editModalOpen} selectedTask={selectedTask} bookingId={bookingId} toggleModal={() => setEditModalOpen(!editModalOpen)} />
     </Row>
   );
 };

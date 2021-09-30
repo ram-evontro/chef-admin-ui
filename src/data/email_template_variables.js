@@ -12,6 +12,7 @@ const emailTemplateVariables =
     order_completed_chefs_table:[...tagvariables.common,...tagvariables.order],
     order_feedback_virtual_dining_host:[...tagvariables.common,...tagvariables.order],
     order_feedback_chefs_table:[...tagvariables.common,...tagvariables.order],
+    number_verify_otp:[...tagvariables.otp],
   };
 
 export default emailTemplateVariables;

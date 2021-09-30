@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Row, Card, CardBody, Button, CardTitle } from "reactstrap";
+import { Row, Card, CardBody, Button, CardTitle, Badge } from "reactstrap";
 import { Colxx } from "components/common/CustomBootstrap";
 import IntlMessages from "helpers/IntlMessages";
 import GalleryDetail from "../../elements/GalleryDetail";
@@ -13,48 +13,10 @@ import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
 import fileapi from "helpers/fileupload";
 import { images } from "helpers/images";
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import Map from "./map";
-
-const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
-  const onMarkerDragEnd = (event) => {
-    console.log(event);
-    setLat(event.latLng.lat());
-    setLong(event.latLng.lng());
-  };
-  const mapClick = (event) => {
-    console.log(event);
-    setLat(event.latLng.lat());
-    setLong(event.latLng.lng());
-  };
-
-  const MapWithAMarker = withScriptjs(
-    withGoogleMap((map) => {
-      function zoomChanged() {
-        setZoom(this.getZoom());
-      }
-      return (
-        <GoogleMap zoom={zoom} onZoomChanged={zoomChanged} onClick={mapClick} defaultCenter={{ lat: mylat, lng: mylong }}>
-          <Marker draggable={true} onDragEnd={onMarkerDragEnd} position={{ lat: mylat, lng: mylong }} />
-        </GoogleMap>
-      );
-    })
-  );
-  const map = useMemo(() => {
-    return withScriptjs(
-      withGoogleMap((map) => {
-        function zoomChanged() {
-          setZoom(this.getZoom());
-        }
-        return (
-          <GoogleMap zoom={zoom} onZoomChanged={zoomChanged} onClick={mapClick} defaultCenter={{ lat: mylat, lng: mylong }}>
-            <Marker draggable={true} onDragEnd={onMarkerDragEnd} position={{ lat: mylat, lng: mylong }} />
-          </GoogleMap>
-        );
-      })
-    );
-  }, []);
-  const [zoom, setZoom] = useState(10);
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDetails }) => {
+  const [zoom, setZoom] = useState(12);
   const [mylat, setLat] = useState(12.959555780366589);
   const [mylong, setLong] = useState(77.58477366143252);
   const [user, setUser] = useState({});
@@ -68,7 +30,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
   const [fileAction, setFileAction] = useState("none");
   const [imageToDelete, setImageToDelete] = useState(null);
   const [dropZone, setDropZone] = useState(null);
-  const [mapKey, setMapKey] = useState('');
+  const [mapKey, setMapKey] = useState("");
   let componentConfig = { postUrl: "no-url" };
   const { upload } = fileapi();
   let eventHandlers = {
@@ -96,6 +58,13 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
     }
     await setUserGalleryPic(allFiles);
   }, [tempFile]);
+  useEffect(async () => {
+    console.log("image to delete changes");
+    if (imageToDelete) {
+      await handleClick("deleteimage");
+      setImageToDelete(null);
+    }
+  }, [imageToDelete]);
   const djsConfig = {
     thumbnailHeight: 160,
     maxFilesize: 2,
@@ -160,7 +129,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
       if (data.feedbacks) {
         setFeedbacks(data.feedbacks);
       }
-      let response = await api.get(axiosURLS.CHEF_TYPES_ALL);     
+      let response = await api.get(axiosURLS.CHEF_TYPES_ALL);
       setChefTypes(response.data);
       setChefTypesForView(response.data);
       response = await api.get(axiosURLS.INTEGRATIONS);
@@ -173,7 +142,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
       }
     }
     setLoading(false);
-  }, [id]);
+  }, [id, updateDetails]);
 
   const handleChange = (e) => {
     let tempdata = { ...user };
@@ -294,8 +263,29 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
     setUserPicture(e.target.files[0]);
   };
   const inputFile = useRef(null);
+  const autoComplete = useRef(null);
   const openFileInput = () => {
     inputFile.current.click();
+  };
+  const updateGalleryImage = async (picture, replace) => {
+    let temp = [];
+    if (user.gallery_pictures) {
+      temp = [...user.gallery_pictures];
+    }
+    const findIndex = temp.findIndex((row) => {
+      return row === replace ? true : false;
+    });
+    if (findIndex > -1) {
+      temp.splice(findIndex, 1);
+    }
+    let fileurl = await upload(picture);
+    temp.push(fileurl);
+    let formdata = { details: { gallery_pictures: temp } };
+    let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
+    spreadUser(data);
+    console.log(findIndex);
+    console.log(picture, replace);
+    // let fileUrl = await upload(picture);
   };
   return loading ? (
     <div className="loading" />
@@ -304,7 +294,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
       <Colxx xxs="12" lg="4" className="mb-4 col-left">
         <Card className="mb-4">
           <div className="position-absolute card-top-buttons">
-            <Button onClick={openFileInput} outline color="white" className="icon-button">
+            <Button onClick={openFileInput} color="primary" className="icon-button">
               <i className="simple-icon-pencil" />
               <input type="file" ref={inputFile} className="d-none" onChange={changeImage} />
             </Button>
@@ -313,6 +303,9 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
             thumb={userPicture ? URL.createObjectURL(userPicture) : user.picture ? user.picture : images.chefplaceholder.default}
             large={userPicture ? URL.createObjectURL(userPicture) : user.picture ? user.picture : images.chefplaceholder.default}
             className="card-img-top"
+            ratio={443 / 560}
+            setUserPicture={setUserPicture}
+            userPicture={userPicture}
           />
           <CardBody>
             <p className="text-muted text-small mb-1">
@@ -353,6 +346,30 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
               <IntlMessages id="pages.details" />
             </CardTitle>
             <div>
+              <p className="text-muted text-small mb-1">
+                <IntlMessages id="forms.status" />
+              </p>
+              {user.status ? (
+                <Badge className="form-control mb-2" color="primary">
+                  Active
+                </Badge>
+              ) : (
+                <Badge className="form-control mb-2" color="secondary">
+                  InActive
+                </Badge>
+              )}
+              <p className="text-muted text-small mb-1">
+                <IntlMessages id="forms.featured" />
+              </p>
+              {user.is_featured ? (
+                <Badge className="form-control mb-2" color="primary">
+                  Yes
+                </Badge>
+              ) : (
+                <Badge className="form-control mb-2" color="secondary">
+                  No
+                </Badge>
+              )}
               <p className="text-muted text-small mb-1">
                 <IntlMessages id="forms.chef_type" />
               </p>
@@ -423,7 +440,12 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
             <CardTitle>
               <IntlMessages id="pages.gallery" />
             </CardTitle>
-            <GalleryDetail setImageToDelete={setImageToDelete} handleClick={handleClick} images={user.gallery_pictures} />
+            <GalleryDetail
+              updateGalleryImage={updateGalleryImage}
+              setImageToDelete={setImageToDelete}
+              handleClick={handleClick}
+              images={user.gallery_pictures}
+            />
           </CardBody>
         </Card>
         <Card className="mb-4">
@@ -467,10 +489,11 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks }) => {
               <IntlMessages id="forms.pincode" />
             </p>
             <input onChange={handleChange} type="text" name="pincode" className="form-control mb-2" value={user.pincode} />
-            <Map zoom={zoom} setLat={setLat} mapKey={mapKey} setLong={setLong} mylat={mylat} mylong={mylong} setZoom={setZoom} />
+            <input ref={autoComplete} placeholder="Search a place..." type="text" className="form-control" />
+            <Map zoom={zoom} setLat={setLat} autoComplete={autoComplete} mapKey={mapKey} setLong={setLong} mylat={mylat} mylong={mylong} setZoom={setZoom} />
             <Button
               color="primary"
-              className={`btn-shadow btn-multiple-state ${loading ? "show-spinner" : ""}`}
+              className={`btn-shadow mt-2 btn-multiple-state ${loading ? "show-spinner" : ""}`}
               onClick={() => {
                 handleClick("details");
               }}

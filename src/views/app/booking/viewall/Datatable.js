@@ -151,7 +151,20 @@ const Datatable = ({
         Header: "Order No",
         accessor: "order_number",
         cellClass: "text-muted  w-10",
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => (
+          <>
+            <a
+              title="View"
+              href="javascript:;"
+              onClick={() => {
+                updateAction("view", props.row.original.id);
+              }}
+              
+            >
+              {props.value}
+            </a>
+          </>
+        ),
       },
       {
         Header: "Host Name",
@@ -189,9 +202,13 @@ const Datatable = ({
             <br />
             {props.row.original.meal}
             <br />
-            {props.row.original.type=== "virtual_dining" ?(<>{props.row.original.menu_selection==="diner"?'Different Menu':'Common Menu'}</>) : ""}
+            {props.row.original.type === "virtual_dining" ? <>{props.row.original.menu_selection === "diner" ? "Different Menu" : "Common Menu"}</> : ""}
             <br />
-            {props.row.original.type=== "virtual_dining" ?(<>{props.row.original.delivery_selection==="diner"?'Different Location':'Common Location'}</>) : ""}
+            {props.row.original.type === "virtual_dining" ? (
+              <>{props.row.original.delivery_selection === "diner" ? "Different Location" : "Common Location"}</>
+            ) : (
+              ""
+            )}
           </>
         ),
       },
@@ -224,7 +241,7 @@ const Datatable = ({
                 updateAction("view", row.original.id);
               }}
               class="glyph-icon simple-icon-eye"
-            ></a>           
+            ></a>
           </>
         ),
       },

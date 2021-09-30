@@ -175,13 +175,13 @@ const Datatable = ({
       {
         Header: "Name",
         accessor: "name",
-        cellClass: "list-item-heading w-40",
+        cellClass: "list-item-heading w-20",
         Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
         Header: "Icon",
         accessor: "icon",
-        cellClass: "text-muted  w-20",
+        cellClass: "text-muted  w-10",
         Cell: (props) => (
           <React.Fragment>
             <div className={`glyph-icon ${props.value}`} />
@@ -192,6 +192,11 @@ const Datatable = ({
         Header: "Price",
         accessor: "price",
         cellClass: "text-muted  w-20",
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
+      },{
+        Header: "Description",
+        accessor: "description",
+        cellClass: "text-muted  w-40",
         Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
