@@ -150,7 +150,7 @@ const Singleview = ({ match, history }) => {
       setModalOpen(true);
     } catch (err) {
       console.log(err);
-      if (err.response&&err.response.data) {
+      if (err.response && err.response.data) {
         NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
       }
     }
