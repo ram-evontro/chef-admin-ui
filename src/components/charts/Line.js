@@ -2,9 +2,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Chart } from 'chart.js';
 
-import { lineChartOptions } from './config';
 
-const Line = ({ data, shadow = false }) => {
+
+const Line = ({ lineChartOptions,data, shadow = false }) => {
   const chartContainer = useRef(null);
   const [, setChartInstance] = useState(null);
 

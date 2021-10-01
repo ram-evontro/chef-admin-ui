@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
-import { Row, Button, ButtonDropdown, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle, CustomInput, Collapse } from "reactstrap";
+import { Row, Button, ButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle, CustomInput } from "reactstrap";
 import { NotificationManager } from "components/common/react-notifications";
 import IntlMessages from "helpers/IntlMessages";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
@@ -10,15 +10,15 @@ import Datatable from "./list/Datatable";
 import Addmodal from "./list/Addmodal";
 import Deletealert from "../elements/Deletealert";
 import { adminRoot } from "constants/defaultValues";
-
-const List = ({ match,history }) => {
+import download from "downloadjs";
+const List = ({ match, history }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [chefTypes, setChefTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
-    column: "name",
-    order: "asc",
+    column: "",
+    order: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalFor, setModalFor] = useState("");
@@ -72,14 +72,18 @@ const List = ({ match,history }) => {
   const deleteSelected = async (res) => {
     setIsLoading(true);
     if (res) {
-      await Promise.all(
-        selectedItems.map(async (item) => {
-          await api.delete(axiosURLS.USERS + "/" + item);
-        })
-      );
-      setSelectedItems([]);
-      fetchData();
-      NotificationManager.success("User Deleted successfully", "Deleted", 3000, null, null, "");
+      try {
+        await Promise.all(
+          selectedItems.map(async (item) => {
+            await api.delete(axiosURLS.USERS + "/" + item);
+          })
+        );
+        setSelectedItems([]);
+        fetchData();
+        NotificationManager.success("Chef Deleted successfully", "Success", 3000, null, null, "");
+      } catch (err) {
+        if (err.response && err.response.data) NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+      }
     }
     setIsLoading(false);
   };
@@ -102,25 +106,39 @@ const List = ({ match,history }) => {
       limit: selectedPageSize,
       role: "chef",
       page: currentPage,
-      sortBy: selectedOrderOption.column + ":" + selectedOrderOption.order,
     };
+    if (selectedOrderOption.column != "" && selectedOrderOption.order) {
+      senddata["sortBy"] = selectedOrderOption.column + ":" + selectedOrderOption.order;
+    }
     if (search && search != "") {
       senddata["name"] = search;
+    } else {
     }
-    api
-      .get(axiosURLS.USERS, {
-        params: senddata,
-      })
-      .then((res) => {
-        return res.data;
-      })
-      .then((data) => {
-        setTotalPage(data.totalPages);
-        setItems(data.results);
-        setSelectedItems([]);
-        setTotalItemCount(data.totalResults);
-        setIsLoading(false);
+    try {
+      let { data } = await api.get(axiosURLS.USERS, { params: senddata });
+      setTotalPage(data.totalPages);
+      setItems(data.results);
+      setSelectedItems([]);
+      setTotalItemCount(data.totalResults);
+      setIsLoading(false);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        NotificationManager.error(err.response.data.message, "Update Error", 3000, null, null, "");
+      }
+    }
+  };
+  const exportCSV = async () => {
+    setIsLoading(true);
+    try {
+      let response = await api.post(axiosURLS.USERS + "/exportcsv", {
+        selected: selectedItems,
       });
+      const content = response.headers["content-type"];
+      download(response.data, "export.csv", content);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
   };
   const setStatusSelected = async (status) => {
     setIsLoading(true);
@@ -138,13 +156,11 @@ const List = ({ match,history }) => {
   const toggleStatusSingle = async (id, setto) => {
     setIsLoading(true);
     let formdata = { status: setto };
-    try{
-    await api.patch(axiosURLS.USERS + "/" + id, formdata);
-    fetchData();
-    NotificationManager.success("Chef status changed successfully", "Changed", 3000, null, null, "");
-    }
-    catch(err)
-    {
+    try {
+      await api.patch(axiosURLS.USERS + "/" + id, formdata);
+      fetchData();
+      NotificationManager.success("Chef status changed successfully", "Changed", 3000, null, null, "");
+    } catch (err) {
       console.log(err);
       console.log(err.response);
       if (err.response) {
@@ -155,14 +171,12 @@ const List = ({ match,history }) => {
   };
   const featuredSingle = async (id, setto) => {
     setIsLoading(true);
-    let formdata = { details:{is_featured: setto} };
-    try{
-    await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
-    fetchData();
-    NotificationManager.success("Chef status changed successfully", "Changed", 3000, null, null, "");
-    }
-    catch(err)
-    {
+    let formdata = { details: { is_featured: setto } };
+    try {
+      await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
+      fetchData();
+      NotificationManager.success("Chef status changed successfully", "Changed", 3000, null, null, "");
+    } catch (err) {
       console.log(err);
       console.log(err.response);
       if (err.response) {
@@ -171,28 +185,23 @@ const List = ({ match,history }) => {
     }
     setIsLoading(false);
   };
-  const updateAction = async (action,id) =>{
-    if(action ==="activate")
-    {
-      toggleStatusSingle(id,true);
+  const updateAction = async (action, id) => {
+    if (action === "activate") {
+      toggleStatusSingle(id, true);
     }
-    if(action ==="deactivate")
-    {
-      toggleStatusSingle(id,false);
+    if (action === "deactivate") {
+      toggleStatusSingle(id, false);
     }
-    if(action ==="featured")
-    {
-      featuredSingle(id,true);
+    if (action === "featured") {
+      featuredSingle(id, true);
     }
-    if(action ==="notfeatured")
-    {
-      featuredSingle(id,false);
+    if (action === "notfeatured") {
+      featuredSingle(id, false);
     }
-    if(action ==="view")
-    {
-      history.push(`${adminRoot}/chef/view/?p=`+id);
+    if (action === "view") {
+      history.push(`${adminRoot}/chef/view/?p=` + id);
     }
-  }
+  };
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedPageSize, selectedOrderOption, search]);
@@ -248,6 +257,9 @@ const List = ({ match,history }) => {
               >
                 <IntlMessages id="pages.deactivate" />
               </DropdownItem>
+              <DropdownItem onClick={exportCSV}>
+                <IntlMessages id="pages.export_csv" />
+              </DropdownItem>
             </DropdownMenu>
           </ButtonDropdown>
           <div className="search-sm d-inline-block  ml-1 mb-1 ">
@@ -262,16 +274,6 @@ const List = ({ match,history }) => {
               value={search}
             />
           </div>
-          <Button
-            color="primary"
-            size="lg"
-            className="top-left-button ml-3"
-            onClick={() => {
-              setSearch("");
-            }}
-          >
-            <IntlMessages id="pages.clear_search" />
-          </Button>
           <div className="text-zero top-right-button-container">
             <Button
               color="primary"

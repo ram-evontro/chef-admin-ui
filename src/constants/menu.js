@@ -74,6 +74,11 @@ const data = [
             label: "menu.meal_types",
             to: `${adminRoot}/settings/meal_types`,
           },
+          {
+            icon: "simple-icon-arrow-right",
+            label: "menu.meal_time",
+            to: `${adminRoot}/settings/meal_time`,
+          },
         ],
       },
       {
@@ -120,6 +125,14 @@ const data = [
         to: `${adminRoot}/integrations/google_maps`,
       },
       {
+<<<<<<< HEAD
+=======
+        icon: "simple-icon-event",
+        label: "menu.google_calendar",
+        to: `${adminRoot}/integrations/google_calendar`,
+      },
+      {
+>>>>>>> 44e227b5232e9d508133a3d8334b64223cc4084f
         icon: "simple-icon-envelope-open",
         label: "menu.mailchimp",
         to: `${adminRoot}/integrations/mailchimp`,
@@ -140,15 +153,26 @@ const data = [
         to: `${adminRoot}/integrations/dunzo`,
       },
       {
+<<<<<<< HEAD
         icon: "simple-icon-event",
         label: "menu.calendly",
         to: `${adminRoot}/integrations/calendly`,
       },
       {
+=======
+>>>>>>> 44e227b5232e9d508133a3d8334b64223cc4084f
         icon: "simple-icon-cloud-upload",
         label: "menu.s3_bucket",
         to: `${adminRoot}/integrations/s3`,
       },
+<<<<<<< HEAD
+=======
+      {
+        icon: "simple-icon-notebook",
+        label: "menu.quickbooks",
+        to: `${adminRoot}/integrations/quickbooks`,
+      },
+>>>>>>> 44e227b5232e9d508133a3d8334b64223cc4084f
     ],
   },
 ];

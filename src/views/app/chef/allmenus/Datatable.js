@@ -3,11 +3,11 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/display-name */
-import React, { useEffect } from 'react';
-import { Badge, CustomInput } from 'reactstrap';
-import { useTable, usePagination, useSortBy, useFilters } from 'react-table';
-import classnames from 'classnames';
-import DatatablePagination from '../../elements/DataTablePagination';
+import React, { useEffect } from "react";
+import { Badge, CustomInput } from "reactstrap";
+import { useTable, usePagination, useSortBy, useFilters } from "react-table";
+import classnames from "classnames";
+import DatatablePagination from "../../elements/DataTablePagination";
 
 const Table = ({
   columns,
@@ -40,7 +40,7 @@ const Table = ({
         sortBy: [
           {
             id: selectedOrderOption.column,
-            desc: selectedOrderOption.order === 'desc' ? true : false,
+            desc: selectedOrderOption.order === "desc" ? true : false,
           },
         ],
       },
@@ -50,17 +50,16 @@ const Table = ({
     usePagination
   );
   useEffect(() => {
-    if (
-      sortBy.length > 0 &&
-      (sortBy[0].id != selectedOrderOption.column ||
-        selectedOrderOption.order != (sortBy[0].desc ? 'desc' : 'asc'))
-    ) {
+    if (sortBy.length > 0 && (sortBy[0].id != selectedOrderOption.column || selectedOrderOption.order != (sortBy[0].desc ? "desc" : "asc"))) {
       let data = {};
-      data['column'] = sortBy[0].id;
-      data['order'] = sortBy[0].desc ? 'desc' : 'asc';
+      data["column"] = sortBy[0].id;
+      data["order"] = sortBy[0].desc ? "desc" : "asc";
+      setSelectedOrderOption(data);
+    } else if (sortBy.length == 0) {
+      data["column"] = "";
+      data["order"] = "";
       setSelectedOrderOption(data);
     }
-
 
     console.log(sortBy);
   }, [sortBy]);
@@ -69,9 +68,8 @@ const Table = ({
       <table
         {...getTableProps()}
         className={`r-table table table-responsive ${classnames({
-          'table-divided': divided,
-          'loading-table': isLoading,
-
+          "table-divided": divided,
+          "loading-table": isLoading,
         })}`}
       >
         <thead>
@@ -81,15 +79,9 @@ const Table = ({
                 <th
                   key={`th_${columnIndex}`}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className={
-                    column.isSorted
-                      ? column.isSortedDesc
-                        ? 'sorted-desc'
-                        : 'sorted-asc'
-                      : ''
-                  }
+                  className={column.isSorted ? (column.isSortedDesc ? "sorted-desc" : "sorted-asc") : ""}
                 >
-                  {column.render('Header')}
+                  {column.render("Header")}
                   <span />
                 </th>
               ))}
@@ -109,7 +101,7 @@ const Table = ({
                       className: cell.column.cellClass,
                     })}
                   >
-                    {cell.render('Cell')}
+                    {cell.render("Cell")}
                   </td>
                 ))}
               </tr>
@@ -121,7 +113,7 @@ const Table = ({
       <DatatablePagination
         page={currentPage - 1}
         pages={totalPage}
-        canPrevious={currentPage >1 ? true : false}
+        canPrevious={currentPage > 1 ? true : false}
         canNext={currentPage < totalPage ? true : false}
         pageSizeOptions={[4, 10, 20, 30, 40, 50]}
         showPageSizeOptions={true}
@@ -151,14 +143,15 @@ const Datatable = ({
   setSelectedOrderOption,
   selectedOrderOption,
   deleteSingle,
-  updateAction
+  updateAction,
 }) => {
   const cols = React.useMemo(
     () => [
       {
-        Header: 'Select',
-        accessor: 'id',
-        cellClass: '  w-10',
+        Header: "Select",
+        accessor: "id",
+        cellClass: "  w-10",
+        disableSortBy: true,
         Cell: (props) => (
           <>
             <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
@@ -175,55 +168,93 @@ const Datatable = ({
         ),
       },
       {
-        Header: 'Picture',
-        accessor: 'cover_picture',
-        cellClass: 'list-item-heading w-10',
-        Cell: ({row,value}) => <><a href="javascript:;" onClick={()=>{updateAction('view',row.values.id)}} ><img  className="list-thumbnail responsive border-0" src={value} alt="" /></a></>,
-      },
-      {
-        Header: 'Title',
-        accessor: 'title',
-        cellClass: '  w-20',
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: 'Chef',
-        accessor: 'user.name',
-        cellClass: '  w-20',
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: 'Cuisine',
-        accessor: 'cuisine',
-        cellClass: '  w-10',
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: 'Menu Type',
-        accessor: 'chef_type',
-        cellClass: '  w-10',
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: 'Meal Type',
-        accessor: 'meal_type',
-        cellClass: '  w-10',
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-        cellClass: '  w-10',
-        Cell: ({row,value}) => <><a title="Click to change status" onClick={()=>{updateAction((row.values.status?'deactivate':'activate'),row.values.id)}} href="javascript:;">{value?(<Badge color="primary">Active</Badge>):(<Badge color="secondary">InActive</Badge>)}</a></>,
-      },
-      {
-        Header: 'Actions',
-        accessor: 'details.is_featured',
-        cellClass: '  w-10',
-        Cell: ({row}) => (
+        Header: "Picture",
+        accessor: "cover_picture",
+        cellClass: "list-item-heading w-10",
+        disableSortBy: true,
+        Cell: ({ row, value }) => (
           <>
-            <a title="View" href="javascript:;" onClick={()=>{updateAction('view',row.values.id)}} className="glyph-icon simple-icon-eye"></a>
-           <a title="Delete" href="javascript:;" onClick={() => {deleteSingle(row.values.id)}} className="ml-3 glyph-icon simple-icon-trash"></a>
+            <a
+              href="javascript:;"
+              onClick={() => {
+                updateAction("view", row.values.id);
+              }}
+            >
+              <img className="list-thumbnail responsive border-0" src={value} alt="" />
+            </a>
+          </>
+        ),
+      },
+      {
+        Header: "Title",
+        accessor: "title",
+        cellClass: "  w-20",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Chef",
+        accessor: "user.name",
+        cellClass: "  w-20",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Cuisine",
+        accessor: "cuisine",
+        cellClass: "  w-10",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Menu Type",
+        accessor: "chef_type.name",
+        cellClass: "  w-10",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Meal Type",
+        accessor: "meal_type",
+        cellClass: "  w-10",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        cellClass: "  w-10",
+        Cell: ({ row, value }) => (
+          <>
+            <a
+              title="Click to change status"
+              onClick={() => {
+                updateAction(row.values.status ? "deactivate" : "activate", row.values.id);
+              }}
+              href="javascript:;"
+            >
+              {value ? <Badge color="primary">Active</Badge> : <Badge color="secondary">InActive</Badge>}
+            </a>
+          </>
+        ),
+      },
+      {
+        Header: "Actions",
+        disableSortBy: true,
+        cellClass: "  w-10",
+        Cell: ({ row }) => (
+          <>
+            <a
+              title="View"
+              href="javascript:;"
+              onClick={() => {
+                updateAction("view", row.values.id);
+              }}
+              className="glyph-icon simple-icon-eye"
+            ></a>
+            <a
+              title="Delete"
+              href="javascript:;"
+              onClick={() => {
+                deleteSingle(row.values.id);
+              }}
+              className="ml-3 glyph-icon simple-icon-trash"
+            ></a>
           </>
         ),
       },

@@ -59,13 +59,17 @@ const Table = ({
       data['column'] = sortBy[0].id;
       data['order'] = sortBy[0].desc ? 'desc' : 'asc';
       setSelectedOrderOption(data);
+    } else if (sortBy.length == 0) {
+      data["column"] = "";
+      data["order"] = "";
+      setSelectedOrderOption(data);
     }
 
 
     console.log(sortBy);
   }, [sortBy]);
   return (
-    <>
+    <React.Fragment>
       <table
         {...getTableProps()}
         className={`r-table table table-responsive ${classnames({
@@ -133,7 +137,7 @@ const Table = ({
         }}
         paginationMaxSize={10}
       />
-    </>
+    </React.Fragment>
   );
 };
 
@@ -163,8 +167,9 @@ const Datatable = ({
         Header: 'Select',
         accessor: 'id',
         cellClass: 'text-muted  w-10',
+        disableSortBy: true,
         Cell: (props) => (
-          <>
+          <React.Fragment>
             <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
               <CustomInput
                 className="mb-0"
@@ -175,29 +180,29 @@ const Datatable = ({
                 label=""
               />
             </div>
-          </>
+          </React.Fragment>
         ),
       },
       {
         Header: 'Name',
         accessor: 'name',
         cellClass: 'list-item-heading w-40',
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
         Header: 'Booking Type',
         accessor: 'booking_type',
         cellClass: 'text-muted  w-10',
-        Cell: (props) =>  <>{props.value}</>,
+        Cell: (props) =>  <React.Fragment>{props.value}</React.Fragment>,
       },
       {
         Header: 'Actions',
         cellClass: 'text-muted  w-10',
         Cell: ({row}) => (
-          <>
+          <React.Fragment>
             <a href="javascript:;" onClick={()=>{editFunc(row.values)}} class="glyph-icon simple-icon-pencil"></a>
             <a href="javascript:;" onClick={() => {deleteSingle(row.values.id)}} class="ml-3 glyph-icon simple-icon-trash"></a>
-          </>
+          </React.Fragment>
         ),
       },
     ],

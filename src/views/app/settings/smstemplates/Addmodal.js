@@ -1,51 +1,68 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Label,
-  CustomInput,
-  Badge,
-} from 'reactstrap';
-import smsTemplateVariables from 'data/sms_template_variables';
-import 'react-datepicker/dist/react-datepicker.css';
-import IntlMessages from 'helpers/IntlMessages';
-import api from 'helpers/api';
-import * as axiosURLS from 'helpers/endpoints';
-import toast from 'react-hot-toast';
-const Addmodal = ({
-  modalOpen,
-  toggleModal,
-  fetchData,
-  editformdata,
-  modalFor,
-}) => {
+import React, { useState, useEffect } from "react";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Badge, FormGroup } from "reactstrap";
+import smsTemplateVariables from "data/sms_template_variables";
+import "react-datepicker/dist/react-datepicker.css";
+import IntlMessages from "helpers/IntlMessages";
+import api from "helpers/api";
+import * as axiosURLS from "helpers/endpoints";
+import { NotificationManager } from "components/common/react-notifications";
+const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [id, setId] = useState('');
+  const [id, setId] = useState("");
   const [badges, setBadges] = useState([]);
   const [formdata, setFormdata] = useState({});
+  const [errors, setErrors] = useState({});
   useEffect(() => {
-    setId(editformdata['id']);
+    setId(editformdata["id"]);
     let temp = { ...editformdata };
-    delete temp['id'];
+    delete temp["id"];
     setFormdata(temp);
   }, [editformdata]);
+  useEffect(() => {
+    if (!modalOpen) {
+      setErrors({});
+      setFormdata({});
+      setBadges([]);
+    }
+  }, [modalOpen]);
   const handleChange = (e) => {
     let tempdata = { ...formdata };
     let val = e.target.value;
     let name = e.target.name;
     tempdata[name] = val;
     setFormdata(tempdata);
+    let tempErrors = { ...errors };
+    delete tempErrors[name];
+    setErrors(tempErrors);
+  };
+  const validate = (e) => {
+    let tempErrors = {};
+
+    if (!formdata.name) {
+      tempErrors.name = "Please enter name";
+    }
+    if (!formdata.message) {
+      tempErrors.message = "Please enter template";
+    }
+    if (!formdata.slug) {
+      tempErrors.slug = "Please select slug";
+    }
+    setErrors(tempErrors);
+    if (tempErrors && Object.keys(tempErrors).length === 0) {
+      return true;
+    } else {
+      return false;
+    }
   };
   const setSlug = (e) => {
     let tempdata = { ...formdata };
     let val = e.target.value;
-    tempdata['slug'] = val;
+    tempdata["slug"] = val;
     setFormdata(tempdata);
-    if(val!=''){
+    let tempErrors = { ...errors };
+    delete tempErrors['slug'];
+    setErrors(tempErrors);
+    if (val != "") {
       setBadges([...smsTemplateVariables[val]]);
     } else {
       setBadges([]);
@@ -53,96 +70,84 @@ const Addmodal = ({
   };
   const insertTag = (tag) => {
     let tempdata = { ...formdata };
-    if (tempdata['message']) {
-      tempdata['message'] = tempdata['message'] + tag;
+    if (tempdata["message"]) {
+      tempdata["message"] = tempdata["message"] + tag;
     } else {
-      tempdata['message'] = tag;
+      tempdata["message"] = tag;
     }
     setFormdata(tempdata);
   };
   const handleClick = async () => {
+    if (!validate()) {
+      return false;
+    }
     setIsLoading(true);
     let newformdata;
     try {
-      if (modalFor === 'edit') {
-        await api.patch(axiosURLS.SMS_TEMPLATES + '/' + id, formdata);
-        toast.success('Sms Template Edited successfully');
+      if (modalFor === "edit") {
+        await api.patch(axiosURLS.SMS_TEMPLATES + "/" + id, formdata);
+        NotificationManager.success("Sms Template Edited successfully", "Success", 3000, null, null, "");
       } else {
         await api.post(axiosURLS.SMS_TEMPLATES, formdata);
-        toast.success('Sms Template Added successfully');
+        NotificationManager.success("Sms Template Added successfully", "Success", 3000, null, null, "");
       }
-
       fetchData();
+      toggleModal();
     } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        toast.error(err.response.data.message);
+      if (err.response && err.response.data) {
+        NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
       }
     }
     setIsLoading(false);
-    toggleModal();
   };
   return (
-    <Modal
-      isOpen={modalOpen}
-      toggle={toggleModal}
-      wrapClassName="modal-right"
-      backdrop="static"
-    >
+    <Modal isOpen={modalOpen} toggle={toggleModal} wrapClassName="modal-right" backdrop="static">
       <ModalHeader toggle={toggleModal}>
         <IntlMessages id="pages.add-new-modal-title" />
       </ModalHeader>
       <ModalBody>
-        <Label>
-          <IntlMessages id="forms.name" />
-        </Label>
-        <Input
-          type="text"
-          name="name"
-          value={formdata.name ? formdata.name : ''}
-          onChange={handleChange}
-        />
-        <Label className="mt-4">
+        <FormGroup>
+          <Label>
+            <IntlMessages id="forms.name" />
+          </Label>
+          <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
+          {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
+        </FormGroup>
+        {/* <Label className="mt-4">
           <IntlMessages id="forms.url" />
         </Label>
         <Input
           type="textarea"
           name="url"
-          value={formdata.url ? formdata.url : ''}
+          value={formdata.url ? formdata.url : ""}
           onChange={handleChange}
           placeholder="Enter API URL from SMS provider. with [MOBILE NUMBER] and [MESSAGE] as dynamic fields"
-        />
-        <Label className="mt-4">
-          <IntlMessages id="forms.message" />
-        </Label>
-        <Input
-          type="textarea"
-          name="message"
-          value={formdata.message ? formdata.message : ''}
-          onChange={handleChange}
-        />
-        <Label className="mt-4">
-          <IntlMessages id="forms.type" />
-        </Label>
-        <select
-          className="form-control"
-          name="slug"
-          value={formdata.slug ? formdata.slug : ''}
-          onChange={setSlug}
-          id="slug"
-        >
-          <option key={'slugs_select-1'} value="">
-            Select Template
-          </option>
-          {Object.keys(smsTemplateVariables).map((data, index) => {
-            return (
-              <option key={data} value={data}>
-                {(data.split('_').join(' ').toUpperCase())}
-              </option>
-            );
-          })}
-        </select>
+        /> */}
+        <FormGroup className="mt-4">
+          <Label>
+            <IntlMessages id="forms.message" />
+          </Label>
+          <Input rows={8} type="textarea" name="message" value={formdata.message ? formdata.message : ""} onChange={handleChange} />
+          {errors.message && <div className="invalid-feedback d-block">{errors.message}</div>}
+        </FormGroup>
+        <FormGroup className="mt-4">
+          <Label>
+            <IntlMessages id="forms.type" />
+          </Label>
+          <select className="form-control" name="slug" value={formdata.slug ? formdata.slug : ""} onChange={setSlug} id="slug">
+            <option key={"slugs_select-1"} value="">
+              Select Template
+            </option>
+            {Object.keys(smsTemplateVariables).map((data, index) => {
+              return (
+                <option key={data} value={data}>
+                  {data.split("_").join(" ").toUpperCase()}
+                </option>
+              );
+            })}
+          </select>
+          {errors.slug && <div className="invalid-feedback d-block">{errors.slug}</div>}
+        </FormGroup>
         {badges.map((data, index) => (
           <Badge
             onClick={() => {
@@ -159,13 +164,7 @@ const Addmodal = ({
         <Button color="secondary" outline onClick={toggleModal}>
           <IntlMessages id="pages.cancel" />
         </Button>
-        <Button
-          color="primary"
-          className={`btn-shadow btn-multiple-state ${
-            isLoading ? 'show-spinner' : ''
-          }`}
-          onClick={handleClick}
-        >
+        <Button color="primary" className={`btn-shadow btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleClick}>
           <span className="spinner d-inline-block">
             <span className="bounce1" />
             <span className="bounce2" />

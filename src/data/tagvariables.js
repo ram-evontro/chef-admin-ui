@@ -8,16 +8,20 @@ export const common = [
     { title: 'Instagram Link', val: '{website.instagram_link}' },
   ];
   export const order = [
-    { title: 'Order Number', val: '{bookings.order_number}' },
-    { title: 'Host Name', val: '{bookings.user.name}' },
-    { title: 'Host Phone', val: '{bookings.user.phone}' },
-    { title: 'Order Total', val: '{bookings.total}' },
-    { title: 'Order Link', val: '{bookings.order_link}' },
+    { title: 'Order Number', val: '{booking.order_number}' },
+    { title: 'Host Name', val: '{booking.user.name}' },
+    { title: 'Host Phone', val: '{booking.user.phone}' },
+    { title: 'Order Total', val: '{booking.total}' },
+    { title: 'Order Link', val: '{url}' },
   ];
-
+  export const feedback = [
+    { title: 'Feedback Url', val: '{feedback_url}' },
+  ];
+  export const diner = [
+    { title: 'Diner Name', val: '{diner.user.name}' },
+    { title: 'Diner Menu', val: '{diner.menu.title}' },
+  ];
   export const otp =[
     {title:'OTP',val:'{otp}'},
-    {title:'First Name',val:'{firstname}'},
-    {title:'Last Name',val:'{lastname}'},
-    {title:'Email',val:'{email}'}
+  
   ]

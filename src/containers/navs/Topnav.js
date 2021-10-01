@@ -28,7 +28,6 @@ import {
   searchPath,
   localeOptions,
   isDarkSwitchActive,
-  buyUrl,
   adminRoot,
 } from 'constants/defaultValues';
 
@@ -268,12 +267,12 @@ const TopNav = ({
             <DropdownToggle className="p-0" color="empty">
               <span className="name mr-1">{currentUser&&currentUser.user?currentUser.user.name:'Admin'}</span>
               <span>
-                <img alt="Profile" src="/assets/img/profiles/l-1.jpg" />
+                <img alt="Profile" src={currentUser&&currentUser.user?currentUser.user.picture:"/assets/img/profiles/l-1.jpg"} />
               </span>
             </DropdownToggle>
             <DropdownMenu className="mt-3" right>
-              <DropdownItem>Account</DropdownItem>
-              <DropdownItem>Support</DropdownItem>
+              <DropdownItem onClick={()=>{history.push(`${adminRoot}/account`)}}>Account</DropdownItem>
+              <DropdownItem  onClick={()=>{history.push(`${adminRoot}/support`)}}>Support</DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={() => handleLogout()}>
                 Sign out

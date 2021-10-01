@@ -3,6 +3,8 @@ import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import AppLayout from 'layout/AppLayout';
+import Account from './Account';
+import Support from './Support';
 // import { ProtectedRoute, UserRole } from 'helpers/authHelper';
 const Dashboards = React.lazy(() =>
   import(/* webpackChunkName: "viwes-second-menu" */ './dashboards')
@@ -46,11 +48,14 @@ const App = ({ match }) => {
               path={`${match.url}/integrations`}
               render={(props) => <Integrations {...props} />}
             />
-            {/* <ProtectedRoute
-                    path={`${match.url}/second-menu`}
-                    component={SecondMenu}
-                    roles={[UserRole.Admin]}
-            /> */}
+            <Route
+              path={`${match.url}/account`}
+              render={(props) => <Account {...props} />}
+            />
+            <Route
+              path={`${match.url}/support`}
+              render={(props) => <Support {...props} />}
+            />
             <Redirect to="/error" />
           </Switch>
         </Suspense>

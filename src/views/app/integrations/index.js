@@ -10,8 +10,8 @@ const Googlemaps = React.lazy(() =>
 const Dunzo = React.lazy(() =>
   import(/* webpackChunkName: "Dunzo" */ './Dunzo')
 );
-const Calendly = React.lazy(() =>
-  import(/* webpackChunkName: "Calendly" */ './Calendly')
+const GoogleCalendar = React.lazy(() =>
+  import(/* webpackChunkName: "GoogleCalendar" */ './GoogleCalendar')
 );
 const Razorpay = React.lazy(() =>
   import(/* webpackChunkName: "Razorpay" */ './Razorpay')
@@ -21,6 +21,9 @@ const S3 = React.lazy(() =>
 );
 const Plivo = React.lazy(() =>
   import(/* webpackChunkName: "Plivo" */ './Plivo')
+);
+const Quickbooks = React.lazy(() =>
+  import(/* webpackChunkName: "Quickbooks" */ './Quickbooks')
 );
 const Integrations = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
@@ -43,8 +46,8 @@ const Integrations = ({ match }) => (
         render={(props) => <Razorpay {...props} />}
       />
       <Route
-        path={`${match.url}/calendly`}
-        render={(props) => <Calendly {...props} />}
+        path={`${match.url}/google_calendar`}
+        render={(props) => <GoogleCalendar {...props} />}
       />
        <Route
         path={`${match.url}/s3`}
@@ -53,6 +56,10 @@ const Integrations = ({ match }) => (
       <Route
         path={`${match.url}/plivo`}
         render={(props) => <Plivo {...props} />}
+      />
+       <Route
+        path={`${match.url}/quickbooks`}
+        render={(props) => <Quickbooks {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

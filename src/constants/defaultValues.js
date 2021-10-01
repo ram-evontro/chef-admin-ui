@@ -18,14 +18,6 @@ export const localeOptions = [
   { id: 'enrtl', name: 'English - RTL', direction: 'rtl' },
 ];
 
-export const firebaseConfig = {
-  apiKey: 'AIzaSyBBksq-Asxq2M4Ot-75X19IyrEYJqNBPcg',
-  authDomain: 'gogo-react-login.firebaseapp.com',
-  databaseURL: 'https://gogo-react-login.firebaseio.com',
-  projectId: 'gogo-react-login',
-  storageBucket: 'gogo-react-login.appspot.com',
-  messagingSenderId: '216495999563',
-};
 
 export const adminRoot = '/app';
 export const searchPath = `${adminRoot}/#`;

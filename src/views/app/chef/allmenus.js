@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
-import { Row, Button, ButtonDropdown, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle, CustomInput, Collapse } from "reactstrap";
+import { Row, Button, ButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle, CustomInput } from "reactstrap";
 import { NotificationManager } from "components/common/react-notifications";
 import IntlMessages from "helpers/IntlMessages";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
@@ -10,7 +10,7 @@ import Datatable from "./allmenus/Datatable";
 import Menuadd from "./singleview/menuadd";
 import Deletealert from "../elements/Deletealert";
 import { adminRoot } from "constants/defaultValues";
-
+import download from "downloadjs";
 const Allmenus = ({ match, history }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [chefTypes, setChefTypes] = useState([]);
@@ -18,8 +18,8 @@ const Allmenus = ({ match, history }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(4);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
-    column: "name",
-    order: "asc",
+    column: "",
+    order: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalFor, setModalFor] = useState("");
@@ -28,7 +28,6 @@ const Allmenus = ({ match, history }) => {
   const [totalPage, setTotalPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
-  const [formdata, setFormdata] = useState({});
   const [items, setItems] = useState([]);
   const [lastChecked, setLastChecked] = useState(null);
   const [dropdownSplitOpen, setDropdownSplitOpen] = useState(false);
@@ -97,31 +96,45 @@ const Allmenus = ({ match, history }) => {
     showDeleteAlert();
   };
   const showDeleteAlert = () => {
-   setDeleteAlert(!deleteAlert);
-   };
+    setDeleteAlert(!deleteAlert);
+  };
   const fetchData = async () => {
     let senddata = {
       limit: selectedPageSize,
       page: currentPage,
-      sortBy: selectedOrderOption.column + ":" + selectedOrderOption.order,
     };
+    if (selectedOrderOption.column != "" && selectedOrderOption.order) {
+      senddata["sortBy"] = selectedOrderOption.column + ":" + selectedOrderOption.order;
+    }
     if (search && search != "") {
       senddata["name"] = search;
+    } else {
     }
-    api
-      .get(axiosURLS.MENU, {
-        params: senddata,
-      })
-      .then((res) => {
-        return res.data;
-      })
-      .then((data) => {
-        setTotalPage(data.totalPages);
-        setItems(data.results);
-        setSelectedItems([]);
-        setTotalItemCount(data.totalResults);
-        setIsLoading(false);
+    try {
+      let { data } = await api.get(axiosURLS.MENU, { params: senddata });
+      setTotalPage(data.totalPages);
+      setItems(data.results);
+      setSelectedItems([]);
+      setTotalItemCount(data.totalResults);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        NotificationManager.error(err.response.data.message, "Fetch Error", 3000, null, null, "");
+      }
+    }
+    setIsLoading(false);
+  };
+  const exportCSV = async () => {
+    setIsLoading(true);
+    try {
+      let response = await api.post(axiosURLS.MENU + "/exportcsv", {
+        selected: selectedItems,
       });
+      const content = response.headers["content-type"];
+      download(response.data, "export.csv", content);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
   };
   const setStatusSelected = async (status) => {
     setIsLoading(true);
@@ -177,7 +190,7 @@ const Allmenus = ({ match, history }) => {
       let response = await api.get(axiosURLS.CHEFS_ALL);
       setChefs(response.data);
     } catch (err) {
-      NotificationManager.error(`Some error occured`, "Menu Types Error", 3000, null, null, "");
+      // NotificationManager.error(`Some error occured`, "Menu Types Error", 3000, null, null, "");
     }
   }, []);
   return (
@@ -220,6 +233,9 @@ const Allmenus = ({ match, history }) => {
               >
                 <IntlMessages id="pages.deactivate" />
               </DropdownItem>
+              <DropdownItem onClick={exportCSV}>
+                <IntlMessages id="pages.export_csv" />
+              </DropdownItem>
             </DropdownMenu>
           </ButtonDropdown>
           <div className="search-sm d-inline-block  ml-1 mb-1 ">
@@ -234,16 +250,6 @@ const Allmenus = ({ match, history }) => {
               value={search}
             />
           </div>
-          <Button
-            color="primary"
-            size="lg"
-            className="top-left-button ml-3"
-            onClick={() => {
-              setSearch("");
-            }}
-          >
-            <IntlMessages id="pages.clear_search" />
-          </Button>
           <div className="text-zero top-right-button-container">
             <Button
               color="primary"
