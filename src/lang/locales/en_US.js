@@ -190,6 +190,7 @@ module.exports = {
   "menu.support": "Support",
   "menu.account": "Account",
   "menu.quickbooks": "Quickbooks",
+  "menu.cms": "CMS",
   /* 04.Dashboards */
   "dashboards.pending-orders": "Pending Orders",
   "dashboards.completed-orders": "Completed Orders",

@@ -11,6 +11,7 @@ const SmsTemplates = React.lazy(() => import(/* webpackChunkName: "menuview" */ 
 const EmailTemplates = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./EmailTemplates"));
 const WebsiteSettings = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./WebsiteSettings"));
 const BookingSettings = React.lazy(() => import(/* webpackChunkName: "BookingSettings" */ "./BookingSettings"));
+const Cms = React.lazy(() => import(/* webpackChunkName: "BookingSettings" */ "./Cms"));
 const Settings = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
@@ -26,6 +27,7 @@ const Settings = ({ match }) => (
       <Route path={`${match.url}/vouchers`} render={(props) => <Vouchers {...props} />} />
       <Route path={`${match.url}/sms_templates`} render={(props) => <SmsTemplates {...props} />} />
       <Route path={`${match.url}/email_templates`} render={(props) => <EmailTemplates {...props} />} />
+      <Route path={`${match.url}/cms`} render={(props) => <Cms {...props} />} />
       <Redirect to="/error" />
     </Switch>
   </Suspense>

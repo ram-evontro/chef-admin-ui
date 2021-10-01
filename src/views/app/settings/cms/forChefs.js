@@ -128,6 +128,7 @@ const ForChef = () => {
   };
   const changeImageHeader = async (e, imageSection, section, component) => {
     e.preventDefault();
+    console.log('header change');
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
@@ -322,7 +323,11 @@ const ForChef = () => {
                     <div>
                       <Button
                         onClick={() => {
+<<<<<<< HEAD
                           openFileInput("ForChef headerImage");
+=======
+                          openFileInput("headerImageChef");
+>>>>>>> c99f64c25fdf656c5b3a1d110adec4a33532020c
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -332,7 +337,11 @@ const ForChef = () => {
                         <input
                           type="file"
                           // ref={inputFile}
+<<<<<<< HEAD
                           id="ForChef headerImage"
+=======
+                          id="headerImageChef"
+>>>>>>> c99f64c25fdf656c5b3a1d110adec4a33532020c
                           rclassName="d-none"
                           onChange={(e) => changeImageHeader(e, "image", "header", header)}
                           style={{ display: "none" }}
