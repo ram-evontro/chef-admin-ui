@@ -7,6 +7,7 @@ const Cropbox = ({ modalOpen, toggleModal, crop, file, setCrop, setUserPicture, 
   const [fileDetails, setFileDetails] = useState({});
   useEffect(() => {
     if (!userPicture) {
+      if(file){
       let name =file.split("/").splice(-1).pop();
       name =(name.length > 15) ? name.slice(-14): name;
       let type = name.split(".")[1];
@@ -20,6 +21,7 @@ const Cropbox = ({ modalOpen, toggleModal, crop, file, setCrop, setUserPicture, 
         mime = "image/jpeg";
       }
       setFileDetails({ name: name, type: mime });
+    }
     } else {
       setFileDetails({ name: userPicture.name, type: userPicture.type });
     }
