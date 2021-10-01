@@ -213,7 +213,7 @@ const AboutUs = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("headerImage");
+                          openFileInput("aboutUs headerImage");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -222,7 +222,7 @@ const AboutUs = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="headerImage"
+                          id="aboutUs headerImage"
                           rclassName="d-none"
                           onChange={(e) => changeImageHeader(e, "image", "header", header)}
                           style={{ display: "none" }}
@@ -466,7 +466,7 @@ const AboutUs = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("FounderImage");
+                          openFileInput("aboutUs FounderImage");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -475,7 +475,7 @@ const AboutUs = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="FounderImage"
+                          id="aboutUs FounderImage"
                           rclassName="d-none"
                           onChange={(e) => changeImageFounder(e, "picture", "founder", founder)}
                           style={{ display: "none" }}
