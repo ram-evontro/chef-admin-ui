@@ -27,7 +27,6 @@ import IntlMessages from "helpers/IntlMessages";
 import api from "helpers/api";
 import fileapi from "helpers/fileupload";
 import SingleLightbox from "components/pages/SingleLightbox";
-
 import { NotificationManager } from "components/common/react-notifications";
 import * as axiosURLS from "helpers/endpoints";
 
@@ -40,6 +39,7 @@ const ForChef = () => {
   const [bookingCta, setBookingCta] = useState({});
   const [forChefs, setForChefs] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [currPicture, setCurrPicture] = useState();
   const { upload } = fileapi();
@@ -217,6 +217,7 @@ const ForChef = () => {
     document.getElementById(image).click();
   };
   useEffect(async () => {
+    setLoading(true);
     try {
       let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.FOR_CHEFS);
       setForChefs(data.for_chef);
@@ -228,6 +229,7 @@ const ForChef = () => {
         NotificationManager.error(err.response.data.message, "Fetch Error", 3000, null, null, "");
       }
     }
+    setLoading(false);
   }, []);
   const valueSetter = (data) => {
     setHeader(data.for_chef.header);
@@ -237,7 +239,9 @@ const ForChef = () => {
     setQuote(data.for_chef.quote);
     setBookingCta(data.for_chef.booking_cta);
   };
-  return (
+  return loading ? (
+    <div className="loading" />
+  ) : (
     <React.Fragment>
       <Row>
         <Col sm="12">

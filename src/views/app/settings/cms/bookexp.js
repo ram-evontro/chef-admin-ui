@@ -34,6 +34,7 @@ import * as axiosURLS from "helpers/endpoints";
 
 const BookExp = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("1");
   const [header, setHeader] = useState({});
   const [virtualDining, setVirtualDining] = useState({});
@@ -268,6 +269,7 @@ const BookExp = () => {
   };
 
   useEffect(async () => {
+    setLoading(true);
     try {
       let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE);
       setBookExperience(data.book_experience);
@@ -279,6 +281,7 @@ const BookExp = () => {
         NotificationManager.error(err.response.data.message, "Fetch Error", 3000, null, null, "");
       }
     }
+    setLoading(false);
   }, []);
   const valueSetter = (data) => {
     setVirtualDining(data.book_experience.virtual_dining);
@@ -291,7 +294,9 @@ const BookExp = () => {
     setQuote(data.book_experience.quote);
     setBookingCta(data.book_experience.booking_cta);
   };
-  return (
+  return loading ? (
+    <div className="loading" />
+  ) : (
     <React.Fragment>
       <Row>
         <Col sm="12">
