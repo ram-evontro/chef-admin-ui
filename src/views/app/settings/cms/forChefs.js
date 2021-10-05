@@ -27,7 +27,6 @@ import IntlMessages from "helpers/IntlMessages";
 import api from "helpers/api";
 import fileapi from "helpers/fileupload";
 import SingleLightbox from "components/pages/SingleLightbox";
-
 import { NotificationManager } from "components/common/react-notifications";
 import * as axiosURLS from "helpers/endpoints";
 
@@ -40,6 +39,7 @@ const ForChef = () => {
   const [bookingCta, setBookingCta] = useState({});
   const [forChefs, setForChefs] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [currPicture, setCurrPicture] = useState();
   const { upload } = fileapi();
@@ -128,7 +128,7 @@ const ForChef = () => {
   };
   const changeImageHeader = async (e, imageSection, section, component) => {
     e.preventDefault();
-    console.log('header change');
+    console.log("header change");
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
@@ -217,6 +217,7 @@ const ForChef = () => {
     document.getElementById(image).click();
   };
   useEffect(async () => {
+    setLoading(true);
     try {
       let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.FOR_CHEFS);
       setForChefs(data.for_chef);
@@ -228,6 +229,7 @@ const ForChef = () => {
         NotificationManager.error(err.response.data.message, "Fetch Error", 3000, null, null, "");
       }
     }
+    setLoading(false);
   }, []);
   const valueSetter = (data) => {
     setHeader(data.for_chef.header);
@@ -237,7 +239,9 @@ const ForChef = () => {
     setQuote(data.for_chef.quote);
     setBookingCta(data.for_chef.booking_cta);
   };
-  return (
+  return loading ? (
+    <div className="loading" />
+  ) : (
     <React.Fragment>
       <Row>
         <Col sm="12">
@@ -263,7 +267,7 @@ const ForChef = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("Quote Image");
+                          openFileInput("ForChef Quote Image");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -272,7 +276,7 @@ const ForChef = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="Quote Image"
+                          id="ForChef Quote Image"
                           rclassName="d-none"
                           onChange={(e) => changeImageQuote(e, "by_image", "quote", quote)}
                           style={{ display: "none" }}
@@ -323,7 +327,7 @@ const ForChef = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("headerImageChef");
+                          openFileInput("ForChef headerImage");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -333,7 +337,7 @@ const ForChef = () => {
                         <input
                           type="file"
                           // ref={inputFile}
-                          id="headerImageChef"
+                          id="ForChef headerImage"
                           rclassName="d-none"
                           onChange={(e) => changeImageHeader(e, "image", "header", header)}
                           style={{ display: "none" }}
@@ -457,7 +461,7 @@ const ForChef = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("OurChef Image[0]");
+                          openFileInput("ForChef OurChef Image[0]");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -466,7 +470,7 @@ const ForChef = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="OurChef Image[0]"
+                          id="ForChef OurChef Image[0]"
                           rclassName="d-none"
                           onChange={(e) => changeImageOurChef(e, "image", "our_chefs", ourChefs, 0)}
                           style={{ display: "none" }}
@@ -502,7 +506,7 @@ const ForChef = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("OurChef Image[1]");
+                          openFileInput("ForChef OurChef Image[1]");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -511,7 +515,7 @@ const ForChef = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="OurChef Image[1]"
+                          id="ForChef OurChef Image[1]"
                           rclassName="d-none"
                           onChange={(e) => changeImageOurChef(e, "image", "our_chefs", ourChefs, 1)}
                           style={{ display: "none" }}
@@ -593,7 +597,7 @@ const ForChef = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("Offerings Image[0]");
+                          openFileInput("ForChef Offerings Image[0]");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -602,7 +606,7 @@ const ForChef = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="Offerings Image[0]"
+                          id="ForChef Offerings Image[0]"
                           rclassName="d-none"
                           onChange={(e) => changeImageOfferings(e, "image", "offerings", offerings, 0)}
                           style={{ display: "none" }}
@@ -639,7 +643,7 @@ const ForChef = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("Offerings Image[1]");
+                          openFileInput("ForChef Offerings Image[1]");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -648,7 +652,7 @@ const ForChef = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="Offerings Image[1]"
+                          id="ForChef Offerings Image[1]"
                           rclassName="d-none"
                           onChange={(e) => changeImageOfferings(e, "image", "offerings", offerings, 1)}
                           style={{ display: "none" }}

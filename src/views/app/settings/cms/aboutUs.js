@@ -36,6 +36,8 @@ const AboutUs = () => {
   const [newsletter, setNewsletter] = useState({});
   const [founder, setFounder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [allData, setAllData] = useState({});
   const { upload } = fileapi();
 
@@ -92,7 +94,6 @@ const AboutUs = () => {
   const handleClickForAboutUs = async (e, section, component) => {
     setIsLoading(true);
     let newfomdata = { section: section, type: component.type, details: { ...component } };
-    console.log(newfomdata);
     try {
       await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, newfomdata);
       NotificationManager.success("Saved successfully", "Saved", 3000, null, null, "");
@@ -176,6 +177,7 @@ const AboutUs = () => {
   };
 
   useEffect(async () => {
+    setLoading(true);
     try {
       let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.ABOUT_US);
       setAllData(data.about_us);
@@ -187,6 +189,7 @@ const AboutUs = () => {
         NotificationManager.error(err.response.data.message, "Fetch Error", 3000, null, null, "");
       }
     }
+    setLoading(false);
   }, []);
   const valueSetter = (data) => {
     setHeader(data.about_us.header);
@@ -195,7 +198,9 @@ const AboutUs = () => {
     setNewsletter(data.about_us.newsletter);
     setFounder(data.about_us.founder);
   };
-  return (
+  return loading ? (
+    <div className="loading" />
+  ) : (
     <React.Fragment>
       <Row>
         <Col sm="12">
@@ -213,7 +218,7 @@ const AboutUs = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("headerImage");
+                          openFileInput("aboutUs headerImage");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -222,7 +227,7 @@ const AboutUs = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="headerImage"
+                          id="aboutUs headerImage"
                           rclassName="d-none"
                           onChange={(e) => changeImageHeader(e, "image", "header", header)}
                           style={{ display: "none" }}
@@ -466,7 +471,7 @@ const AboutUs = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("FounderImage");
+                          openFileInput("aboutUs FounderImage");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -475,7 +480,7 @@ const AboutUs = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="FounderImage"
+                          id="aboutUs FounderImage"
                           rclassName="d-none"
                           onChange={(e) => changeImageFounder(e, "picture", "founder", founder)}
                           style={{ display: "none" }}
