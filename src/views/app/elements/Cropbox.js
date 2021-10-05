@@ -69,7 +69,7 @@ const Cropbox = ({ modalOpen, toggleModal, crop, file, setCrop, setUserPicture, 
           onImageLoaded={(origimage) => {
             setImage(origimage);
           }}
-          src={file}
+          src={file+'?origin='+window.location.host}
           crop={crop}
           onChange={(newCrop) => setCrop(newCrop)}
           crossorigin="anonymous"
