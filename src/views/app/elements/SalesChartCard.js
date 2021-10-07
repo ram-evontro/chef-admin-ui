@@ -80,7 +80,7 @@ const SalesChartCard = ({ linechart }) => {
               },
               ticks: {
                 beginAtZero: true,
-                stepSize: (max-min)/10,
+                stepSize: Math.floor((max-min)/10),
                 min: (min-5)>0?(min-5):0,
                 max: max+5,
                 padding: 20,

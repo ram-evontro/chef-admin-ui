@@ -70,26 +70,26 @@ export function* watchRegisterUser() {
   yield takeEvery(REGISTER_USER, registerWithEmailPassword);
 }
 
-const registerWithEmailPasswordAsync = async (email, password) =>{}
-  // eslint-disable-next-line no-return-await
+const registerWithEmailPasswordAsync = async (email, password) => {};
+// eslint-disable-next-line no-return-await
 
-  function* registerWithEmailPassword({ payload }) {
-    const { email, password } = payload.user;
-    const { history } = payload;
-    try {
-      const registerUser = yield call(registerWithEmailPasswordAsync, email, password);
-      if (!registerUser.message) {
-        const item = { uid: registerUser.user.uid, ...currentUser };
-        setCurrentUser(item);
-        yield put(registerUserSuccess(item));
-        history.push(adminRoot);
-      } else {
-        yield put(registerUserError(registerUser.message));
-      }
-    } catch (error) {
-      yield put(registerUserError(error));
+function* registerWithEmailPassword({ payload }) {
+  const { email, password } = payload.user;
+  const { history } = payload;
+  try {
+    const registerUser = yield call(registerWithEmailPasswordAsync, email, password);
+    if (!registerUser.message) {
+      const item = { uid: registerUser.user.uid, ...currentUser };
+      setCurrentUser(item);
+      yield put(registerUserSuccess(item));
+      history.push(adminRoot);
+    } else {
+      yield put(registerUserError(registerUser.message));
     }
-  };
+  } catch (error) {
+    yield put(registerUserError(error));
+  }
+}
 
 export function* watchLogoutUser() {
   // eslint-disable-next-line no-use-before-define
@@ -123,6 +123,24 @@ export function* watchForgotPassword() {
 
 const forgotPasswordAsync = async (email) => {
   // eslint-disable-next-line no-return-await
+  const user = await axios({
+    method: "POST",
+    url: axiosURLS.FORGOT_PASSWORD,
+    data: { email: email },
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-type": "application/json",
+    },
+  })
+    .then(({ data }) => {
+      console.log(data);
+      return data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return false;
+    });
+  console.log(user);
 };
 
 function* forgotPassword({ payload }) {
@@ -146,16 +164,35 @@ export function* watchResetPassword() {
 
 const resetPasswordAsync = async (resetPasswordCode, newPassword) => {
   // eslint-disable-next-line no-return-await
+  const user = await axios({
+    method: "POST",
+    url: axiosURLS.RESET_PASSWORD + "?token=" + resetPasswordCode,
+    data: { password: newPassword },
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-type": "application/json",
+    },
+  })
+    .then(({ data }) => {
+      console.log(data);
+      return true;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return false;
+    });
+  return user;
 };
 
 function* resetPassword({ payload }) {
   const { newPassword, resetPasswordCode } = payload;
   try {
     const resetPasswordStatus = yield call(resetPasswordAsync, resetPasswordCode, newPassword);
-    if (!resetPasswordStatus) {
+    console.log(resetPasswordStatus,'return');
+    if (resetPasswordStatus) {
       yield put(resetPasswordSuccess("success"));
     } else {
-      yield put(resetPasswordError(resetPasswordStatus.message));
+      yield put(resetPasswordError("Some Error occured"));
     }
   } catch (error) {
     yield put(resetPasswordError(error));

@@ -155,6 +155,10 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     formdata["tags"] = tagsLO;
     delete formdata["id"];
     delete formdata["user"];
+    if(formdata["chef_type"]['id'])
+    {
+      formdata["chef_type"] = formdata["chef_type"]['id'];
+    }
     try {
       let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
       NotificationManager.success("Menu updated successfully", "Success", 3000, null, null, "");

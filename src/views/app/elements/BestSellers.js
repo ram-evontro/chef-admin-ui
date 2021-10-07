@@ -28,7 +28,12 @@ function Table({ columns, data }) {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 6 },
+      initialState: { pageIndex: 0, pageSize: 6,sortBy: [
+        {
+          id: 'total_orders',
+          desc: true,
+        },
+      ], },
     },
     useSortBy,
     usePagination
@@ -36,7 +41,7 @@ function Table({ columns, data }) {
 
   return (
     <>
-      <table {...getTableProps()} className="r-table table">
+      <table {...getTableProps()} className="r-table table table-responsive">
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>

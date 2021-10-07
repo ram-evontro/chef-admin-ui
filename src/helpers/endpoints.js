@@ -1,6 +1,8 @@
-export const BASE_URL = "https://hypervergedemo.site/backend/v1/"; //'http://localhost:8000/v1/'; //
+export const BASE_URL = 'http://localhost:8000/v1/'; //"https://hypervergedemo.site/backend/v1/"; //
 export const LOGIN = "auth/login";
 export const LOGOUT = "auth/logout";
+export const FORGOT_PASSWORD = "auth/forgot-password";
+export const RESET_PASSWORD = "auth/reset-password";
 export const REFRESH_TOKEN = "auth/refresh-tokens";
 export const USERS = "users";
 export const USER_JOIN_REQUESTS = "users/requestjoin";

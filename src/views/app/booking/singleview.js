@@ -124,22 +124,15 @@ const Singleview = ({ match, history }) => {
     }
     setIsLoadingForLog(false);
   };
-  const updateDunzo = async (task_id) => {
+  const updateDunzo = (task_id) => {
     setSelectedTask(task_id);
     setEditModalOpen(true);
-    // setIsLoadingDunzo(true);
-    // try {
-    //   let { data } = await api.post(axiosURLS.DUNZO + "/" + task_id);
-    //   console.log(data);
-    //   NotificationManager.success("Status refreshed successfully", "Updated", 3000, null, null, "");
-    // } catch (err) {
-    //   if (err.response) {
-    //     NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-    //   }
-    // }
-    // setIsLoadingDunzo(false);
   };
-  const viewDunzo = async () => {
+  const updateBookingTime = () => {
+    setSelectedTask(null);
+    setEditModalOpen(true);
+  };
+  const viewDunzo =  () => {
     setModalOpen(true);
   };
   const fetchAndViewDunzo = async (task_id) => {
@@ -328,7 +321,14 @@ const Singleview = ({ match, history }) => {
                       <b>Diner Count:</b> {booking.diner_count}
                     </p>
                     <p>
-                      <b>Booking date:</b> {moment.utc(booking.booking_date).format("MMM D, Y HH:mm")}
+                      <b>Experience date:</b> {moment.utc(booking.booking_date).format("MMM D, Y HH:mm")}
+                      {booking.dunzo_taskids.length === 0&&booking.type === "virtual_dining" ? (
+                        <button onClick={updateBookingTime} className="btn btn-outline-primary" title="Edit delivery Time">
+                          <i className="simple-icon-pencil" />
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </p>
                     <p>
                       <b>Meal:</b> {booking.meal}
@@ -635,7 +635,7 @@ const Singleview = ({ match, history }) => {
       <RequestPayment requestPayment={requestPayment} modalOpen={paymentModalOpen} toggleModal={() => setPaymentModalOpen(!paymentModalOpen)} />
       <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={performAction} />
       <Cancelorder requestCancel={requestCancel} modalOpen={cancelModalOpen} toggleModal={() => setCancelModalOpen(!cancelModalOpen)} />
-      <Editbooking modalOpen={editModalOpen} selectedTask={selectedTask} bookingId={bookingId} toggleModal={() => setEditModalOpen(!editModalOpen)} />
+      <Editbooking modalOpen={editModalOpen} setBooking={setBooking} selectedTask={selectedTask} bookingId={bookingId} toggleModal={() => setEditModalOpen(!editModalOpen)} />
     </Row>
   );
 };

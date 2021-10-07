@@ -15,6 +15,13 @@ const data = [
     subs: [],
   },
   {
+    id: "diner",
+    icon: "iconsminds-business-man",
+    label: "menu.diners",
+    to: `${adminRoot}/diner`,
+    subs: [],
+  },
+  {
     id: "chef",
     icon: "iconsminds-chef-hat",
     label: "menu.chef",

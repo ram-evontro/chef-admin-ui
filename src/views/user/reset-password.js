@@ -22,16 +22,17 @@ const ResetPassword = ({ location, history, loading, error, resetPasswordAction 
   const [newPasswordAgain] = useState("");
 
   useEffect(() => {
+    // console.log(!loading,newPassword);
     if (error) {
       NotificationManager.warning(error, "Forgot Password Error", 3000, null, null, "");
-    } else if (!loading && newPassword === "success")
+    } else if (!loading)
       NotificationManager.success("Please login with your new password.", "Reset Password Success", 3000, null, null, "");
   }, [error, loading, newPassword]);
 
   const onResetPassword = (values) => {
     if (!loading) {
       const params = new URLSearchParams(location.search);
-      const oobCode = params.get("oobCode");
+      const oobCode = params.get("token");
       if (oobCode) {
         if (values.newPassword !== "") {
           resetPasswordAction({

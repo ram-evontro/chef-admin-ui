@@ -148,7 +148,7 @@ module.exports = {
   "menu.wizard": "Wizard",
   "menu.bookings": "Bookings",
   "menu.booking": "Bookings",
-  "menu.list": "Chef List",
+  "menu.list": "List",
   "menu.chef": "Chefs",
   "menu.chefadd": "Chef Add",
   "menu.chefviewall": "Chef List",
@@ -191,6 +191,8 @@ module.exports = {
   "menu.account": "Account",
   "menu.quickbooks": "Quickbooks",
   "menu.cms": "CMS",
+  "menu.diners": "Diners",
+  "menu.diner": "Diner",
   /* 04.Dashboards */
   "dashboards.pending-orders": "Pending Orders",
   "dashboards.completed-orders": "Completed Orders",

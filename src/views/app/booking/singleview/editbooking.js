@@ -5,7 +5,7 @@ import TimePicker from "react-time-picker";
 import api from "helpers/api";
 import moment from "moment";
 import * as axiosURLS from "helpers/endpoints";
-const Editbooking = ({ modalOpen, toggleModal, selectedTask, bookingId }) => {
+const Editbooking = ({ modalOpen, toggleModal, selectedTask, bookingId,setBooking }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formdata, setFormdata] = useState({});
   const [errors, setErrors] = useState({});
@@ -39,6 +39,7 @@ const Editbooking = ({ modalOpen, toggleModal, selectedTask, bookingId }) => {
     formdata["booking_id"] = bookingId;
     try{
     let { data } = await api.post(axiosURLS.DUNZO_EDIT + "/" + selectedTask, formdata);
+    setBooking(data);
     toggleModal();
     }
     catch(err)
