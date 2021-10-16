@@ -11,6 +11,8 @@ export const common = [
     { title: 'Order Number', val: '{booking.order_number}' },
     { title: 'Host Name', val: '{booking.user.name}' },
     { title: 'Host Phone', val: '{booking.user.phone}' },
+    { title: 'Additional Message', val: '{booking.message}' },
+    { title: 'Experince Date', val: '{booking.booking_date}' },
     { title: 'Order Total', val: '{booking.total}' },
     { title: 'Order Link', val: '{url}' },
   ];
@@ -20,6 +22,13 @@ export const common = [
   export const diner = [
     { title: 'Diner Name', val: '{diner.user.name}' },
     { title: 'Diner Menu', val: '{diner.menu.title}' },
+  ];
+  export const selected_menu = [
+    { title: 'Menu Name', val: '{menu.title}' },
+    { title: 'Meal Count', val: '{meal_count}' },
+  ];
+  export const chef = [
+    { title: 'Chef Name', val: '{chef.name}' },
   ];
   export const otp =[
     {title:'OTP',val:'{otp}'},

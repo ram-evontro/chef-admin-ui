@@ -17,6 +17,9 @@ const smsTemplateVariables =
     order_feedback_virtual_dining_host:[...tagvariables.common,...tagvariables.order,...tagvariables.feedback],
     order_feedback_virtual_dining_diner:[...tagvariables.common,...tagvariables.order,...tagvariables.feedback,...tagvariables.diner] ,
     order_feedback_chefs_table:[...tagvariables.common,...tagvariables.order,...tagvariables.feedback],
+    order_placed_vd_forchef:[...tagvariables.common,...tagvariables.order,...tagvariables.selected_menu,...tagvariables.chef],
+    chef_chosen:[...tagvariables.common,...tagvariables.order,...tagvariables.chef],
+    order_placed_foradmin:[...tagvariables.common,...tagvariables.order],
   };
 
 export default smsTemplateVariables;

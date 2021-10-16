@@ -109,8 +109,9 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
     ),
   };
   let spreadUser = (data) => {
-    let tempuser = data;
+    let tempuser = {...data};
     Object.assign(tempuser, tempuser.details);
+    tempuser.feedbacks=data.feedbacks;
     setUser(tempuser);
     if (tempuser.tags) {
       setTagsLO(tempuser.tags);
@@ -125,6 +126,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
         setLong(data.details.coordinates.lng);
         setLat(data.details.coordinates.lat);
       }
+      console.log(data);
       spreadUser(data);
       if (data.feedbacks) {
         setFeedbacks(data.feedbacks);
@@ -185,6 +187,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
         delete temp["id"];
         delete temp["isEmailVerified"];
         delete temp["status"];
+        delete temp["feedbacks"];
         temp["tags"] = tagsLO;
         temp["coordinates"] = {};
         temp["coordinates"]["lat"] = mylat;

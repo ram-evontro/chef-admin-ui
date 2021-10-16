@@ -23,6 +23,20 @@ const Table = ({
   setSelectedOrderOption,
   selectedOrderOption,
 }) => {
+  let initial_state = {
+    pageIndex: 0,
+    pageSize: selectedPageSize,
+    
+  };
+  if(selectedOrderOption.column)
+  {
+    initial_state['sortBy']= [
+      {
+        id: selectedOrderOption.column,
+        desc: selectedOrderOption.order === "desc" ? true : false,
+      },
+    ];
+  }
   const {
     getTableProps,
     getTableBodyProps,
@@ -35,16 +49,7 @@ const Table = ({
     {
       columns,
       data,
-      initialState: {
-        pageIndex: 0,
-        pageSize: selectedPageSize,
-        sortBy: [
-          {
-            id: selectedOrderOption.column,
-            desc: selectedOrderOption.order === "desc" ? true : false,
-          },
-        ],
-      },
+      initialState: initial_state,
     },
     useFilters,
     useSortBy,
@@ -133,6 +138,7 @@ const Datatable = ({
   currentPage,
   totalPage,
   onChangePage,
+  onCheckItem,
   selectedPageSize,
   isLoading,
   setSelectedPageSize,
@@ -147,6 +153,26 @@ const Datatable = ({
   };
   const cols = React.useMemo(
     () => [
+      {
+        Header: "Select",
+        accessor: "id",
+        cellClass: "  w-10",
+        disableSortBy: true,
+        Cell: (props) => (
+          <>
+            <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
+              <CustomInput
+                className="mb-0"
+                type="checkbox"
+                id={`check_${props.value}`}
+                checked={selectedItems.includes(props.value)}
+                onChange={(event) => onCheckItem(event, props.value)}
+                label=""
+              />
+            </div>
+          </>
+        ),
+      },
       {
         Header: "Order No",
         accessor: "order_number",
@@ -169,6 +195,7 @@ const Datatable = ({
       {
         Header: "Host Name",
         accessor: "user.name",
+        disableSortBy: true,
         cellClass: "list-item-heading w-15",
         Cell: (props) => (
           <>
@@ -193,7 +220,7 @@ const Datatable = ({
         ),
       },
       {
-        Header: "Booking Date",
+        Header: "Experince Date",
         accessor: "booking_date",
         cellClass: "text-muted  w-10",
         Cell: (props) => (
@@ -232,6 +259,7 @@ const Datatable = ({
       {
         Header: "Actions",
         cellClass: "text-muted  w-10",
+        disableSortBy: true,
         Cell: ({ row }) => (
           <>
             <a

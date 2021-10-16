@@ -141,7 +141,7 @@ const Cms = ({ match }) => {
                 toggle("2");
               }}
             >
-              For Chefs
+             Cook with us
             </NavLink>
           </NavItem>
           <NavItem>

@@ -163,7 +163,7 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
         </FormGroup>
         <FormGroup className="mt-4">
           <Label>
-            <IntlMessages id="forms.max_uses" />
+            <IntlMessages id="forms.max_uses_per_user" />
           </Label>
           <Input type="number" min="1" name="max_uses" value={formdata.max_uses ? formdata.max_uses : ""} onChange={handleChange} />
           {errors.max_uses && <div className="invalid-feedback d-block">{errors.max_uses}</div>}

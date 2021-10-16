@@ -37,6 +37,7 @@ const ForChef = () => {
   const [newsletter, setNewsletter] = useState({});
   const [quote, setQuote] = useState({});
   const [bookingCta, setBookingCta] = useState({});
+  const [howItWorks, setHowItWorks] = useState({});
   const [forChefs, setForChefs] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -101,6 +102,13 @@ const ForChef = () => {
     let name = e.target.name;
     tempdata[name] = val;
     setBookingCta(tempdata);
+  };
+  const handleHowItWorks = (e) => {
+    let tempdata = { ...howItWorks };
+    let val = e.target.value;
+    let name = e.target.name;
+    tempdata[name] = val;
+    setHowItWorks(tempdata);
   };
   const changeImageQuote = async (e, imageSection, section, component) => {
     e.preventDefault();
@@ -238,6 +246,7 @@ const ForChef = () => {
     setNewsletter(data.for_chef.newsletter);
     setQuote(data.for_chef.quote);
     setBookingCta(data.for_chef.booking_cta);
+    setHowItWorks(data.for_chef.how_it_works);
   };
   return loading ? (
     <div className="loading" />
@@ -763,6 +772,43 @@ const ForChef = () => {
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
               onClick={(e) => handleClickForChef(e, "booking_cta", bookingCta)}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.forChef.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>How it works</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      Youtube Link
+                    </Label>
+                    <Input type="text" name="link" value={howItWorks ? howItWorks.link : ""} onChange={handleHowItWorks} />
+                   </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickForChef(e, "how_it_works", howItWorks)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />

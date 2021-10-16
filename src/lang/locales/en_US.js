@@ -343,6 +343,13 @@ module.exports = {
   "pages.cancel_order": "Cancel Order",
   "pages.crop": "Crop",
   "pages.edit_booking": "Edit Booking",
+  "pages.advanced_filters": "Advanced Filters",
+  "pages.filter": "Filter",
+  "pages.reset": "Reset",
+  "pages.resend_link": "Resend Link",
+  "pages.schedule_delivery": "Schedule Delivery",
+  "pages.schedule_delivery_all":"Schedule Delivery for all diners",
+  "pages.request_feedback": "Request Feedback",
   /* 06.Applications */
 
   /* 06.01.Chat */
@@ -600,6 +607,7 @@ module.exports = {
   "forms.type": "Type",
   "forms.value": "Value",
   "forms.max_uses": "Max Uses",
+  "forms.max_uses_per_user": "Max Uses Per User",
   "forms.url": "URL",
   "forms.message": "Message",
   "forms.mailchimp": "Mailchimp",

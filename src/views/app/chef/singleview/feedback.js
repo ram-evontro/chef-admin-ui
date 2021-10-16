@@ -14,7 +14,7 @@ const Feedback = ({ feedbacks }) => {
                 <CardBody className="align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center">
                   <Row className="w-100">
                     <Colxx xss="12" md="2">
-                      {itemData.from.name}
+                      {itemData.from?itemData.from.name:'NA'}
                     </Colxx>
                     <Colxx xss="12" md="4">
                       {itemData.rating.map((rate) => (

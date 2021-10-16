@@ -132,13 +132,13 @@ const Singleview = ({ match, history }) => {
     setSelectedTask(null);
     setEditModalOpen(true);
   };
-  const viewDunzo =  () => {
+  const viewDunzo = () => {
     setModalOpen(true);
   };
   const fetchAndViewDunzo = async (task_id) => {
     setIsLoadingDunzo(true);
     try {
-      let { data } = await api.post(axiosURLS.DUNZO + "/" + task_id);
+      let { data } = await api.post(axiosURLS.DUNZO + "/" + booking.id+ "/" + task_id);
       setDunzoDetails(data);
       setModalOpen(true);
     } catch (err) {
@@ -222,9 +222,44 @@ const Singleview = ({ match, history }) => {
       }
       setIsLoadingForLog(false);
     }
+    if (actions.action === "schedule_delivery_all") {
+      setIsLoadingForLog(true);
+      let formdata = {};
+      formdata["chosen_chef"] = actions.data;
+      try {
+        let { data } = await api.post(axiosURLS.BOOKING_ACTION + "/" + "schedule_delivery_all" + "/" + booking.id, formdata);
+        NotificationManager.success("Delivery scheduled successfully", "Sucess", 3000, null, null, "");
+        setBooking(data);
+      } catch (err) {
+        console.log(err);
+        if (err.response && err.response.data) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+      setIsLoadingForLog(false);
+    }
+    if (actions.action === "cancel_unpaid_order") {
+      requestCancel({ amount: 0, desc: "Cancel unpaid order" });
+    }
   };
   const cancelOrder = () => {
-    setCancelModalOpen(true);
+    if (booking.status !== "Order Placed") {
+      setCancelModalOpen(true);
+    } else {
+      confirmAction("cancel_unpaid_order", {});
+    }
+  };
+  const resendLink = async (user_id, forstep) => {
+    setIsLoadingDunzo(true);
+    try {
+      let { data } = await api.post(axiosURLS.BOOKING_RESEND_LINK + "/" + booking.id + "/" + user_id, { forstep: forstep });
+      NotificationManager.success("Link resent successfully", "Success", 3000, null, null, "");
+    } catch (err) {
+      if (err.response && err.response.data) {
+        NotificationManager.error(err.response.data.message, "Error", 3000, null, null, "");
+      }
+    }
+    setIsLoadingDunzo(false);
   };
   return isLoading ? (
     <div className="loading" />
@@ -258,6 +293,17 @@ const Singleview = ({ match, history }) => {
               {booking.status !== "Order Completed" && booking.status !== "Order Cancelled" ? (
                 <DropdownItem onClick={cancelOrder}>
                   <IntlMessages id="pages.cancel_order" />
+                </DropdownItem>
+              ) : (
+                ""
+              )}
+              {booking.type === "virtual_dining" && booking.status == "Order Paid" ? (
+                <DropdownItem
+                  onClick={() => {
+                    confirmAction("schedule_delivery_all", {});
+                  }}
+                >
+                  <IntlMessages id="pages.schedule_delivery_all" />
                 </DropdownItem>
               ) : (
                 ""
@@ -322,7 +368,7 @@ const Singleview = ({ match, history }) => {
                     </p>
                     <p>
                       <b>Experience date:</b> {moment.utc(booking.booking_date).format("MMM D, Y HH:mm")}
-                      {booking.dunzo_taskids.length === 0&&booking.type === "virtual_dining" ? (
+                      {booking.dunzo_taskids && booking.dunzo_taskids.length === 0 && booking.type === "virtual_dining" ? (
                         <button onClick={updateBookingTime} className="btn btn-outline-primary" title="Edit delivery Time">
                           <i className="simple-icon-pencil" />
                         </button>
@@ -388,6 +434,23 @@ const Singleview = ({ match, history }) => {
                           </Row>
                         ))}
                       </p>
+                    ) : booking.status === "Order Completed" ? (
+                      <Button
+                        color="primary"
+                        className={`btn-shadow btn-multiple-state ${isLoadingDunzo ? "show-spinner" : ""}`}
+                        onClick={() => {
+                          resendLink(booking.user.id, "get_user_feedback");
+                        }}
+                      >
+                        <span className="spinner d-inline-block">
+                          <span className="bounce1" />
+                          <span className="bounce2" />
+                          <span className="bounce3" />
+                        </span>
+                        <span className="label">
+                          <IntlMessages id="pages.request_feedback" />
+                        </span>
+                      </Button>
                     ) : (
                       ""
                     )}
@@ -495,19 +558,7 @@ const Singleview = ({ match, history }) => {
                       {booking.dunzo_taskids.map((taskid) => (
                         <React.Fragment key={taskid.task_id}>
                           <p>
-                            <b>Dunzo Ref Id:</b> {taskid.task_id}
-                          </p>
-                          <p>
-                            <b>Dunzo delivery status:</b> {taskid.state}{" "}
-                            <button
-                              onClick={() => {
-                                updateDunzo(taskid.task_id);
-                              }}
-                              className="btn btn-outline-primary"
-                              title="Edit delivery Time"
-                            >
-                              <i className={` ${isLoadingDunzo ? "animate-spin" : ""}  simple-icon-pencil`} />
-                            </button>
+                            <b>Dunzo Ref Id:</b> {taskid.task_id}{" "}
                             <button
                               onClick={() => {
                                 fetchAndViewDunzo(taskid.task_id);
@@ -623,6 +674,8 @@ const Singleview = ({ match, history }) => {
                   viewDunzo={viewDunzo}
                   isLoadingDunzo={isLoadingDunzo}
                   setDunzoDetails={setDunzoDetails}
+                  setIsLoadingDunzo={setIsLoadingDunzo}
+                  setBooking={setBooking}
                 />
               </Row>
             </TabPane>
@@ -635,7 +688,13 @@ const Singleview = ({ match, history }) => {
       <RequestPayment requestPayment={requestPayment} modalOpen={paymentModalOpen} toggleModal={() => setPaymentModalOpen(!paymentModalOpen)} />
       <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={performAction} />
       <Cancelorder requestCancel={requestCancel} modalOpen={cancelModalOpen} toggleModal={() => setCancelModalOpen(!cancelModalOpen)} />
-      <Editbooking modalOpen={editModalOpen} setBooking={setBooking} selectedTask={selectedTask} bookingId={bookingId} toggleModal={() => setEditModalOpen(!editModalOpen)} />
+      <Editbooking
+        modalOpen={editModalOpen}
+        setBooking={setBooking}
+        selectedTask={selectedTask}
+        bookingId={bookingId}
+        toggleModal={() => setEditModalOpen(!editModalOpen)}
+      />
     </Row>
   );
 };

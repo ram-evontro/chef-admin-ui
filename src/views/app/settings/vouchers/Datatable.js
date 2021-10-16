@@ -211,14 +211,14 @@ const Datatable = ({
         Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
-        Header: 'Max Uses',
+        Header: 'Max Uses Per User',
         accessor: 'max_uses',
         cellClass: 'text-muted  w-10',
         Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
-        Header: 'Times Used',
-        accessor: 'times_used',
+        Header: 'Users',
+        accessor: 'diners.length',
         cellClass: 'text-muted  w-10',
         Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       } ,
