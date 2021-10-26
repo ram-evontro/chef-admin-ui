@@ -179,16 +179,9 @@ const Datatable = ({
         cellClass: "w-20",
         Cell: (props) => (
           <>
-            <a
-              title="View"
-              href="javascript:;"
-              onClick={() => {
-                updateAction("view", props.row.original.id);
-              }}
-              
-            >
+           
               {props.value}
-            </a>
+           
           </>
         ),
       },

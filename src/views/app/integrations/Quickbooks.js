@@ -77,6 +77,22 @@ const Quickbooks = ({ match }) => {
                       <IntlMessages id="forms.url" />
                     </Label>
                     <Input type="text" name="url" value={formdata.url ? formdata.url : ""} onChange={handleChange} />
+                    <Label className="mt-3">
+                      Razorpay Payment Method ID
+                    </Label>
+                    <Input type="text" name="payment_method" value={formdata.payment_method ? formdata.payment_method : ""} onChange={handleChange} />
+                    <Label className="mt-3">
+                      Meal Service ID
+                    </Label>
+                    <Input type="text" name="meal_id" value={formdata.meal_id ? formdata.meal_id : ""} onChange={handleChange} />
+                    <Label className="mt-3">
+                      Moodbag Service ID
+                    </Label>
+                    <Input type="text" name="moodbag_id" value={formdata.moodbag_id ? formdata.moodbag_id : ""} onChange={handleChange} />
+                    <Label className="mt-3">
+                      Delivery Service ID
+                    </Label>
+                    <Input type="text" name="delivery_id" value={formdata.delivery_id ? formdata.delivery_id : ""} onChange={handleChange} />
                     <center>
                       <a
                         href={axiosURLS.BASE_URL + axiosURLS.QUICKBOOKSAUTH}

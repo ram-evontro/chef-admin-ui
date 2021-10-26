@@ -165,6 +165,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
 
         let { data } = await api.patch(axiosURLS.USERS + "/" + id, formdata);
         spreadUser(data);
+        setUserPicture(null);
         NotificationManager.success("User updated successfully", "Success", 3000, null, null, "");
       } catch (err) {
         console.log(err);

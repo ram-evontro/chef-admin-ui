@@ -23,7 +23,8 @@ const refreshAccessToken = async () => {
       loginUser["tokens"] = data;
       store.dispatch(loginUserSuccess(loginUser));
     } catch (err) {
-      // store.dispatch(logoutUser())
+      localStorage.removeItem('persist:root');
+      window.location.reload();
       console.log('error in refresh token',err);
     }
 

@@ -10,18 +10,21 @@ import SalesChartCard from "../elements/SalesChartCard";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import { adminRoot } from "constants/defaultValues";
+import { NotificationManager } from "components/common/react-notifications";
 const DetailsDashboard = ({ match, history }) => {
   const [upcomingOrders, setUpcomingOrders] = useState([]);
   const [calendar, setCalendar] = useState([]);
   const [users, setUsers] = useState({});
   const [carousel, setCarousel] = useState({});
   const [linechart, setLinechart] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const updateAction = (action, id) => {
     if (action === "view") {
       history.push(`${adminRoot}/booking/view/?b=` + id);
     }
   };
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       let { data } = await api.get(axiosURLS.DASHBOARD);
       setCalendar(data.calendar);
@@ -30,13 +33,16 @@ const DetailsDashboard = ({ match, history }) => {
       setCarousel(data.carousel);
       setLinechart(data.linechart);
     } catch (err) {
-      console.log(err);
+      if (err.response && err.response.data) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
     }
+    setIsLoading(false);
   };
   const changeMonth = async (date) => {
     try {
-      let { data } = await api.post(axiosURLS.BOOKING_BY_MONTH,{date:date});
-      let tempCalendar = [...calendar,...data];
+      let { data } = await api.post(axiosURLS.BOOKING_BY_MONTH, { date: date });
+      let tempCalendar = [...calendar, ...data];
       setCalendar(tempCalendar);
       console.log(data);
     } catch (err) {
@@ -46,7 +52,9 @@ const DetailsDashboard = ({ match, history }) => {
   useEffect(() => {
     fetchData();
   }, []);
-  return (
+  return isLoading ? (
+    <div className="loading" />
+  ) : (
     <>
       <Row>
         <Colxx xxs="12">

@@ -450,99 +450,55 @@ const ForChef = () => {
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.forChef.ourChefs.content" />
                     </Label>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.forChef.ourChefs.content[0].name" />
-                    </Label>
-                    <Input type="text" name="name" value={ourChefs.content ? ourChefs.content[0].name : ""} onChange={(e) => handleChef(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.forChef.ourChefs.content[0].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={ourChefs.content ? ourChefs.content[0].description : ""}
-                      onChange={(e) => handleChef(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.forChef.ourChefs.content[0].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ForChef OurChef Image[0]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ForChef OurChef Image[0]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageOurChef(e, "image", "our_chefs", ourChefs, 0)}
-                          style={{ display: "none" }}
+                    {ourChefs.content&&ourChefs.content.map((content,key) => (
+                      <div className="mt-3">
+                        <Label className="mt-4">
+                          Content {key +1} Name
+                        </Label>
+                        <Input type="text" name="name" value={ourChefs.content ? ourChefs.content[key].name : ""} onChange={(e) => handleChef(e, key)} />
+                        <Label className="mt-4">
+                        Content {key +1} Description
+                        </Label>
+                        <Input
+                          type="textarea"
+                          name="description"
+                          value={ourChefs.content ? ourChefs.content[key].description : ""}
+                          onChange={(e) => handleChef(e, key)}
                         />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={ourChefs.content ? ourChefs.content[0].image : ""}
-                          thumb={ourChefs.content ? ourChefs.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    {/* <Input type="text" name="image" value={ourChefs.content ? ourChefs.content[0].image : ""} onChange={(e) => handleChef(e, 0)} /> */}
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.forChef.ourChefs.content[1].name" />
-                    </Label>
-                    <Input type="text" name="name" value={ourChefs.content ? ourChefs.content[1].name : ""} onChange={(e) => handleChef(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.forChef.ourChefs.content[1].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={ourChefs.content ? ourChefs.content[1].description : ""}
-                      onChange={(e) => handleChef(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.forChef.ourChefs.content[1].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ForChef OurChef Image[1]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ForChef OurChef Image[1]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageOurChef(e, "image", "our_chefs", ourChefs, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={ourChefs.content ? ourChefs.content[1].image : ""}
-                          thumb={ourChefs.content ? ourChefs.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                      {/* <img src={quote ? quote.by_image : ""} /> */}
-                    </div>
-                    <br></br>
-                    {/* <Input type="text" name="image" value={ourChefs.content ? ourChefs.content[1].image : ""} onChange={(e) => handleChef(e, 1)} /> */}
-                  </Colxx>
+                        <Label className="mt-4">
+                        Content {key +1} Image
+                        </Label>
+                        <div>
+                          <Button
+                            onClick={() => {
+                              openFileInput("ForChef OurChef Image["+key+"]");
+                            }}
+                            className="icon-button"
+                            style={{ float: "right" }}
+                          >
+                            <i className="simple-icon-pencil" />
+                            <br></br>
+                            <input
+                              type="file"
+                              id={"ForChef OurChef Image["+key+"]"}
+                              rclassName="d-none"
+                              onChange={(e) => changeImageOurChef(e, "image", "our_chefs", ourChefs, key)}
+                              style={{ display: "none" }}
+                            />
+                          </Button>
+                          <br></br>
+                          <Col md={4}>
+                            <SingleLightbox
+                              large={ourChefs.content ? ourChefs.content[key].image : ""}
+                              thumb={ourChefs.content ? ourChefs.content[key].image : ""}
+                              className="card-img-top"
+                            ></SingleLightbox>
+                          </Col>
+                        </div>
+                      </div>
+                    ))}
+                   
+                    </Colxx>
                 </Row>
               </Form>
             </CardBody>
@@ -795,11 +751,9 @@ const ForChef = () => {
               <Form>
                 <Row>
                   <Colxx xxs="12">
-                    <Label className="mt-4">
-                      Youtube Link
-                    </Label>
+                    <Label className="mt-4">Youtube Link</Label>
                     <Input type="text" name="link" value={howItWorks ? howItWorks.link : ""} onChange={handleHowItWorks} />
-                   </Colxx>
+                  </Colxx>
                 </Row>
               </Form>
             </CardBody>
