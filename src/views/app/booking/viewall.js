@@ -234,6 +234,7 @@ const Viewall = ({ match, history }) => {
                             <option value="">Select Value</option>
                             <option value="virtual_dining">Virtual Dining</option>
                             <option value="chef_table">Chefs Table</option>
+                            <option value="chef_event">Chefs Event</option>
                           </select>
                         </FormGroup>
                       </Colxx>

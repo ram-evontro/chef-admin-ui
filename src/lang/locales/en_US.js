@@ -193,6 +193,8 @@ module.exports = {
   "menu.cms": "CMS",
   "menu.diners": "Diners",
   "menu.diner": "Diner",
+  "menu.chef_events": "Chef Events",
+  "menu.events": "Chef Events",
   /* 04.Dashboards */
   "dashboards.pending-orders": "Pending Orders",
   "dashboards.completed-orders": "Completed Orders",
@@ -350,6 +352,8 @@ module.exports = {
   "pages.schedule_delivery": "Schedule Delivery",
   "pages.schedule_delivery_all":"Schedule Delivery for all diners",
   "pages.request_feedback": "Request Feedback",
+  "pages.dates": "Dates",
+  "pages.what_to_expect": "What to expect",
   /* 06.Applications */
 
   /* 06.01.Chat */
@@ -666,6 +670,10 @@ module.exports = {
   "forms.featured": "Featured",
   "forms.refund_amount": "Refund Amount",
   "forms.new_booking_time": "New Booking Time",
+  "forms.venue": "Venue",
+  "forms.timefrom": "Time From",
+  "forms.timetill": "Time Till",
+  "forms.seats": "Seats",
   /* 07.11.Form Components */
   "form-components.custom-inputs": "Custom Inputs",
   "form-components.checkboxes": "Checkboxes",

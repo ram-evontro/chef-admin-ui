@@ -20,6 +20,15 @@ const smsTemplateVariables =
     order_placed_vd_forchef:[...tagvariables.common,...tagvariables.order,...tagvariables.selected_menu,...tagvariables.chef],
     chef_chosen:[...tagvariables.common,...tagvariables.order,...tagvariables.chef],
     order_placed_foradmin:[...tagvariables.common,...tagvariables.order],
+    order_paid_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_paid_chef_event_host_also_diner:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_paid_chef_event_diner:[...tagvariables.common,...tagvariables.order,...tagvariables.event,...tagvariables.diner] ,
+    order_reminder_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_reminder_chef_event_diner:[...tagvariables.common,...tagvariables.order,...tagvariables.event,...tagvariables.diner] ,
+    order_completed_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_completed_chef_event_diner:[...tagvariables.common,...tagvariables.order,...tagvariables.event,...tagvariables.diner] ,
+    order_feedback_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event,...tagvariables.feedback],
+    order_feedback_chef_event_diner:[...tagvariables.common,...tagvariables.order,...tagvariables.event,...tagvariables.feedback,...tagvariables.diner] ,
   };
 
 export default smsTemplateVariables;

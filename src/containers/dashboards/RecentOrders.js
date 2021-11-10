@@ -13,11 +13,6 @@ import moment from 'moment';
 const RecentOrders = ({items,updateAction}) => {
   return (
     <Card>
-      <div className="position-absolute card-top-buttons">
-        <button type="button" className="btn btn-header-light icon-button">
-          <i className="simple-icon-refresh" />
-        </button>
-      </div>
       <CardBody>
         <CardTitle>
           <IntlMessages id="dashboards.upcoming_orders" />

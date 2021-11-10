@@ -138,7 +138,7 @@ const Singleview = ({ match, history }) => {
   const fetchAndViewDunzo = async (task_id) => {
     setIsLoadingDunzo(true);
     try {
-      let { data } = await api.post(axiosURLS.DUNZO + "/" + booking.id+ "/" + task_id);
+      let { data } = await api.post(axiosURLS.DUNZO + "/" + booking.id + "/" + task_id);
       setDunzoDetails(data);
       setModalOpen(true);
     } catch (err) {
@@ -328,7 +328,7 @@ const Singleview = ({ match, history }) => {
               <IntlMessages id="pages.details" />
             </NavLink>
           </NavItem>
-          {booking.type === "virtual_dining" && (booking.menu_selection === "diner" || booking.delivery_selection === "diner") ? (
+          {booking.type === "chef_event" || (booking.type === "virtual_dining" && (booking.menu_selection === "diner" || booking.delivery_selection === "diner")) ? (
             <NavItem>
               <NavLink
                 className={classnames({
@@ -361,7 +361,7 @@ const Singleview = ({ match, history }) => {
                       <b>Order No:</b> {booking.order_number}
                     </p>
                     <p>
-                      <b>Type:</b> {booking.type === "virtual_dining" ? "Virtual Dining" : "Chef's Table"}
+                      <b>Type:</b> {booking.type === "virtual_dining" ? "Virtual Dining" : booking.type === "chef_table" ? "Chef's Table" : "Chef's Event"}
                     </p>
                     <p>
                       <b>Diner Count:</b> {booking.diner_count}
@@ -376,18 +376,25 @@ const Singleview = ({ match, history }) => {
                         ""
                       )}
                     </p>
-                    <p>
-                      <b>Meal:</b> {booking.meal}
-                    </p>
-                    <p>
-                      <b>City:</b> {booking.city}
-                    </p>
+                    {booking.type !== "chef_event" ? (
+                      <>
+                        <p>
+                          <b>Meal:</b> {booking.meal}
+                        </p>
+                        <p>
+                          <b>City:</b> {booking.city}
+                        </p>
+                        <p>
+                          <b>Additional message:</b> {booking.message}
+                        </p>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <p>
                       <b>Order status:</b> {booking.status}
                     </p>
-                    <p>
-                      <b>Additional message:</b> {booking.message}
-                    </p>
+
                     {booking.type === "virtual_dining" ? (
                       <p>
                         <b>Menu Selection:</b> {booking.menu_selection === "diner" ? "Different for each diner" : "Common menu"}
@@ -466,7 +473,7 @@ const Singleview = ({ match, history }) => {
                         <p>
                           <b>Total:</b> {booking.total}
                         </p>
-                        {booking.type === "virtual_dining" ? (
+                        {booking.type === "virtual_dining" || booking.type === "chef_event" ? (
                           <>
                             <p>
                               <b>Meal Cost:</b> {booking.payment.meal}
@@ -474,12 +481,19 @@ const Singleview = ({ match, history }) => {
                             <p>
                               <b>Taxes:</b> {booking.payment.taxes}
                             </p>
-                            <p>
-                              <b>Delivery Charges:</b> {booking.payment.delivery_charges}
-                            </p>
-                            <p>
-                              <b>Mood Bag:</b> {booking.payment.mood_bag}
-                            </p>
+                            {booking.type !== "chef_event" ? (
+                              <>
+                                <p>
+                                  <b>Delivery Charges:</b> {booking.payment.delivery_charges}
+                                </p>
+                                <p>
+                                  <b>Mood Bag:</b> {booking.payment.mood_bag}
+                                </p>
+                              </>
+                            ) : (
+                              ""
+                            )}
+
                             <p>
                               <b>Discount:</b> {booking.payment.discount}
                             </p>
@@ -534,7 +548,7 @@ const Singleview = ({ match, history }) => {
               </Colxx>
               <Colxx xxs="12" lg="7" className="mb-4 col-right">
                 <Log logAction={logAction} isLoadingForLog={isLoadingForLog} data={booking.log} className="mb-4" />
-                {booking.delivery_selection === "common" ? (
+                {booking.type === "virtual_dining" && booking.delivery_selection === "common" ? (
                   <Card className="mb-2">
                     <CardBody>
                       <CardTitle>
@@ -570,6 +584,32 @@ const Singleview = ({ match, history }) => {
                           </p>
                         </React.Fragment>
                       ))}
+                    </CardBody>
+                  </Card>
+                ) : (
+                  ""
+                )}
+                {booking.type === "chef_event" ? (
+                  <Card className="mb-2">
+                    <CardBody>
+                      <CardTitle>
+                        <h3>Event Details</h3>
+                      </CardTitle>
+                      <p>
+                        <b>Title:</b> {booking.event.title}
+                      </p>
+                      <p>
+                        <b>Description:</b> {booking.event.desc}
+                      </p>
+                      <p>
+                        <b>Venue:</b> {booking.event.venue.address}
+                      </p>
+                      <p>
+                        <b>Time From:</b> {booking.event.timefrom}
+                      </p>
+                      <p>
+                        <b>Time Till:</b> {booking.event.timetill}
+                      </p>
                     </CardBody>
                   </Card>
                 ) : (
@@ -662,7 +702,8 @@ const Singleview = ({ match, history }) => {
               </Colxx>
             </Row>
           </TabPane>
-          {booking.type === "virtual_dining" && (booking.menu_selection === "diner" || booking.delivery_selection === "diner") ? (
+          {booking.type === "chef_event" ||
+          (booking.type === "virtual_dining" && (booking.menu_selection === "diner" || booking.delivery_selection === "diner")) ? (
             <TabPane tabId="diners">
               <Row>
                 <Diners

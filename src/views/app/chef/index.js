@@ -13,6 +13,12 @@ const Menuview = React.lazy(() =>
 const Allmenus = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './allmenus')
 );
+const Events = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './events')
+);
+const Eventview = React.lazy(() =>
+  import(/* webpackChunkName: "menuview" */ './eventview')
+);
 const Chefrequests = React.lazy(() =>
   import(/* webpackChunkName: "menuview" */ './chefrequests')
 );
@@ -35,6 +41,14 @@ const Chef = ({ match }) => (
       <Route
         path={`${match.url}/allmenus`}
         render={(props) => <Allmenus {...props} />}
+      />
+      <Route
+        path={`${match.url}/events`}
+        render={(props) => <Events {...props} />}
+      />
+      <Route
+        path={`${match.url}/eventview`}
+        render={(props) => <Eventview {...props} />}
       />
       <Route
         path={`${match.url}/chefrequests`}

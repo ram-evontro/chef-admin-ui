@@ -34,7 +34,7 @@ const Quickbooks = ({ match }) => {
     setIsLoading(false);
   };
   useEffect(async () => {
-    window.location.hash = '';
+    window.location.hash = "";
     try {
       let { data } = await api.get(axiosURLS.INTEGRATION + "/quickbooks");
       setFormdata(data.key_value);
@@ -77,22 +77,68 @@ const Quickbooks = ({ match }) => {
                       <IntlMessages id="forms.url" />
                     </Label>
                     <Input type="text" name="url" value={formdata.url ? formdata.url : ""} onChange={handleChange} />
-                    <Label className="mt-3">
-                      Razorpay Payment Method ID
-                    </Label>
-                    <Input type="text" name="payment_method" value={formdata.payment_method ? formdata.payment_method : ""} onChange={handleChange} />
-                    <Label className="mt-3">
-                      Meal Service ID
-                    </Label>
-                    <Input type="text" name="meal_id" value={formdata.meal_id ? formdata.meal_id : ""} onChange={handleChange} />
-                    <Label className="mt-3">
-                      Moodbag Service ID
-                    </Label>
-                    <Input type="text" name="moodbag_id" value={formdata.moodbag_id ? formdata.moodbag_id : ""} onChange={handleChange} />
-                    <Label className="mt-3">
-                      Delivery Service ID
-                    </Label>
-                    <Input type="text" name="delivery_id" value={formdata.delivery_id ? formdata.delivery_id : ""} onChange={handleChange} />
+
+                    <Row>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Meal Service ID</Label>
+                        <Input type="text" name="meal_id" value={formdata.meal_id ? formdata.meal_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Meal Tax ID</Label>
+                        <Input type="text" name="meal_tax_id" value={formdata.meal_tax_id ? formdata.meal_tax_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Meal Tax Percentage</Label>
+                        <Input type="text" name="meal_tax_percent" value={formdata.meal_tax_percent ? formdata.meal_tax_percent : ""} onChange={handleChange} />
+                      </Colxx>
+                    </Row>
+                    <Row>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Moodbag Service ID</Label>
+                        <Input type="text" name="moodbag_id" value={formdata.moodbag_id ? formdata.moodbag_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Moodbag Tax ID</Label>
+                        <Input type="text" name="moodbag_tax_id" value={formdata.moodbag_tax_id ? formdata.moodbag_tax_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Moodbag Tax Percentage</Label>
+                        <Input
+                          type="text"
+                          name="moodbag_tax_percent"
+                          value={formdata.moodbag_tax_percent ? formdata.moodbag_tax_percent : ""}
+                          onChange={handleChange}
+                        />
+                      </Colxx>
+                    </Row>
+                    <Row>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Discount Service ID</Label>
+                        <Input type="text" name="discount_id" value={formdata.discount_id ? formdata.discount_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Discount Tax ID</Label>
+                        <Input type="text" name="discount_tax_id" value={formdata.discount_tax_id ? formdata.discount_tax_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Razorpay Payment Method ID</Label>
+                        <Input type="text" name="payment_method" value={formdata.payment_method ? formdata.payment_method : ""} onChange={handleChange} />
+                      </Colxx>
+                    </Row>
+                    <Row>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Delivery Service ID</Label>
+                        <Input type="text" name="delivery_id" value={formdata.delivery_id ? formdata.delivery_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Delivery Tax ID</Label>
+                        <Input type="text" name="delivery_tax_id" value={formdata.delivery_tax_id ? formdata.delivery_tax_id : ""} onChange={handleChange} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-3">Delivery Tax Percentage</Label>
+                        <Input type="text" name="delivery_tax_percent" value={formdata.delivery_tax_percent ? formdata.delivery_tax_percent : ""} onChange={handleChange} />
+                      </Colxx>                      
+                    </Row>
                     <center>
                       <a
                         href={axiosURLS.BASE_URL + axiosURLS.QUICKBOOKSAUTH}

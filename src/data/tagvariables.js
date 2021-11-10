@@ -33,4 +33,9 @@ export const common = [
   export const otp =[
     {title:'OTP',val:'{otp}'},
   
+  ];
+  export const event =[
+    {title:'Event Title',val:'{booking.event.title}'},
+    {title:'Event Description',val:'{booking.event.desc}'},
+    {title:'Event Venue',val:'{booking.event.venue.address}'},
   ]

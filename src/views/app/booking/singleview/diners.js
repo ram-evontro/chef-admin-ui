@@ -25,16 +25,30 @@ const DinerItem = ({ item, menu, delivery, deliveryObj, resendLink, isLoadingDun
           </CardBody>
         </div>
         <div className="card-body pt-1">
-          <p>
-            <b>Number of Meals:</b> {item.meals}
-          </p>
-          <p>
-            <b>Mood Bag requested:</b>
-            {item.mood_bag ? "Yes" : "No"}
-          </p>
-          {item.avoid.length > 0 ? (
+          {booking.type === "virtual_dining" ? (
+            <>
+              <p>
+                <b>Number of Meals:</b> {item.meals}
+              </p>
+              <p>
+                <b>Mood Bag requested:</b>
+                {item.mood_bag ? "Yes" : "No"}
+              </p>
+            </>
+          ) : (
+            ""
+          )}
+
+          {item.allergen.length > 0 ? (
             <p>
-              <b>Allergic to:</b> {item.avoid.join(",")}
+              <b>Allergic to:</b> {item.allergen.join(",")}
+            </p>
+          ) : (
+            ""
+          )}
+          {item.meal_type ? (
+            <p>
+              <b>Meal preference:</b> {item.meal_type}
             </p>
           ) : (
             ""
@@ -197,7 +211,7 @@ const Diners = ({ menu, delivery, diners, booking, updateDunzo, viewDunzo, isLoa
   const [deliveryObj, setDeliveryObj] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   useEffect(async () => {
-    if (moment().add(7, "days").isBefore(booking.booking_date)) {
+    if (!booking.dunzo_taskids || booking.dunzo_taskids.length == 0) {
       setMessage("Details will be shared 7 days before booking date");
     } else {
       await fetchDeliveryData();
@@ -211,7 +225,7 @@ const Diners = ({ menu, delivery, diners, booking, updateDunzo, viewDunzo, isLoa
         if (task.task_id) {
           let { data } = await api.post(axiosURLS.DUNZO + "/" + booking.id + "/" + task.task_id);
           data.locations_order.map((step) => {
-            if (step.type === "drop") {
+            if (step.reference_id.includes("drop")) {
               let diner_id = step.reference_id.split("-")[2];
               if (diner_id) {
                 tempDeliveryObj[diner_id] = {
@@ -227,6 +241,7 @@ const Diners = ({ menu, delivery, diners, booking, updateDunzo, viewDunzo, isLoa
         }
       })
     );
+    console.log(tempDeliveryObj);
     setDeliveryObj(tempDeliveryObj);
   };
   const resendLink = async (diner_id, forstep) => {

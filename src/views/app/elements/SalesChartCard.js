@@ -101,21 +101,6 @@ const SalesChartCard = ({ linechart }) => {
   }, [linechart]);
   return lineChartData ? (
     <Card>
-      <div className="position-absolute card-top-buttons">
-        <UncontrolledDropdown>
-          <DropdownToggle color="" className="btn btn-header-light icon-button">
-            <i className="simple-icon-refresh" />
-          </DropdownToggle>
-          <DropdownMenu right>
-            <DropdownItem>
-              <IntlMessages id="dashboards.sales" />
-            </DropdownItem>
-            <DropdownItem>
-              <IntlMessages id="dashboards.orders" />
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </div>
       <CardBody>
         <CardTitle>
           <IntlMessages id="dashboards.sales" />

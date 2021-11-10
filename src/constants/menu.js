@@ -39,10 +39,16 @@ const data = [
         to: `${adminRoot}/chef/allmenus`,
       },
       {
+        icon: "simple-icon-calendar",
+        label: "menu.chef_events",
+        to: `${adminRoot}/chef/events`,
+      },
+      {
         icon: "simple-icon-note",
         label: "menu.chef_join_requests",
         to: `${adminRoot}/chef/chefrequests`,
       },
+
     ],
   },
   {

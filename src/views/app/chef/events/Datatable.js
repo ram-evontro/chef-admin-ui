@@ -4,11 +4,11 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/display-name */
 import React, { useEffect } from "react";
-import moment from "moment";
 import { Badge, CustomInput } from "reactstrap";
 import { useTable, usePagination, useSortBy, useFilters } from "react-table";
 import classnames from "classnames";
 import DatatablePagination from "../../elements/DataTablePagination";
+import moment from "moment";
 
 const Table = ({
   columns,
@@ -23,20 +23,6 @@ const Table = ({
   setSelectedOrderOption,
   selectedOrderOption,
 }) => {
-  let initial_state = {
-    pageIndex: 0,
-    pageSize: selectedPageSize,
-    
-  };
-  if(selectedOrderOption.column)
-  {
-    initial_state['sortBy']= [
-      {
-        id: selectedOrderOption.column,
-        desc: selectedOrderOption.order === "desc" ? true : false,
-      },
-    ];
-  }
   const {
     getTableProps,
     getTableBodyProps,
@@ -49,7 +35,16 @@ const Table = ({
     {
       columns,
       data,
-      initialState: initial_state,
+      initialState: {
+        pageIndex: 0,
+        pageSize: selectedPageSize,
+        sortBy: [
+          {
+            id: selectedOrderOption.column,
+            desc: selectedOrderOption.order === "desc" ? true : false,
+          },
+        ],
+      },
     },
     useFilters,
     useSortBy,
@@ -60,6 +55,10 @@ const Table = ({
       let data = {};
       data["column"] = sortBy[0].id;
       data["order"] = sortBy[0].desc ? "desc" : "asc";
+      setSelectedOrderOption(data);
+    } else if (sortBy.length == 0) {
+      data["column"] = "";
+      data["order"] = "";
       setSelectedOrderOption(data);
     }
 
@@ -135,22 +134,18 @@ const Table = ({
 const Datatable = ({
   items,
   selectedItems,
+  onCheckItem,
   currentPage,
   totalPage,
   onChangePage,
-  onCheckItem,
   selectedPageSize,
   isLoading,
   setSelectedPageSize,
   setSelectedOrderOption,
   selectedOrderOption,
+  deleteSingle,
   updateAction,
 }) => {
-  const editFunc = (data) => {
-    let newData = { ...data };
-    delete newData["Actions"];
-    // editSelected(newData);
-  };
   const cols = React.useMemo(
     () => [
       {
@@ -174,102 +169,88 @@ const Datatable = ({
         ),
       },
       {
-        Header: "Order No",
-        accessor: "order_number",
-        cellClass: "text-muted  w-10",
+        Header: "Title",
+        accessor: "title",
+        cellClass: "  w-20",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Chef",
+        accessor: "chef.name",
+        cellClass: "  w-10",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Date & Time",
+        accessor: "dates",
+        cellClass: "  w-20",
         Cell: (props) => (
           <>
+            {props.row.original.timefrom}-{props.row.original.timetill}
+            <br />
+            {props.value.map((date, key) => (key === props.value.length - 1 ? moment(date).format("D MMM Y") : moment(date).format("D"))).join(",")}
+          </>
+        ),
+      },
+      {
+        Header: "Venue",
+        accessor: "venue",
+        cellClass: "  w-10",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Seats",
+        accessor: "seats",
+        cellClass: "  w-10",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Price",
+        accessor: "price",
+        cellClass: "  w-10",
+        Cell: (props) => <>{props.value}</>,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        cellClass: "  w-10",
+        Cell: ({ row, value }) => (
+          <>
             <a
-              title="View"
-              href="javascript:;"
+              title="Click to change status"
               onClick={() => {
-                updateAction("view", props.row.original.id);
+                updateAction(row.values.status ? "deactivate" : "activate", row.values.id);
               }}
-              
+              href="javascript:;"
             >
-              {props.value}
+              {value ? <Badge color="primary">Active</Badge> : <Badge color="secondary">InActive</Badge>}
             </a>
           </>
         ),
       },
       {
-        Header: "Host Name",
-        accessor: "user.name",
-        disableSortBy: true,
-        cellClass: "list-item-heading w-15",
-        Cell: (props) => (
-          <>
-            {props.value}
-            <br />
-            {props.row.original.user.mobile}
-            <br />
-            {props.row.original.user.email}
-          </>
-        ),
-      },
-      {
-        Header: "Type",
-        accessor: "type",
-        cellClass: "text-muted  w-15",
-        Cell: (props) => (
-          <>
-            {props.value === "virtual_dining" ? "Virtual Dining" : props.value === "chef_table"?"Chef's Table":"Chef's Event"}
-            <br />
-            Diners:{props.row.original.diner_count}
-          </>
-        ),
-      },
-      {
-        Header: "Experince Date",
-        accessor: "booking_date",
-        cellClass: "text-muted  w-10",
-        Cell: (props) => (
-          <>
-            {moment(props.row.original.booking_date).format("DD MMM YYYY")}
-            <br />
-            {props.row.original.type !== "chef_event" ?props.row.original.meal:props.row.original.event?props.row.original.event.title:''}
-            <br />
-            {props.row.original.type === "virtual_dining" ? <>{props.row.original.menu_selection === "diner" ? "Different Menu" : "Common Menu"}</> : ""}
-            <br />
-            {props.row.original.type === "virtual_dining" ? (
-              <>{props.row.original.delivery_selection === "diner" ? "Different Location" : "Common Location"}</>
-            ) : (
-              ""
-            )}
-          </>
-        ),
-      },
-
-      {
-        Header: "Status",
-        accessor: "status",
-        cellClass: "w-10",
-        Cell: (props) => (
-          <>
-            <Badge
-              color={
-                props.value === "Order Placed" ? "info" : props.value === "Order Paid" ? "success" : props.value === "Order Completed" ? "primary" : "secondary"
-              }
-            >
-              {props.value}
-            </Badge>
-          </>
-        ),
-      },
-      {
         Header: "Actions",
-        cellClass: "text-muted  w-10",
         disableSortBy: true,
+        cellClass: "  w-10",
         Cell: ({ row }) => (
           <>
             <a
               title="View"
               href="javascript:;"
               onClick={() => {
-                updateAction("view", row.original.id);
+                updateAction("view", row.values.id);
               }}
-              class="glyph-icon simple-icon-eye"
+              className="glyph-icon simple-icon-eye"
             ></a>
+            {row.original.booking_count===0?(
+            <a
+              title="Delete"
+              href="javascript:;"
+              onClick={() => {
+                deleteSingle(row.values.id);
+              }}
+              className="ml-3 glyph-icon simple-icon-trash"
+            ></a>):('')}
           </>
         ),
       },
@@ -290,6 +271,7 @@ const Datatable = ({
         setSelectedOrderOption={setSelectedOrderOption}
         selectedOrderOption={selectedOrderOption}
         divided
+        responsive
       />
     </div>
   );
