@@ -11,7 +11,7 @@ import Addmodal from "./events/Addmodal";
 import Deletealert from "../elements/Deletealert";
 import { adminRoot } from "constants/defaultValues";
 import download from "downloadjs";
-const Events = ({ match, history }) => {
+const Events = ({ match, history, forchef }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [chefTypes, setChefTypes] = useState([]);
   const [chefs, setChefs] = useState([]);
@@ -111,11 +111,16 @@ const Events = ({ match, history }) => {
     } else {
     }
     try {
-      let { data } = await api.get(axiosURLS.EVENT, { params: senddata });
-      setTotalPage(data.totalPages);
-      setItems(data.results);
+      let response;
+      if (!forchef) {
+        response = await api.get(axiosURLS.EVENT, { params: senddata });
+      } else {
+        response = await api.get(axiosURLS.EVENTS_FOR_USER + "/" + forchef, { params: senddata });
+      }
+      setTotalPage(response.data.totalPages);
+      setItems(response.data.results);
       setSelectedItems([]);
-      setTotalItemCount(data.totalResults);
+      setTotalItemCount(response.data.totalResults);
     } catch (err) {
       if (err.response && err.response.data) {
         NotificationManager.error(err.response.data.message, "Fetch Error", 3000, null, null, "");
@@ -173,7 +178,11 @@ const Events = ({ match, history }) => {
       toggleStatusSingle(id, false);
     }
     if (action === "view") {
-      history.push(`${adminRoot}/chef/eventview/?event=` + id);
+      if (!forchef) {
+        history.push(`${adminRoot}/chef/eventview/?event=` + id);
+      } else {
+        history.push(`${adminRoot}/chef/eventview/?event=` + id+`&p=`+forchef);
+      }
     }
   };
   useEffect(() => {
@@ -195,12 +204,16 @@ const Events = ({ match, history }) => {
   }, []);
   return (
     <>
-      <Row>
-        <Colxx xxs="12">
-          <Breadcrumb heading="menu.events" match={match} />
-          <Separator className="mb-1" />
-        </Colxx>
-      </Row>
+      {!forchef ? (
+        <Row>
+          <Colxx xxs="12">
+            <Breadcrumb heading="menu.events" match={match} />
+            <Separator className="mb-1" />
+          </Colxx>
+        </Row>
+      ) : (
+        ""
+      )}
       <Row>
         <Colxx xxs="12">
           <ButtonDropdown isOpen={dropdownSplitOpen} toggle={() => setDropdownSplitOpen(!dropdownSplitOpen)}>
@@ -279,10 +292,11 @@ const Events = ({ match, history }) => {
             deleteSingle={deleteSingle}
             toggleStatusSingle={toggleStatusSingle}
             updateAction={updateAction}
+            forchef={forchef}
           />
         </Colxx>
       </Row>
-      <Addmodal fetchData={fetchData} id={false} chefs={chefs} chefTypes={chefTypes} modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} />
+      <Addmodal fetchData={fetchData} id={forchef} chefs={chefs} chefTypes={chefTypes} modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} />
       <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={deleteSelected} />
     </>
   );

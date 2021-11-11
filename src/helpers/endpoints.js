@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8000/v1/'; // "https://hypervergedemo.site/backend/v1/"; //
+export const BASE_URL = "https://hypervergedemo.site/backend/v1/"; //'http://localhost:8000/v1/'; // 
 export const LOGIN = "auth/login";
 export const LOGOUT = "auth/logout";
 export const FORGOT_PASSWORD = "auth/forgot-password";
@@ -13,6 +13,7 @@ export const USER_MENUS = "menu/users";
 export const MENU = "menu";
 export const EVENT = "event";
 export const EVENT_DOWNLOAD = "event/download";
+export const EVENTS_FOR_USER = "event/user";
 export const BOOKING = "booking";
 export const BOOKING_ACTION = "booking/action";
 export const BOOKING_LOG = "booking/log";

@@ -354,6 +354,7 @@ module.exports = {
   "pages.request_feedback": "Request Feedback",
   "pages.dates": "Dates",
   "pages.what_to_expect": "What to expect",
+  "pages.events": "EVENTS",
   /* 06.Applications */
 
   /* 06.01.Chat */
@@ -674,6 +675,8 @@ module.exports = {
   "forms.timefrom": "Time From",
   "forms.timetill": "Time Till",
   "forms.seats": "Seats",
+  "forms.date_from": "Date From",
+  "forms.date_to": "Date To",
   /* 07.11.Form Components */
   "form-components.custom-inputs": "Custom Inputs",
   "form-components.checkboxes": "Checkboxes",

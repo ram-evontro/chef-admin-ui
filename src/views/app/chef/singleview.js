@@ -9,6 +9,7 @@ import Breadcrumb from "containers/navs/Breadcrumb";
 import { Colxx } from "components/common/CustomBootstrap";
 import IntlMessages from "helpers/IntlMessages";
 import Deletealert from "../elements/Deletealert";
+import Events from "./events";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
@@ -94,6 +95,15 @@ const Singleview = ({ match, history }) => {
     let id = history.location.search.replace("?p=", "");
     setId(id);
   }, []);
+  useEffect(async () => {
+    if(activeTab==="events")
+    {
+      let {data} = await api.get(axiosURLS.EVENTS_FOR_USER + "/" + id);
+      console.log(data);
+      //paginate user events
+
+    }
+  }, [activeTab]);
   return (
     <>
       <Row>
@@ -182,6 +192,21 @@ const Singleview = ({ match, history }) => {
             <NavItem>
               <NavLink
                 className={classnames({
+                  active: activeTab === "events",
+                  "nav-link": true,
+                })}
+                onClick={() => {
+                  setActiveTab("events");
+                }}
+                location={{}}
+                to={"?p=" + id}
+              >
+                <IntlMessages id="pages.events" />
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={classnames({
                   active: activeTab === "feedback",
                   "nav-link": true,
                 })}
@@ -205,6 +230,9 @@ const Singleview = ({ match, history }) => {
             </TabPane>
             <TabPane tabId="feedback">
               <Feedback feedbacks={feedbacks} />
+            </TabPane>
+            <TabPane tabId="events">
+            {activeTab==="events"?(<Events match={match} history={history} forchef={id} />):('')}
             </TabPane>
           </TabContent>
         </Colxx>

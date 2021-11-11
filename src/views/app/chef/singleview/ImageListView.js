@@ -18,7 +18,7 @@ const ImageListView = ({ menu, isSelect, collect, onCheckItem,id }) => {
         >
           <div className="position-relative">
             <NavLink to={`${adminRoot}/chef/menuview?p=${id}&menu=${menu.id}`} className="w-40 w-sm-100">
-              <CardImg top alt={menu.title} src={menu.cover_picture} />
+              <CardImg className="menu_fixed_image" top alt={menu.title} src={menu.cover_picture} />
             </NavLink>
             <Badge color={menu.status ? "primary" : "secondary"} pill className="position-absolute badge-top-left">
               {menu.status ? "Active" : "Inactive"}

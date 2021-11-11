@@ -7,9 +7,13 @@ import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import toast from "react-hot-toast";
 import moment from "moment";
+import EmailReport from "./dunzo/EmailReport";
+import PdfReport from "./dunzo/PdfReport";
 const Dunzo = ({ match }) => {
   const [formdata, setFormdata] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [pdfModalOpen, setPdfModalOpen] = useState(false);
   const handleChange = (e) => {
     let tempdata = { ...formdata };
     let val = e.target.value;
@@ -33,10 +37,10 @@ const Dunzo = ({ match }) => {
     }
     setIsLoading(false);
   };
-  const sendEmail = async () =>{
+  const sendEmail = async ({email,from,to}) =>{
     setIsLoading(true);
     try {
-      let { data } = await api.post(axiosURLS.DUNZO_EMAIL,{email:'harvindersharad@gmail.com',from:moment().subtract(5,'days').valueOf(),to:moment().subtract(3,'days').valueOf()});
+      let { data } = await api.post(axiosURLS.DUNZO_EMAIL,{email:email,from:moment(from).valueOf(),to:moment(to).valueOf()});
      console.log(data);
     } catch (err) {
       console.log(err);
@@ -124,7 +128,7 @@ const Dunzo = ({ match }) => {
             <CardBody>
               <Row>
                 <Colxx xxs="12">
-                  <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={sendEmail}>
+                  <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={()=>{setEmailModalOpen(true)}}>
                     <span className="spinner d-inline-block">
                       <span className="bounce1" />
                       <span className="bounce2" />
@@ -134,7 +138,7 @@ const Dunzo = ({ match }) => {
                     Email Reports
                     </span>
                   </Button>
-                  <Button color="primary" className={`btn-shadow mt-4 ml-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={downloadPDF}>
+                  {/* <Button color="primary" className={`btn-shadow mt-4 ml-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={downloadPDF}>
                     <span className="spinner d-inline-block">
                       <span className="bounce1" />
                       <span className="bounce2" />
@@ -143,13 +147,15 @@ const Dunzo = ({ match }) => {
                     <span className="label">
                     Download PDF
                     </span>
-                  </Button>
+                  </Button> */}
                 </Colxx>
               </Row>
             </CardBody>
           </Card>
         </Colxx>
       </Row>
+      <EmailReport sendEmail={sendEmail} modalOpen={emailModalOpen} toggleModal={() => setEmailModalOpen(!emailModalOpen)}  />
+      <PdfReport />
     </>
   );
 };

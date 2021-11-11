@@ -145,104 +145,108 @@ const Datatable = ({
   selectedOrderOption,
   deleteSingle,
   updateAction,
+  forchef,
 }) => {
-  const cols = React.useMemo(
-    () => [
-      {
-        Header: "Select",
-        accessor: "id",
-        cellClass: "  w-10",
-        disableSortBy: true,
-        Cell: (props) => (
-          <>
-            <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
-              <CustomInput
-                className="mb-0"
-                type="checkbox"
-                id={`check_${props.value}`}
-                checked={selectedItems.includes(props.value)}
-                onChange={(event) => onCheckItem(event, props.value)}
-                label=""
-              />
-            </div>
-          </>
-        ),
-      },
-      {
-        Header: "Title",
-        accessor: "title",
-        cellClass: "  w-20",
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: "Chef",
-        accessor: "chef.name",
-        cellClass: "  w-10",
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: "Date & Time",
-        accessor: "dates",
-        cellClass: "  w-20",
-        Cell: (props) => (
-          <>
-            {props.row.original.timefrom}-{props.row.original.timetill}
-            <br />
-            {props.value.map((date, key) => (key === props.value.length - 1 ? moment(date).format("D MMM Y") : moment(date).format("D"))).join(",")}
-          </>
-        ),
-      },
-      {
-        Header: "Venue",
-        accessor: "venue",
-        cellClass: "  w-10",
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: "Seats",
-        accessor: "seats",
-        cellClass: "  w-10",
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: "Price",
-        accessor: "price",
-        cellClass: "  w-10",
-        Cell: (props) => <>{props.value}</>,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        cellClass: "  w-10",
-        Cell: ({ row, value }) => (
-          <>
-            <a
-              title="Click to change status"
-              onClick={() => {
-                updateAction(row.values.status ? "deactivate" : "activate", row.values.id);
-              }}
-              href="javascript:;"
-            >
-              {value ? <Badge color="primary">Active</Badge> : <Badge color="secondary">InActive</Badge>}
-            </a>
-          </>
-        ),
-      },
-      {
-        Header: "Actions",
-        disableSortBy: true,
-        cellClass: "  w-10",
-        Cell: ({ row }) => (
-          <>
-            <a
-              title="View"
-              href="javascript:;"
-              onClick={() => {
-                updateAction("view", row.values.id);
-              }}
-              className="glyph-icon simple-icon-eye"
-            ></a>
-            {row.original.booking_count===0?(
+  let temp1 = [
+    {
+      Header: "Select",
+      accessor: "id",
+      cellClass: "  w-10",
+      disableSortBy: true,
+      Cell: (props) => (
+        <>
+          <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
+            <CustomInput
+              className="mb-0"
+              type="checkbox"
+              id={`check_${props.value}`}
+              checked={selectedItems.includes(props.value)}
+              onChange={(event) => onCheckItem(event, props.value)}
+              label=""
+            />
+          </div>
+        </>
+      ),
+    },
+    {
+      Header: "Title",
+      accessor: "title",
+      cellClass: "  w-20",
+      Cell: (props) => <>{props.value}</>,
+    },
+  ];
+  if (!forchef) {
+    temp1.push({
+      Header: "Chef",
+      accessor: "chef.name",
+      cellClass: "  w-10",
+      Cell: (props) => <>{props.value}</>,
+    });
+  }
+  let temp = [
+    {
+      Header: "Date & Time",
+      accessor: "dates",
+      cellClass: "  w-20",
+      Cell: (props) => (
+        <>
+          {props.row.original.timefrom}-{props.row.original.timetill}
+          <br />
+          {props.value.map((date, key) => (key === props.value.length - 1 ? moment(date).format("D MMM Y") : moment(date).format("D"))).join(",")}
+        </>
+      ),
+    },
+    {
+      Header: "Venue",
+      accessor: "venue",
+      cellClass: "  w-10",
+      Cell: (props) => <>{props.value}</>,
+    },
+    {
+      Header: "Seats",
+      accessor: "seats",
+      cellClass: "  w-10",
+      Cell: (props) => <>{props.value}</>,
+    },
+    {
+      Header: "Price",
+      accessor: "price",
+      cellClass: "  w-10",
+      Cell: (props) => <>{props.value}</>,
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      cellClass: "  w-10",
+      Cell: ({ row, value }) => (
+        <>
+          <a
+            title="Click to change status"
+            onClick={() => {
+              updateAction(row.values.status ? "deactivate" : "activate", row.values.id);
+            }}
+            href="javascript:;"
+          >
+            {value ? <Badge color="primary">Active</Badge> : <Badge color="secondary">InActive</Badge>}
+          </a>
+        </>
+      ),
+    },
+    {
+      Header: "Actions",
+      disableSortBy: true,
+      cellClass: "  w-10",
+      Cell: ({ row }) => (
+        <>
+          <a
+            title="View"
+            href="javascript:;"
+            onClick={() => {
+              updateAction("view", row.values.id);
+            }}
+            className="glyph-icon simple-icon-eye"
+          ></a>
+          {row.original.booking_count === 0 ? (
             <a
               title="Delete"
               href="javascript:;"
@@ -250,13 +254,16 @@ const Datatable = ({
                 deleteSingle(row.values.id);
               }}
               className="ml-3 glyph-icon simple-icon-trash"
-            ></a>):('')}
-          </>
-        ),
-      },
-    ],
-    [selectedItems]
-  );
+            ></a>
+          ) : (
+            ""
+          )}
+        </>
+      ),
+    },
+  ];
+ let allcols = [...temp1, ...temp];
+  const cols = React.useMemo(() => allcols, [selectedItems]);
   return (
     <div className="mb-4">
       <Table
