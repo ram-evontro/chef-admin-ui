@@ -31,7 +31,7 @@ const Dunzodetails = ({ modalOpen, toggleModal, details }) => {
             <p>
               <b>Progress:</b><br />
               {details.locations_order
-                ? details.locations_order.map((step) => (<><b>{step.state}: </b>{step.type.toUpperCase()}<br /></>))
+                ? details.locations_order.map((step) => (<><b>{step.state}: </b>{step.type?step.type.toUpperCase():'NA'}<br /></>))
                 : ""}
             </p>
           </>

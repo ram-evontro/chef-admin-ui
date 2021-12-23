@@ -15,6 +15,7 @@ export const common = [
     { title: 'Experince Date', val: '{booking.booking_date}' },
     { title: 'Order Total', val: '{booking.total}' },
     { title: 'Order Link', val: '{url}' },
+    { title: 'Number Of Diners', val: '{booking.diner_count}' },
   ];
   export const feedback = [
     { title: 'Feedback Url', val: '{feedback_url}' },
@@ -26,6 +27,7 @@ export const common = [
   export const selected_menu = [
     { title: 'Menu Name', val: '{menu.title}' },
     { title: 'Meal Count', val: '{meal_count}' },
+    { title: 'Chef Name', val: '{menu.user.name}' },
   ];
   export const chef = [
     { title: 'Chef Name', val: '{chef.name}' },
@@ -37,5 +39,21 @@ export const common = [
   export const event =[
     {title:'Event Title',val:'{booking.event.title}'},
     {title:'Event Description',val:'{booking.event.desc}'},
-    {title:'Event Venue',val:'{booking.event.venue.address}'},
-  ]
+    {title:'Event Venue',val:'{booking.event.venue}'},
+    {title:'Time From',val:'{booking.event.timefrom}'},
+    {title:'Time Till',val:'{booking.event.timetill}'},
+    {title:'Event Hosting Chef',val:'{booking.event.chef.name}'},
+  ];
+  export const joinRequest =[
+    {title:'Name',val:'{name}'},
+    {title:'Email',val:'{email}'},
+    {title:'Phone',val:'{mobile}'},
+  ];
+  export const orderCommonMenu =[
+    {title:'Chef Name',val:'{booking.common_menu.user.name}'},
+    {title:'Menu Name',val:'{booking.common_menu.name}'},
+   ];
+   export const chosenChef =[
+    {title:'Chosen Chef Name',val:'{booking.chosen_chef.name}'},
+    ];
+   

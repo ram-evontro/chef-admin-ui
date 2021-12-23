@@ -24,7 +24,7 @@ const Support = ({ match }) => {
                 </div>
               </div>
               <div className="text-right">
-              <p className="text-muted mb-4">Software version 1.0.1</p>
+              <p className="text-muted mb-4">Software version 1.2</p>
               <p className="text-muted mb-1">Made with <i className="text-danger simple-icon-heart"></i></p>
               <p className="text-muted mb-4">by Monk Tech Labs</p>
               </div>

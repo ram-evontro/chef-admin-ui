@@ -29,7 +29,7 @@ const RecentOrders = ({items,updateAction}) => {
                     className="d-block position-relative"
                   >
                     <img
-                      src={booking.type=="chef_table"?booking.chefs[0].picture:((booking.type==="virtual_dining"&&booking.menu_selection==="host")?booking.common_menu.cover_picture:images.chefplaceholder.default)}
+                      src={booking.type=="chef_table"?booking.chefs[0].picture:booking.type=="chef_event"?(booking.event.pictures?booking.event.pictures[0]:images.chefplaceholder.default):((booking.type==="virtual_dining"&&booking.menu_selection==="host")?booking.common_menu.cover_picture:images.chefplaceholder.default)}
                       alt={booking.title}                      
                       className="list-thumbnail border-0"
                     />
@@ -45,7 +45,7 @@ const RecentOrders = ({items,updateAction}) => {
 
                   <div className="pl-3 pt-2 pr-2 pb-2">
                     <NavLink to={`${adminRoot}/booking/view/?b=${booking.id}`}>
-                      <p className="list-item-heading">{booking.type==="virtual_dining"?"Virtual Dining":"Chef's Table"}</p>
+                      <p className="list-item-heading">{booking.type==="virtual_dining"?"Virtual Dining":booking.type==="chef_table"?"Chef's Table":"Chef's Event"}</p>
                       <div className="pr-4">
                         <p className="text-muted mb-1 text-small">
                           Total diner:{booking.diner_count}&nbsp;&nbsp;&nbsp;&nbsp;                        

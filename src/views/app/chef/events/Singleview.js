@@ -182,6 +182,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
     delete formdata["id"];
     delete formdata["bookings"];
     delete formdata["booking_count"];
+    delete formdata["booking_by_date"];
     setIsLoading(true);
     try {
       if (event.booking_count > 0) {

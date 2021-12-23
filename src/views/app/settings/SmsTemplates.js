@@ -13,7 +13,7 @@ import download from "downloadjs";
 const SmsTemplates = ({ match }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedPageSize, setSelectedPageSize] = useState(4);
+  const [selectedPageSize, setSelectedPageSize] = useState(20);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
     column: "",
     order: "",

@@ -6,7 +6,8 @@
 import React, { useState, useEffect } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
 import DatatablePagination from "components/DatatablePagination";
-
+import { NavLink } from "react-router-dom";
+import { adminRoot } from "constants/defaultValues";
 function Table({ columns, data }) {
   const {
     getTableProps,
@@ -109,6 +110,7 @@ const Bookings = ({ diners }) => {
           hostname: diner.hostname,
           hostmobile: diner.hostmobile,
           booking_id: diner.booking_id,
+          order_number: diner.order_number,
         };
         row["meal_type"] = diner.meal_type ? diner.meal_type : "NA";
         row["allergen"] = diner.allergen.length > 0 ? diner.allergen.join(",") : "NA";
@@ -170,9 +172,9 @@ const Bookings = ({ diners }) => {
       },
       {
         Header: "Order No",
-        accessor: "booking_id",
+        accessor: "order_number",
         cellClass: "text-muted w-20",
-        Cell: (props) => <>{props.value}</>,
+        Cell: (props) => <> <NavLink location={{}} to={`${adminRoot}/booking/view/?b=${props.row.original.booking_id}`}>{props.value}</NavLink></>,
         sortType: "basic",
       },
     ],

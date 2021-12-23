@@ -16,6 +16,13 @@ const emailTemplateVariables =
     order_placed_vd_forchef:[...tagvariables.common,...tagvariables.order,...tagvariables.selected_menu,...tagvariables.chef],
     chef_chosen:[...tagvariables.common,...tagvariables.order,...tagvariables.chef],
     order_placed_foradmin:[...tagvariables.common,...tagvariables.order],
+    order_paid_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_paid_chef_event_host_also_diner:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_reminder_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_completed_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event],
+    order_feedback_chef_event_host:[...tagvariables.common,...tagvariables.order,...tagvariables.event,...tagvariables.feedback],
+    chef_joinrequest_foruser:[...tagvariables.common,...tagvariables.joinRequest],
+    chef_joinrequest_foradmin:[...tagvariables.common,...tagvariables.joinRequest]
   };
 
 export default emailTemplateVariables;

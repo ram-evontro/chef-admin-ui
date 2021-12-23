@@ -39,7 +39,8 @@ const Eventview = ({ match, history }) => {
             dinerwithhost["hostmobile"] = booking.user.mobile;
             dinerwithhost["hostemail"] = booking.user.email;
             dinerwithhost["date"] = moment(booking.booking_date).format("DD MMM YYYY");
-            dinerwithhost["booking_id"] = booking.order_number;
+            dinerwithhost["booking_id"] = booking.id;
+            dinerwithhost["order_number"] = booking.order_number;
             forDiners.push(dinerwithhost);
           });
         });

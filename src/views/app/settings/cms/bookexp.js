@@ -39,6 +39,7 @@ const BookExp = () => {
   const [header, setHeader] = useState({});
   const [virtualDining, setVirtualDining] = useState({});
   const [chefsTable, setChefsTable] = useState({});
+  const [chefsEvent, setChefsEvent] = useState({});
   const [ourfeaturedChefs, setOurfeaturedChefs] = useState({});
   const [offerings, setOfferings] = useState({});
   const [newsletter, setNewsletter] = useState({});
@@ -48,8 +49,23 @@ const BookExp = () => {
   const [bookExperience, setBookExperience] = useState({});
   const { upload } = fileapi();
 
-  const handleHeader = (e, x = -1) => {
+  const handleHeader = (e, x = -1, forbutton = false) => {
     let tempdata = { ...header };
+    let val = e.target.value;
+    let name = e.target.name;
+    if (x !== -1) {
+      if (!forbutton) {
+        tempdata.content[x][name] = val;
+      } else {
+        tempdata.buttons[x] = val;
+      }
+    } else {
+      tempdata[name] = val;
+    }
+    setHeader(tempdata);
+  };
+  const handleChefEvent = (e, x = -1) => {
+    let tempdata = { ...virtualDining };
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
@@ -57,7 +73,7 @@ const BookExp = () => {
     } else {
       tempdata[name] = val;
     }
-    setHeader(tempdata);
+    setVirtualDining(tempdata);
   };
   const handleVirtDine = (e, x = -1) => {
     let tempdata = { ...virtualDining };
@@ -155,7 +171,7 @@ const BookExp = () => {
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
 
-      formdata[imageSection] = fileurl;
+      formdata["images"][imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
@@ -285,6 +301,7 @@ const BookExp = () => {
   }, []);
   const valueSetter = (data) => {
     setVirtualDining(data.book_experience.virtual_dining);
+    setChefsEvent(data.book_experience.chefs_event);
     setHeader(data.book_experience.header);
     setChefsTable(data.book_experience.chefs_table);
     setOurfeaturedChefs(data.book_experience.our_featured_chefs);
@@ -311,78 +328,136 @@ const BookExp = () => {
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.header.image" />
                     </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("headerImage");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="headerImage"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageHeader(e, "image", "header", header)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox large={header ? header.image : ""} thumb={header ? header.image : ""} className="card-img-top"></SingleLightbox>
-                      </Col>
-                    </div>
+                    <Row>
+                      <Colxx xxs="12" md="4">
+                        <div>
+                          <Button
+                            onClick={() => {
+                              openFileInput("headerImage0");
+                            }}
+                            className="icon-button"
+                            style={{ float: "right" }}
+                          >
+                            <i className="simple-icon-pencil" />
+                            <br></br>
+                            <input
+                              type="file"
+                              id="headerImage0"
+                              rclassName="d-none"
+                              onChange={(e) => changeImageHeader(e, 0, "header", header)}
+                              style={{ display: "none" }}
+                            />
+                          </Button>
+                          <br></br>
+                          <Col md={11}>
+                            <SingleLightbox
+                              large={header && header.images ? header.images[0] : ""}
+                              thumb={header && header.images ? header.images[0] : ""}
+                              className="card-img-top"
+                            ></SingleLightbox>
+                          </Col>
+                        </div>
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <div>
+                          <Button
+                            onClick={() => {
+                              openFileInput("headerImage1");
+                            }}
+                            className="icon-button"
+                            style={{ float: "right" }}
+                          >
+                            <i className="simple-icon-pencil" />
+                            <br></br>
+                            <input
+                              type="file"
+                              id="headerImage1"
+                              rclassName="d-none"
+                              onChange={(e) => changeImageHeader(e, 1, "header", header)}
+                              style={{ display: "none" }}
+                            />
+                          </Button>
+                          <br></br>
+                          <Col md={11}>
+                            <SingleLightbox
+                              large={header && header.images ? header.images[1] : ""}
+                              thumb={header && header.images ? header.images[1] : ""}
+                              className="card-img-top"
+                            ></SingleLightbox>
+                          </Col>
+                        </div>
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <div>
+                          <Button
+                            onClick={() => {
+                              openFileInput("headerImage2");
+                            }}
+                            className="icon-button"
+                            style={{ float: "right" }}
+                          >
+                            <i className="simple-icon-pencil" />
+                            <br></br>
+                            <input
+                              type="file"
+                              id="headerImage2"
+                              rclassName="d-none"
+                              onChange={(e) => changeImageHeader(e, 2, "header", header)}
+                              style={{ display: "none" }}
+                            />
+                          </Button>
+                          <br></br>
+                          <Col md={11}>
+                            <SingleLightbox
+                              large={header && header.images ? header.images[2] : ""}
+                              thumb={header && header.images ? header.images[2] : ""}
+                              className="card-img-top"
+                            ></SingleLightbox>
+                          </Col>
+                        </div>
+                      </Colxx>
+                    </Row>
                     <br></br>
                     {/* <Input type="text" name="image" value={header.image ? header.image : ""} onChange={handleHeader} /> */}
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.header.title" />
                     </Label>
+
                     <Input type="text" name="title" value={header.title ? header.title : ""} onChange={handleHeader} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.header.content" />
-                    </Label>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.header.content[0].title" />
-                    </Label>
-                    <Input type="text" name="title" value={header.content ? header.content[0].title : ""} onChange={(e) => handleHeader(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.header.content[0].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={header.content ? header.content[0].description : ""}
-                      onChange={(e) => handleHeader(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.header.content[1].title" />
-                    </Label>
-                    <Input type="text" name="title" value={header.content ? header.content[1].title : ""} onChange={(e) => handleHeader(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.header.content[1].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={header.content ? header.content[1].description : ""}
-                      onChange={(e) => handleHeader(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.header.content[2].title" />
-                    </Label>
-                    <Input type="text" name="title" value={header.content ? header.content[2].title : ""} onChange={(e) => handleHeader(e, 2)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.header.content[2].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={header.content ? header.content[2].description : ""}
-                      onChange={(e) => handleHeader(e, 2)}
-                    />
+                    <Row>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-4">
+                          <IntlMessages id="bookExperience.header.content[0].title" />
+                        </Label>
+                        <Input type="text" name="title" value={header.content ? header.content[0].title : ""} onChange={(e) => handleHeader(e, 0)} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-4">
+                          <IntlMessages id="bookExperience.header.content[1].title" />
+                        </Label>
+                        <Input type="text" name="title" value={header.content ? header.content[1].title : ""} onChange={(e) => handleHeader(e, 1)} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-4">
+                          <IntlMessages id="bookExperience.header.content[2].title" />
+                        </Label>
+                        <Input type="text" name="title" value={header.content ? header.content[2].title : ""} onChange={(e) => handleHeader(e, 2)} />
+                      </Colxx>
+                    </Row>
+                    <Row>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-4">Button 1 Text</Label>
+                        <Input type="text" name="title" value={header.buttons ? header.buttons[0] : ""} onChange={(e) => handleHeader(e, 0, true)} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-4">Button 2 Text</Label>
+                        <Input type="text" name="title" value={header.buttons ? header.buttons[1] : ""} onChange={(e) => handleHeader(e, 1, true)} />
+                      </Colxx>
+                      <Colxx xxs="12" md="4">
+                        <Label className="mt-4">Button 3 Text</Label>
+                        <Input type="text" name="title" value={header.buttons ? header.buttons[2] : ""} onChange={(e) => handleHeader(e, 2, true)} />
+                      </Colxx>
+                    </Row>
                   </Colxx>
                 </Row>
               </Form>
@@ -408,7 +483,7 @@ const BookExp = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Newsletter</h4>
+          <h4>Chefs Event</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">
@@ -417,13 +492,69 @@ const BookExp = () => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.newsletter.title" />
+                      <IntlMessages id="bookExperience.virtualDining.title" />
                     </Label>
-                    <Input type="text" name="title" value={newsletter ? newsletter.title : ""} onChange={handleNewsLetter} />
+                    <Input type="text" name="title" value={chefsEvent ? chefsEvent.title : ""} onChange={handleChefEvent} />
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.newsletter.description" />
+                      <IntlMessages id="bookExperience.chefsEvent.description" />
                     </Label>
-                    <Input type="textarea" name="desc" value={newsletter ? newsletter.desc : ""} onChange={handleNewsLetter} />
+                    <Input type="textarea" name="description" value={chefsEvent ? chefsEvent.description : ""} onChange={handleChefEvent} />
+                    <Row>
+                      {chefsEvent.content
+                        ? chefsEvent.content.map((content, index) => (
+                            <Colxx xxs="12" md="3">
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.chefsEvent.content[" + index + "].title"} />
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                value={chefsEvent.content ? chefsEvent.content[index].title : ""}
+                                onChange={(e) => handleChefEvent(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.chefsEvent.content[" + index + "].description"} />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={chefsEvent.content ? chefsEvent.content[index].description : ""}
+                                onChange={(e) => handleChefEvent(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.chefsEvent.content[" + index + "].image"} />
+                              </Label>
+                              <div>
+                                <Button
+                                  onClick={() => {
+                                    openFileInput("chefsEvent Image[" + index + "]");
+                                  }}
+                                  className="icon-button"
+                                  style={{ float: "right" }}
+                                >
+                                  <i className="simple-icon-pencil" />
+                                  <br></br>
+                                  <input
+                                    type="file"
+                                    id="chefsEvent Image[index]"
+                                    rclassName="d-none"
+                                    onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", chefsEvent, index)}
+                                    style={{ display: "none" }}
+                                  />
+                                </Button>
+                                <br></br>
+                                <Col md={11}>
+                                  <SingleLightbox
+                                    large={chefsEvent.content ? chefsEvent.content[index].image : ""}
+                                    thumb={chefsEvent.content ? chefsEvent.content[index].image : ""}
+                                    className="card-img-top"
+                                  ></SingleLightbox>
+                                </Col>
+                              </div>
+                            </Colxx>
+                          ))
+                        : ""}
+                    </Row>
                   </Colxx>
                 </Row>
               </Form>
@@ -433,7 +564,298 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "newsletter", newsletter)}
+              onClick={(e) => handleClickBookExp(e, "chefs_event", chefsEvent)}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>Virtual Dinning</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.virtualDining.title" />
+                    </Label>
+                    <Input type="text" name="title" value={virtualDining ? virtualDining.title : ""} onChange={handleVirtDine} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.virtualDining.description" />
+                    </Label>
+                    <Input type="textarea" name="description" value={virtualDining ? virtualDining.description : ""} onChange={handleVirtDine} />
+                    <Row>
+                      {virtualDining.content
+                        ? virtualDining.content.map((content, index) => (
+                            <Colxx xxs="12" md="3">
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.virtualDining.content[" + index + "].title"} />
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                value={virtualDining.content ? virtualDining.content[index].title : ""}
+                                onChange={(e) => handleVirtDine(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.virtualDining.content[" + index + "].description"} />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={virtualDining.content ? virtualDining.content[index].description : ""}
+                                onChange={(e) => handleVirtDine(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.virtualDining.content[" + index + "].image"} />
+                              </Label>
+                              <div>
+                                <Button
+                                  onClick={() => {
+                                    openFileInput("virtualDining Image[" + index + "]");
+                                  }}
+                                  className="icon-button"
+                                  style={{ float: "right" }}
+                                >
+                                  <i className="simple-icon-pencil" />
+                                  <br></br>
+                                  <input
+                                    type="file"
+                                    id="virtualDining Image[index]"
+                                    rclassName="d-none"
+                                    onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", virtualDining, index)}
+                                    style={{ display: "none" }}
+                                  />
+                                </Button>
+                                <br></br>
+                                <Col md={11}>
+                                  <SingleLightbox
+                                    large={virtualDining.content ? virtualDining.content[index].image : ""}
+                                    thumb={virtualDining.content ? virtualDining.content[index].image : ""}
+                                    className="card-img-top"
+                                  ></SingleLightbox>
+                                </Col>
+                              </div>
+                            </Colxx>
+                          ))
+                        : ""}
+                    </Row>
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickBookExp(e, "virtual_dining", virtualDining)}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>Chefs Table</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.chefsTable.title" />
+                    </Label>
+                    <Input type="text" name="title" value={chefsTable ? chefsTable.title : ""} onChange={handleChefTable} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.chefsTable.description" />
+                    </Label>
+                    <Input type="textarea" name="description" value={chefsTable ? chefsTable.description : ""} onChange={handleChefTable} />
+                    <Row>
+                      {chefsTable.content
+                        ? chefsTable.content.map((content, index) => (
+                            <Colxx xxs="12" md="3">
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.chefsTable.content[" + index + "].title"} />
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                value={chefsTable.content ? chefsTable.content[index].title : ""}
+                                onChange={(e) => handleChefTable(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.chefsTable.content[" + index + "].description"} />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={chefsTable.content ? chefsTable.content[index].description : ""}
+                                onChange={(e) => handleChefTable(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.chefsTable.content[" + index + "].image"} />
+                              </Label>
+                              <div>
+                                <Button
+                                  onClick={() => {
+                                    openFileInput("ChefsTable Image[" + index + "]");
+                                  }}
+                                  className="icon-button"
+                                  style={{ float: "right" }}
+                                >
+                                  <i className="simple-icon-pencil" />
+                                  <br></br>
+                                  <input
+                                    type="file"
+                                    id={"ChefsTable Image[" + index + "]"}
+                                    rclassName="d-none"
+                                    onChange={(e) => changeImageChefsTable(e, "image", "chefs_table", chefsTable, index)}
+                                    style={{ display: "none" }}
+                                  />
+                                </Button>
+                                <br></br>
+                                <Col md={11}>
+                                  <SingleLightbox
+                                    large={chefsTable.content ? chefsTable.content[index].image : ""}
+                                    thumb={chefsTable.content ? chefsTable.content[index].image : ""}
+                                    className="card-img-top"
+                                  ></SingleLightbox>
+                                </Col>
+                              </div>
+                            </Colxx>
+                          ))
+                        : ""}
+                    </Row>
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickBookExp(e, "chefs_table", chefsTable)}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>Fine Dinning</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.fineDining.title" />
+                    </Label>
+                    <Input type="text" name="title" value={fineDining ? fineDining.title : ""} onChange={handleFineDine} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.fineDining.description" />
+                    </Label>
+                    <Input type="textarea" name="description" value={fineDining ? fineDining.description : ""} onChange={handleFineDine} />
+                    <Row>
+                      {fineDining.content
+                        ? fineDining.content.map((content, index) => (
+                            <Colxx xxs="12" md="3">
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.fineDining.content[" + index + "].title"} />
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                value={fineDining.content ? fineDining.content[index].title : ""}
+                                onChange={(e) => handleFineDine(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.fineDining.content[" + index + "].description"} />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={fineDining.content ? fineDining.content[index].description : ""}
+                                onChange={(e) => handleFineDine(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id={"bookExperience.fineDining.content[" + index + "].image"} />
+                              </Label>
+                              <div>
+                                <Button
+                                  onClick={() => {
+                                    openFileInput("fineDining Image[" + index + "]");
+                                  }}
+                                  className="icon-button"
+                                  style={{ float: "right" }}
+                                >
+                                  <i className="simple-icon-pencil" />
+                                  <br></br>
+                                  <input
+                                    type="file"
+                                    id={"fineDining Image[" + index + "]"}
+                                    rclassName="d-none"
+                                    onChange={(e) => changeImageFineDinning(e, "image", "fine_dining", fineDining, index)}
+                                    style={{ display: "none" }}
+                                  />
+                                </Button>
+                                <br></br>
+                                <Col md={11}>
+                                  <SingleLightbox
+                                    large={fineDining.content ? fineDining.content[index].image : ""}
+                                    thumb={fineDining.content ? fineDining.content[index].image : ""}
+                                    className="card-img-top"
+                                  ></SingleLightbox>
+                                </Col>
+                              </div>
+                            </Colxx>
+                          ))
+                        : ""}
+                    </Row>
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickBookExp(e, "fine_dining", fineDining)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -531,7 +953,7 @@ const BookExp = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Chefs Table</h4>
+          <h4>Newsletter</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">
@@ -540,193 +962,13 @@ const BookExp = () => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.title" />
+                      <IntlMessages id="bookExperience.newsletter.title" />
                     </Label>
-                    <Input type="text" name="title" value={chefsTable ? chefsTable.title : ""} onChange={handleChefTable} />
+                    <Input type="text" name="title" value={newsletter ? newsletter.title : ""} onChange={handleNewsLetter} />
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.description" />
+                      <IntlMessages id="bookExperience.newsletter.description" />
                     </Label>
-                    <Input type="textarea" name="description" value={chefsTable ? chefsTable.description : ""} onChange={handleChefTable} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content" />
-                    </Label>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[0].title" />
-                    </Label>
-                    <Input type="text" name="title" value={chefsTable.content ? chefsTable.content[0].title : ""} onChange={(e) => handleChefTable(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[0].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={chefsTable.content ? chefsTable.content[0].description : ""}
-                      onChange={(e) => handleChefTable(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[0].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ChefsTable Image[0]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ChefsTable Image[0]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageChefsTable(e, "image", "chefs_table", chefsTable, 0)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={chefsTable.content ? chefsTable.content[0].image : ""}
-                          thumb={chefsTable.content ? chefsTable.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[1].title" />
-                    </Label>
-                    <Input type="text" name="title" value={chefsTable.content ? chefsTable.content[1].title : ""} onChange={(e) => handleChefTable(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[1].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={chefsTable.content ? chefsTable.content[1].description : ""}
-                      onChange={(e) => handleChefTable(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[1].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ChefsTable Image[1]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ChefsTable Image[1]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageChefsTable(e, "image", "chefs_table", chefsTable, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={chefsTable.content ? chefsTable.content[1].image : ""}
-                          thumb={chefsTable.content ? chefsTable.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[2].title" />
-                    </Label>
-                    <Input type="text" name="title" value={chefsTable.content ? chefsTable.content[2].title : ""} onChange={(e) => handleChefTable(e, 2)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[2].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={chefsTable.content ? chefsTable.content[2].description : ""}
-                      onChange={(e) => handleChefTable(e, 2)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[2].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ChefsTable Image[2]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ChefsTable Image[2]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageChefsTable(e, "image", "chefs_table", chefsTable, 2)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={chefsTable.content ? chefsTable.content[2].image : ""}
-                          thumb={chefsTable.content ? chefsTable.content[2].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[3].title" />
-                    </Label>
-                    <Input type="text" name="title" value={chefsTable.content ? chefsTable.content[3].title : ""} onChange={(e) => handleChefTable(e, 3)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[3].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={chefsTable.content ? chefsTable.content[3].description : ""}
-                      onChange={(e) => handleChefTable(e, 3)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.chefsTable.content[3].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ChefsTable Image[3]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ChefsTable Image[3]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageChefsTable(e, "image", "chefs_table", chefsTable, 3)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={chefsTable.content ? chefsTable.content[3].image : ""}
-                          thumb={chefsTable.content ? chefsTable.content[3].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
+                    <Input type="textarea" name="desc" value={newsletter ? newsletter.desc : ""} onChange={handleNewsLetter} />
                   </Colxx>
                 </Row>
               </Form>
@@ -736,604 +978,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "chefs_table", chefsTable)}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="bookExperience.update" />
-              </span>
-            </Button>
-          </center>
-        </Colxx>
-      </Row>
-      <Row>
-        <Col sm="12">
-          <h4>Offerings</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.title" />
-                    </Label>
-                    <Input type="text" name="title" value={offerings ? offerings.title : ""} onChange={handleOfferings} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={offerings ? offerings.description : ""} onChange={handleOfferings} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.content" />
-                    </Label>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.content[0].title" />
-                    </Label>
-                    <Input type="text" name="title" value={offerings.content ? offerings.content[0].title : ""} onChange={(e) => handleOfferings(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.content[0].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={offerings.content ? offerings.content[0].description : ""}
-                      onChange={(e) => handleOfferings(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.content[0].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("Offerings Image[0]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="Offerings Image[0]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageOfferings(e, "image", "offerings", offerings, 0)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={offerings.content ? offerings.content[0].image : ""}
-                          thumb={offerings.content ? offerings.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.content[1].title" />
-                    </Label>
-                    <Input type="text" name="title" value={offerings.content ? offerings.content[1].title : ""} onChange={(e) => handleOfferings(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.content[1].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={offerings.content ? offerings.content[1].description : ""}
-                      onChange={(e) => handleOfferings(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.offerings.content[1].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("Offerings Image[1]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="Offerings Image[1]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageOfferings(e, "image", "offerings", offerings, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={offerings.content ? offerings.content[1].image : ""}
-                          thumb={offerings.content ? offerings.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Button
-              color="primary"
-              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "offerings", offerings)}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="bookExperience.update" />
-              </span>
-            </Button>
-          </center>
-        </Colxx>
-      </Row>
-      <Row>
-        <Col sm="12">
-          <h4>Fine Dinning</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.title" />
-                    </Label>
-                    <Input type="text" name="title" value={fineDining ? fineDining.title : ""} onChange={handleFineDine} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={fineDining ? fineDining.description : ""} onChange={handleFineDine} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content" />
-                    </Label>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[0].title" />
-                    </Label>
-                    <Input type="text" name="title" value={fineDining.content ? fineDining.content[0].title : ""} onChange={(e) => handleFineDine(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[0].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={fineDining.content ? fineDining.content[0].description : ""}
-                      onChange={(e) => handleFineDine(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[0].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("fineDining Image[0]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="fineDining Image[0]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageFineDinning(e, "image", "fine_dining", fineDining, 0)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={fineDining.content ? fineDining.content[0].image : ""}
-                          thumb={fineDining.content ? fineDining.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[1].title" />
-                    </Label>
-                    <Input type="text" name="title" value={fineDining.content ? fineDining.content[1].title : ""} onChange={(e) => handleFineDine(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[1].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={fineDining.content ? fineDining.content[1].description : ""}
-                      onChange={(e) => handleFineDine(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[1].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("fineDining Image[1]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="fineDining Image[1]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageFineDinning(e, "image", "fine_dining", fineDining, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={fineDining.content ? fineDining.content[1].image : ""}
-                          thumb={fineDining.content ? fineDining.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[2].title" />
-                    </Label>
-                    <Input type="text" name="title" value={fineDining.content ? fineDining.content[2].title : ""} onChange={(e) => handleFineDine(e, 2)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[2].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={fineDining.content ? fineDining.content[2].description : ""}
-                      onChange={(e) => handleFineDine(e, 2)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[2].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("fineDining Image[2]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="fineDining Image[2]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageFineDinning(e, "image", "fine_dining", fineDining, 2)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={fineDining.content ? fineDining.content[2].image : ""}
-                          thumb={fineDining.content ? fineDining.content[2].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[3].title" />
-                    </Label>
-                    <Input type="text" name="title" value={fineDining.content ? fineDining.content[3].title : ""} onChange={(e) => handleFineDine(e, 3)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[3].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={fineDining.content ? fineDining.content[3].description : ""}
-                      onChange={(e) => handleFineDine(e, 3)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.fineDining.content[3].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("fineDining Image[3]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="fineDining Image[3]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageFineDinning(e, "image", "fine_dining", fineDining, 3)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={fineDining.content ? fineDining.content[3].image : ""}
-                          thumb={fineDining.content ? fineDining.content[3].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Button
-              color="primary"
-              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "fine_dining", fineDining)}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="bookExperience.update" />
-              </span>
-            </Button>
-          </center>
-        </Colxx>
-      </Row>
-      <Row>
-        <Col sm="12">
-          <h4>Virtual Dinning</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.title" />
-                    </Label>
-                    <Input type="text" name="title" value={virtualDining ? virtualDining.title : ""} onChange={handleVirtDine} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={virtualDining ? virtualDining.description : ""} onChange={handleVirtDine} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content" />
-                    </Label>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[0].title" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="title"
-                      value={virtualDining.content ? virtualDining.content[0].title : ""}
-                      onChange={(e) => handleVirtDine(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[0].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={virtualDining.content ? virtualDining.content[0].description : ""}
-                      onChange={(e) => handleVirtDine(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[0].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("virtualDining Image[0]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="virtualDining Image[0]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", virtualDining, 0)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={virtualDining.content ? virtualDining.content[0].image : ""}
-                          thumb={virtualDining.content ? virtualDining.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[1].title" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="title"
-                      value={virtualDining.content ? virtualDining.content[1].title : ""}
-                      onChange={(e) => handleVirtDine(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[1].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={virtualDining.content ? virtualDining.content[1].description : ""}
-                      onChange={(e) => handleVirtDine(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[1].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("virtualDining Image[1]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="virtualDining Image[1]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", virtualDining, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={virtualDining.content ? virtualDining.content[1].image : ""}
-                          thumb={virtualDining.content ? virtualDining.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[2].title" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="title"
-                      value={virtualDining.content ? virtualDining.content[2].title : ""}
-                      onChange={(e) => handleVirtDine(e, 2)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[2].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={virtualDining.content ? virtualDining.content[2].description : ""}
-                      onChange={(e) => handleVirtDine(e, 2)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[2].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("virtualDining Image[2]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="virtualDining Image[2]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", virtualDining, 2)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={virtualDining.content ? virtualDining.content[2].image : ""}
-                          thumb={virtualDining.content ? virtualDining.content[2].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[3].title" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="title"
-                      value={virtualDining.content ? virtualDining.content[3].title : ""}
-                      onChange={(e) => handleVirtDine(e, 3)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[3].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={virtualDining.content ? virtualDining.content[3].description : ""}
-                      onChange={(e) => handleVirtDine(e, 3)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.virtualDining.content[3].image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("virtualDining Image[3]");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="virtualDining Image[3]"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", virtualDining, 3)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={virtualDining.content ? virtualDining.content[3].image : ""}
-                          thumb={virtualDining.content ? virtualDining.content[3].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Button
-              color="primary"
-              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "virtual_dining", virtualDining)}
+              onClick={(e) => handleClickBookExp(e, "newsletter", newsletter)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />

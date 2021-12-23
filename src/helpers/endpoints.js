@@ -1,4 +1,4 @@
-export const BASE_URL = "https://hypervergedemo.site/backend/v1/"; //'http://localhost:8000/v1/'; // 
+export const BASE_URL =  'http://localhost:8000/v1/'; //"https://hypervergedemo.site/backend/v1/"; //
 export const LOGIN = "auth/login";
 export const LOGOUT = "auth/logout";
 export const FORGOT_PASSWORD = "auth/forgot-password";
@@ -42,6 +42,8 @@ export const BOOK_AN_EXPERIENCE = "cms/book_experience";
 export const FOR_CHEFS = "cms/for_chef";
 export const OUR_CHEFS = "cms/our_chefs";
 export const ABOUT_US = "cms/about_us";
+export const TICKETED_EXP = "cms/ticketed_experiences";
+export const PRIVATE_EXP = "cms/private_experiences";
 export const DUNZO = "util/dunzo";
 export const DUNZO_EDIT = "util/dunzoedit";
 export const DUNZO_EMAIL = "util/dunzosendemail";

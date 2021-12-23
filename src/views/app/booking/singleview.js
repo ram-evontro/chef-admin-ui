@@ -548,7 +548,7 @@ const Singleview = ({ match, history }) => {
               </Colxx>
               <Colxx xxs="12" lg="7" className="mb-4 col-right">
                 <Log logAction={logAction} isLoadingForLog={isLoadingForLog} data={booking.log} className="mb-4" />
-                {booking.type === "virtual_dining" && booking.delivery_selection === "common" ? (
+                {((booking.type === "virtual_dining" && booking.delivery_selection === "common")|| booking.type === "chef_table") ? (
                   <Card className="mb-2">
                     <CardBody>
                       <CardTitle>
@@ -595,6 +595,7 @@ const Singleview = ({ match, history }) => {
                       <CardTitle>
                         <h3>Event Details</h3>
                       </CardTitle>
+                      <NavLink location={{}} to={`${adminRoot}/chef/eventview/?event=${booking.event.id}`}>
                       <p>
                         <b>Title:</b> {booking.event.title}
                       </p>
@@ -602,7 +603,7 @@ const Singleview = ({ match, history }) => {
                         <b>Description:</b> {booking.event.desc}
                       </p>
                       <p>
-                        <b>Venue:</b> {booking.event.venue.address}
+                        <b>Venue:</b> {booking.event.venue}
                       </p>
                       <p>
                         <b>Time From:</b> {booking.event.timefrom}
@@ -610,6 +611,7 @@ const Singleview = ({ match, history }) => {
                       <p>
                         <b>Time Till:</b> {booking.event.timetill}
                       </p>
+                      </NavLink>
                     </CardBody>
                   </Card>
                 ) : (

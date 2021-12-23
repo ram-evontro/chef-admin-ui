@@ -75,7 +75,7 @@ const CalendarCard = ({ items, updateAction, changeMonth }) => {
     items.map((item) => {
       let temprow = {};
       temprow["key"] = item.id;
-      temprow["title"] = (item.type === "virtual_dining" ? "Virtual Dining" : "Chef's Table") + " (" + item.meal + ")";
+      temprow["title"] = (item.type === "virtual_dining" ? "Virtual Dining"+ " (" + item.meal + ")" : item.type === "chef_table" ?"Chef's Table"+ " (" + item.meal + ")":"Chef's Event");
       temprow["start"] = item.booking_date;
       temprow["end"] = item.booking_date;
       temp.push(temprow);

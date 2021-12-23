@@ -30,6 +30,8 @@ import BookExp from "./cms/bookexp";
 import ForChef from "./cms/forChefs";
 import AboutUs from "./cms/aboutUs";
 import OurChef from "./cms/ourChefs";
+import TicketedExp from "./cms/ticketedExp";
+import PrivateExp from "./cms/privateExp";
 
 const Cms = ({ match }) => {
   const [bookExperience, setBookExperience] = useState({});
@@ -131,7 +133,27 @@ const Cms = ({ match }) => {
                 toggle("1");
               }}
             >
-              Book an Experience
+              Homepage
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "5" })}
+              onClick={() => {
+                toggle("5");
+              }}
+            >
+              Ticketed Experiences
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "6" })}
+              onClick={() => {
+                toggle("6");
+              }}
+            >
+              Private Experiences
             </NavLink>
           </NavItem>
           <NavItem>
@@ -141,7 +163,7 @@ const Cms = ({ match }) => {
                 toggle("2");
               }}
             >
-             Cook with us
+              Cook with us
             </NavLink>
           </NavItem>
           <NavItem>
@@ -178,6 +200,12 @@ const Cms = ({ match }) => {
           </TabPane>
           <TabPane tabId="4">
             <AboutUs />
+          </TabPane>
+          <TabPane tabId="5">
+            <TicketedExp />
+          </TabPane>
+          <TabPane tabId="6">
+            <PrivateExp />
           </TabPane>
         </TabContent>
       </div>
