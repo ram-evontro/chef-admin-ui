@@ -160,7 +160,7 @@ const PrivateExp = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("ForChef headerImage");
+                          openFileInput("PrivateExp headerImage");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -170,7 +170,7 @@ const PrivateExp = () => {
                         <input
                           type="file"
                           // ref={inputFile}
-                          id="ForChef headerImage"
+                          id="PrivateExp headerImage"
                           rclassName="d-none"
                           onChange={(e) => changeImageHeader(e, "image", "header", header)}
                           style={{ display: "none" }}

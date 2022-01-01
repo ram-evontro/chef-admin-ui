@@ -367,7 +367,7 @@ const Singleview = ({ match, history }) => {
                       <b>Diner Count:</b> {booking.diner_count}
                     </p>
                     <p>
-                      <b>Experience date:</b> {moment.utc(booking.booking_date).format("MMM D, Y HH:mm")}
+                      <b>Experience date:</b> {moment(booking.booking_date).format("MMM D, Y HH:mm")}
                       {booking.dunzo_taskids && booking.dunzo_taskids.length === 0 && booking.type === "virtual_dining" ? (
                         <button onClick={updateBookingTime} className="btn btn-outline-primary" title="Edit delivery Time">
                           <i className="simple-icon-pencil" />
@@ -529,7 +529,7 @@ const Singleview = ({ match, history }) => {
                   <Card className="mb-2">
                     <CardBody>
                       <CardTitle>
-                        <h3>Cuisines Prefered</h3>
+                        <h3>Cuisines Preferred</h3>
                       </CardTitle>
                       {booking.cuisines.map((cuisine) => (
                         <div key={cuisine.id}>
@@ -630,6 +630,9 @@ const Singleview = ({ match, history }) => {
                         </p>
                         <p>
                           <b>Menu Desc:</b> {booking.common_menu.desc}
+                        </p>
+                        <p>
+                          <b>Chef :</b> {booking.common_menu.user?booking.common_menu.user.name:'NA'}
                         </p>
                       </NavLink>
                     </CardBody>

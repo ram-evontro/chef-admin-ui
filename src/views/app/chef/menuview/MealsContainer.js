@@ -26,7 +26,7 @@ const MealsContainer = ({ item, mealcourses,handleMenuChange,handleMenuDelete })
       </p>
       <input onChange={(e)=>{handleMenuChange(e,item._id)}} type="text" className="form-control mb-2" value={item.heading} name="heading" />
       <p className="text-muted text-small mb-1">
-        <IntlMessages id="forms.intro" />
+        <IntlMessages id="forms.description" />
       </p>
       <textarea onChange={(e)=>{handleMenuChange(e,item._id)}} value={item.info} className="form-control mb-1" name="info" id="info" cols="30" rows="2"></textarea>
     </div>

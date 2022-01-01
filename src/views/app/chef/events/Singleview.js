@@ -326,9 +326,9 @@ const Singleview = ({ event, setEvent, chefs }) => {
     setEvent(formdata);
   };
   const setDate = (val, key) => {
-    console.log(val, key, "setdate");
+    console.log(val, key, "setdate",moment(val).utcOffset(330),moment().utcOffset());
     let temp = { ...event };
-    temp["dates"][key] = val;
+    temp["dates"][key] = moment(val).utcOffset(moment().utcOffset()).format('Y-MM-DD');
     setEvent(temp);
   };
   return (

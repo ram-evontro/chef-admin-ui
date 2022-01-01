@@ -123,6 +123,34 @@ const TicketedExp = () => {
               <Form>
                 <Row>
                   <Colxx xxs="12">
+                  <Label className="mt-4">
+                      <IntlMessages id="bookExperience.forChef.header.image" />
+                    </Label>
+                    <div>
+                      <Button
+                        onClick={() => {
+                          openFileInput("TicketedExp headerImage");
+                        }}
+                        className="icon-button"
+                        style={{ float: "right" }}
+                      >
+                        <i className="simple-icon-pencil" />
+                        <br></br>
+                        <input
+                          type="file"
+                          // ref={inputFile}
+                          id="TicketedExp headerImage"
+                          rclassName="d-none"
+                          onChange={(e) => changeImageHeader(e, "image", "header", header)}
+                          style={{ display: "none" }}
+                        />
+                      </Button>
+                      <br></br>
+                      <Col md={4}>
+                        <SingleLightbox large={header ? header.image : ""} thumb={header ? header.image : ""} className="card-img-top"></SingleLightbox>
+                      </Col>
+                    </div>
+                    <br></br>
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.forChef.header.title" />
                     </Label>

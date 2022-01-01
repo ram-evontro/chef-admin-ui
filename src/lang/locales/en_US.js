@@ -570,6 +570,7 @@ module.exports = {
   "forms.date-u": "DATE",
   "forms.state-u": "STATE",
   "forms.grid": "Form Grid",
+  "forms.public_address": "Public Address",
   "forms.address": "Address",
   "forms.address2": "Address 2",
   "forms.city": "City",

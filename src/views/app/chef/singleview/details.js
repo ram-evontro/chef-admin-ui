@@ -482,13 +482,13 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
               <IntlMessages id="maps.address" />
             </CardTitle>
             <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.address" />
+              <IntlMessages id="forms.public_address" />
             </p>
             <input onChange={handleChange} type="text" name="address1" className="form-control mb-2" value={user.address1} />
             <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.address2" />
+              <IntlMessages id="forms.address" />
             </p>
-            <input onChange={handleChange} type="text" name="address2" className="form-control mb-2" value={user.address2} />
+            <textarea onChange={handleChange} name="address2" className="form-control mb-2"  >{user.address2}</textarea>
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.pincode" />
             </p>

@@ -65,7 +65,7 @@ const BookExp = () => {
     setHeader(tempdata);
   };
   const handleChefEvent = (e, x = -1) => {
-    let tempdata = { ...virtualDining };
+    let tempdata = { ...chefsEvent };
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
@@ -73,7 +73,7 @@ const BookExp = () => {
     } else {
       tempdata[name] = val;
     }
-    setVirtualDining(tempdata);
+    setChefsEvent(tempdata);
   };
   const handleVirtDine = (e, x = -1) => {
     let tempdata = { ...virtualDining };
@@ -200,6 +200,29 @@ const BookExp = () => {
       let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
 
       setFineDining({ ...formdata });
+      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
+  };
+  const changeImageChefsEvent = async (e, imageSection, section, component, i) => {
+    e.preventDefault();
+    let formdata = { ...component };
+    if (e.target.files[0]) {
+      let fileurl = await upload(e.target.files[0]);
+
+      formdata.content[i][imageSection] = fileurl;
+    }
+    try {
+      var form = { section: section, type: component.type, details: { ...formdata } };
+
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+
+      setChefsEvent({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
     } catch (err) {
       console.log(err);
@@ -536,9 +559,9 @@ const BookExp = () => {
                                   <br></br>
                                   <input
                                     type="file"
-                                    id="chefsEvent Image[index]"
+                                    id={"chefsEvent Image[" + index + "]"}
                                     rclassName="d-none"
-                                    onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", chefsEvent, index)}
+                                    onChange={(e) => changeImageChefsEvent(e, "image", "chefs_event", chefsEvent, index)}
                                     style={{ display: "none" }}
                                   />
                                 </Button>
@@ -580,7 +603,7 @@ const BookExp = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Virtual Dinning</h4>
+          <h4>Virtual Dining</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">
@@ -633,7 +656,7 @@ const BookExp = () => {
                                   <br></br>
                                   <input
                                     type="file"
-                                    id="virtualDining Image[index]"
+                                    id={"virtualDining Image["+index+"]"}
                                     rclassName="d-none"
                                     onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", virtualDining, index)}
                                     style={{ display: "none" }}
@@ -774,7 +797,7 @@ const BookExp = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Fine Dinning</h4>
+          <h4>Fine Dining</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">

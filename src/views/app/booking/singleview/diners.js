@@ -54,12 +54,20 @@ const DinerItem = ({ item, menu, delivery, deliveryObj, resendLink, isLoadingDun
             ""
           )}
           {menu && item.menu ? (
+            <>
             <p>
               <b>Menu Selected:</b>{" "}
               <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${item.menu.id}`}>
                 {item.menu.title}
               </NavLink>
             </p>
+            <p>
+              <b>Chef:</b>{" "}
+              <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${item.menu.id}`}>
+                {item.menu.user?item.menu.user.name:'NA'}
+              </NavLink>
+            </p>
+            </>
           ) : (
             ""
           )}

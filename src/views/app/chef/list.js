@@ -15,7 +15,7 @@ const List = ({ match, history }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [chefTypes, setChefTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedPageSize, setSelectedPageSize] = useState(4);
+  const [selectedPageSize, setSelectedPageSize] = useState(10);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
     column: "",
     order: "",
