@@ -234,7 +234,7 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
         </FormGroup>
         <FormGroup className="mt-3">
           <Label>
-            <IntlMessages id="forms.menu_type" />
+            <IntlMessages id="forms.chef_type" />
           </Label>
           <select
             className="form-control"

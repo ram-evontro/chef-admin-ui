@@ -101,6 +101,7 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
             <option value="">Select Type</option>
             <option value="Chefs Table">Chef's Table</option>
             <option value="Virtual Dining">Virtual Dining</option>
+            <option value="Chefs Event">Chefs Event</option>
           </select>
           {errors.booking_type && <div className="invalid-feedback d-block">{errors.booking_type}</div>}
         </FormGroup>

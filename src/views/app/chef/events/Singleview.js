@@ -35,7 +35,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
   const [mapKey, setMapKey] = useState("");
   const autoComplete = useRef(null);
   useEffect(async () => {
-    setSelectedChef({key:event.chef.id,value:event.chef.id,label:event.chef.name});
+    setSelectedChef({ key: event.chef.id, value: event.chef.id, label: event.chef.name });
     if (event.lat) {
       setLat(event.lat);
     }
@@ -169,12 +169,9 @@ const Singleview = ({ event, setEvent, chefs }) => {
     }
     formdata["lat"] = mylat;
     formdata["lng"] = mylong;
-    if(selectedChef && selectedChef.value!==event.chef.id)
-    {
+    if (selectedChef && selectedChef.value !== event.chef.id) {
       formdata["chef"] = selectedChef.value;
-    }
-    else
-    {
+    } else {
       delete formdata["chef"];
     }
     delete formdata["dates"];
@@ -204,7 +201,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
   const handleChefSelect = (val) => {
     setSelectedChef(val);
     console.log(val);
-   };
+  };
   const deletePicture = () => {};
   const uploadImages = async () => {
     setIsLoading(true);
@@ -326,10 +323,43 @@ const Singleview = ({ event, setEvent, chefs }) => {
     setEvent(formdata);
   };
   const setDate = (val, key) => {
-    console.log(val, key, "setdate",moment(val).utcOffset(330),moment().utcOffset());
+    console.log(val, key, "setdate", moment(val).utcOffset(330), moment().utcOffset());
     let temp = { ...event };
-    temp["dates"][key] = moment(val).utcOffset(moment().utcOffset()).format('Y-MM-DD');
+    temp["dates"][key] = moment(val).utcOffset(moment().utcOffset()).format("Y-MM-DD");
     setEvent(temp);
+  };
+  const updateGalleryImage = async (picture, replace) => {
+    let temp = [];
+    if (event.pictures) {
+      temp = [...event.pictures];
+    }
+    const findIndex = temp.findIndex((row) => {
+      return row === replace ? true : false;
+    });
+    if (findIndex > -1) {
+      temp.splice(findIndex, 1);
+    }
+    let fileurl = await upload(picture);
+    temp.push(fileurl);
+    let formdata = { pictures: temp };
+    if (event.booking_count > 0) {
+      NotificationManager.warning("Caution event already have bookings", "Event has booking", 3000, null, null, "");
+    }
+    try {
+      let { data } = await api.patch(axiosURLS.EVENT + "/" + event.id, formdata);
+      setEvent(data);
+      setUserGalleryPic([]);
+      setFileAction("none");
+      dropZone.removeAllFiles(true);
+      setTempFile(null);
+      NotificationManager.success("Picture cropped successfully", "Success", 3000, null, null, "");
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
   };
   return (
     <Row>
@@ -411,7 +441,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
             <CardTitle>
               <IntlMessages id="pages.gallery" />
             </CardTitle>
-            <GalleryDetail setImageToDelete={setImageToDelete} handleClick={deletePicture} images={event.pictures} />
+            <GalleryDetail updateGalleryImage={updateGalleryImage} setImageToDelete={setImageToDelete} handleClick={deletePicture} images={event.pictures} />
           </CardBody>
         </Card>
         <Card className="mb-4">

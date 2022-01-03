@@ -384,7 +384,7 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
         <Card className="mb-4">
           <CardBody>
             <CardTitle>
-              <IntlMessages id="pages.meals" />
+              <IntlMessages id="pages.menu" />
             </CardTitle>
             {menu.meals && menu.meals.map((meal) => <MealsContainer handleMenuDelete={handleMenuDelete} handleMenuChange={handleMenuChange} mealcourses={courses} key={meal.id} item={meal} />)}
             <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleMenuUpload}>

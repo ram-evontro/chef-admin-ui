@@ -603,7 +603,7 @@ module.exports = {
   "forms.activetill": "Active Till",
   "forms.menu_picture": "Menu Picture",
   "forms.meals": "Meals",
-  "forms.meal_course": "Meal Course",
+  "forms.meal_course": "Course",
   "forms.price": "Price",
   "forms.icon": "Icon",
   "forms.feedback_param": "Feedback Parameter",
