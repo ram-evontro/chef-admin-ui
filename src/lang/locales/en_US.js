@@ -979,7 +979,7 @@ module.exports = {
   "bookExperience.aboutUs.content[3].instagram": "Instagram",
   "bookExperience.aboutUs.content[3].twitter": "Twitter",
   "bookExperience.aboutUs.content[3].post": "Post",
-  "bookExperience.aboutUs.mission.content[0]": "Our Vission",
+  "bookExperience.aboutUs.mission.content[0]": "Our Vision",
   "bookExperience.aboutUs.mission.content[0].title": "Title",
   "bookExperience.aboutUs.mission.content[0].description": "Description",
   "bookExperience.aboutUs.mission.content[1]": "Our Mission",

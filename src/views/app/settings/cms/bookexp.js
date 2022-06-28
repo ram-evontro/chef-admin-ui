@@ -656,7 +656,7 @@ const BookExp = () => {
                                   <br></br>
                                   <input
                                     type="file"
-                                    id={"virtualDining Image["+index+"]"}
+                                    id={"virtualDining Image[" + index + "]"}
                                     rclassName="d-none"
                                     onChange={(e) => changeImageVirtualDinning(e, "image", "virtual_dining", virtualDining, index)}
                                     style={{ display: "none" }}
@@ -782,6 +782,45 @@ const BookExp = () => {
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
               onClick={(e) => handleClickBookExp(e, "chefs_table", chefsTable)}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>Our featured chefs</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.quote.title" />
+                    </Label>
+                    <Input type="text" name="title" value={ourfeaturedChefs ? ourfeaturedChefs.title : ""} onChange={handleFeatChef} />
+                    <Label className="mt-4">Description</Label>
+                    <Input type="text" name="description" value={ourfeaturedChefs ? ourfeaturedChefs.description : ""} onChange={handleFeatChef} />
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickBookExp(e, "our_featured_chefs", ourfeaturedChefs)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />

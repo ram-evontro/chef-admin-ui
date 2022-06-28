@@ -140,6 +140,29 @@ const PrivateExp = () => {
     setBrowseall(data.private_experiences.browse_all);
     
   };
+  const changeImageOfferings = async (e, imageSection, section, component, i) => {
+    e.preventDefault();
+    let formdata = { ...component };
+    if (e.target.files[0]) {
+      let fileurl = await upload(e.target.files[0]);
+
+      formdata.content[i][imageSection] = fileurl;
+    }
+    try {
+      var form = { section: section, type: component.type, details: { ...formdata } };
+
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PRIVATE_EXP, form);
+
+      setOfferings({ ...formdata });
+      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
+  };
   return loading ? (
     <div className="loading" />
   ) : (

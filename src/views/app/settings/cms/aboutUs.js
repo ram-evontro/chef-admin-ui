@@ -517,6 +517,10 @@ const AboutUs = () => {
                       <IntlMessages id={`bookExperience.aboutUs.founder.post`} />
                     </Label>
                     <Input type="text" name="post" value={founder ? founder.post : ""} onChange={handleFounder} />
+                    <Label className="mt-4">
+                      Chef Type
+                    </Label>
+                    <Input type="text" name="chef_type" value={founder ? founder.chef_type : ""} onChange={handleFounder} />
                   </Colxx>
                 </Row>
               </Form>
