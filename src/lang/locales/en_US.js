@@ -350,7 +350,7 @@ module.exports = {
   "pages.reset": "Reset",
   "pages.resend_link": "Resend Link",
   "pages.schedule_delivery": "Schedule Delivery",
-  "pages.schedule_delivery_all":"Schedule Delivery for all diners",
+  "pages.schedule_delivery_all": "Schedule Delivery for all diners",
   "pages.request_feedback": "Request Feedback",
   "pages.dates": "Dates",
   "pages.what_to_expect": "What to expect",
@@ -678,6 +678,7 @@ module.exports = {
   "forms.seats": "Seats",
   "forms.date_from": "Date From",
   "forms.date_to": "Date To",
+  "forms.booking_hours": "Prior booking hours",
   /* 07.11.Form Components */
   "form-components.custom-inputs": "Custom Inputs",
   "form-components.checkboxes": "Checkboxes",

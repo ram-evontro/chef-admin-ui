@@ -121,6 +121,23 @@ const BookingSettings = ({ match }) => {
                     </Label>
                     <Input type="text" name="tax_amount" value={formdata.tax_amount ? formdata.tax_amount : ""} onChange={handleChange} />
                   </Colxx>
+                  <Colxx xxs="12" md="6">
+                    <Label className="mt-4">
+                      <IntlMessages id="forms.booking_hours" />
+                    </Label>
+                    <select
+                      name="booking_hours"
+                      id="booking_hours"
+                      onChange={handleChange}
+                      value={formdata.booking_hours ? formdata.booking_hours : "12"}
+                      className="form-control"
+                    >
+                      <option value="0">0</option>
+                      <option value="12">12</option>
+                      <option value="24">24</option>
+                      <option value="48">48</option>
+                    </select>
+                  </Colxx>
                   <Colxx xxs="12">
                     <center>
                       <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleClick}>

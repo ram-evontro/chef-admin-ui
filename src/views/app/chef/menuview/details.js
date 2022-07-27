@@ -14,6 +14,8 @@ import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
 import { images } from "helpers/images";
 import MealsContainer from "./MealsContainer";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => {
   const { upload } = fileapi();
   const ReactDOMServer = require("react-dom/server");
@@ -155,9 +157,8 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     formdata["tags"] = tagsLO;
     delete formdata["id"];
     delete formdata["user"];
-    if(formdata["chef_type"]['id'])
-    {
-      formdata["chef_type"] = formdata["chef_type"]['id'];
+    if (formdata["chef_type"]["id"]) {
+      formdata["chef_type"] = formdata["chef_type"]["id"];
     }
     try {
       let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
@@ -211,59 +212,55 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     }
     setIsLoading(false);
   };
-  const addMealCard=()=>{
-    let tempmenu = {...menu};
+  const addMealCard = () => {
+    let tempmenu = { ...menu };
     let temparr = [];
-    if(tempmenu.meals&&tempmenu.meals.length>0)
-    {
-      temparr =[...tempmenu.meals]
+    if (tempmenu.meals && tempmenu.meals.length > 0) {
+      temparr = [...tempmenu.meals];
     }
-    let newMeal = {_id:(Math.floor(Math.random() * 1000000) + 1),course:'',heading:'',info:''}
+    let newMeal = { _id: Math.floor(Math.random() * 1000000) + 1, course: "", heading: "", info: "" };
     temparr.push(newMeal);
-    tempmenu['meals']=temparr;
+    tempmenu["meals"] = temparr;
     setMenu(tempmenu);
-  }
-  const handleMenuChange=(e,id)=> {
-    let tempmenu = {...menu};
+  };
+  const handleMenuChange = (e, id) => {
+    let tempmenu = { ...menu };
     let temparr = [];
     let val = e.target.value;
     let name = e.target.name;
-    
-    if(tempmenu.meals&&tempmenu.meals.length>0)
-    {
-      temparr =[...tempmenu.meals];
-      const mealindex = temparr.findIndex((meal)=>(meal._id===id?true:false));
-      temparr[mealindex][name]=val;
-      tempmenu['meals']=temparr;
+
+    if (tempmenu.meals && tempmenu.meals.length > 0) {
+      temparr = [...tempmenu.meals];
+      const mealindex = temparr.findIndex((meal) => (meal._id === id ? true : false));
+      temparr[mealindex][name] = val;
+      tempmenu["meals"] = temparr;
       setMenu(tempmenu);
     }
-  }
-  const handleMenuDelete=(id)=> {
-    let tempmenu = {...menu};
-    let temparr = [];    
-    if(tempmenu.meals&&tempmenu.meals.length>0)
-    {
-      temparr =[...tempmenu.meals];
-      const mealindex = temparr.findIndex((meal)=>(meal._id===id?true:false));
+  };
+  const handleMenuDelete = (id) => {
+    let tempmenu = { ...menu };
+    let temparr = [];
+    if (tempmenu.meals && tempmenu.meals.length > 0) {
+      temparr = [...tempmenu.meals];
+      const mealindex = temparr.findIndex((meal) => (meal._id === id ? true : false));
       if (mealindex > -1) {
         temparr.splice(mealindex, 1);
       }
-      tempmenu['meals']=temparr;
+      tempmenu["meals"] = temparr;
       setMenu(tempmenu);
     }
-  }
-  const handleMenuUpload= async()=> {
-    let tempmenu = {...menu};
-    let formdata = {};    
-    if(tempmenu.meals&&tempmenu.meals.length>0)
-    {
-      formdata['meals'] =tempmenu.meals.map((meal)=>{
-        let tempmeal = {...meal};
-        delete tempmeal['id'];
-        delete tempmeal['_id'];
+  };
+  const handleMenuUpload = async () => {
+    let tempmenu = { ...menu };
+    let formdata = {};
+    if (tempmenu.meals && tempmenu.meals.length > 0) {
+      formdata["meals"] = tempmenu.meals.map((meal) => {
+        let tempmeal = { ...meal };
+        delete tempmeal["id"];
+        delete tempmeal["_id"];
         return tempmeal;
       });
-      setIsLoading(true);     
+      setIsLoading(true);
       try {
         let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
         NotificationManager.success("Meal added successfully", "Success", 3000, null, null, "");
@@ -277,7 +274,12 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
       }
       setIsLoading(false);
     }
-  }
+  };
+  const setDate = (val, param) => {
+    let tempdata = { ...menu };
+    tempdata[param] = val;
+    setMenu(tempdata);
+  };
   return (
     <Row>
       <Colxx xxs="12" lg="4" className="mb-4 col-left">
@@ -336,6 +338,18 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
                 ))}
             </select>
             <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.activefrom" />
+            </p>
+            <div className="mb-2">
+              <DatePicker selected={Date.parse(menu.activefrom)} onChange={(val) => setDate(val, "activefrom")} shouldCloseOnSelect />
+            </div>
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.activetill" />
+            </p>
+            <div className="mb-2">
+              <DatePicker selected={Date.parse(menu.activetill)} onChange={(val) => setDate(val, "activetill")} shouldCloseOnSelect />
+            </div>
+            <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.tags" />
             </p>
             <div className="mb-2">
@@ -386,7 +400,10 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
             <CardTitle>
               <IntlMessages id="pages.menu" />
             </CardTitle>
-            {menu.meals && menu.meals.map((meal) => <MealsContainer handleMenuDelete={handleMenuDelete} handleMenuChange={handleMenuChange} mealcourses={courses} key={meal.id} item={meal} />)}
+            {menu.meals &&
+              menu.meals.map((meal) => (
+                <MealsContainer handleMenuDelete={handleMenuDelete} handleMenuChange={handleMenuChange} mealcourses={courses} key={meal.id} item={meal} />
+              ))}
             <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleMenuUpload}>
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
