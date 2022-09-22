@@ -23,6 +23,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
   const { upload } = fileapi();
   const ReactDOMServer = require("react-dom/server");
   const [selectedChef, setSelectedChef] = useState({});
+  const [selectedMealTime, setSelectedMealTime] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userGalleryPic, setUserGalleryPic] = useState([]);
   const [tempFile, setTempFile] = useState([]);
@@ -44,6 +45,8 @@ const Singleview = ({ event, setEvent, chefs }) => {
     }
     let response = await api.get(axiosURLS.INTEGRATIONS);
     setMapKey(response.data.google_map.api_key);
+    let tempSelectedMealTime = event.new_dates.map((daterow,key)=>({key: key, value: daterow.time, label: daterow.time})); 
+    setSelectedMealTime(tempSelectedMealTime);
   }, [event]);
   let componentConfig = { postUrl: "no-url" };
   let eventHandlers = {
@@ -243,12 +246,12 @@ const Singleview = ({ event, setEvent, chefs }) => {
   const addDate = () => {
     let tempevent = { ...event };
     let temparr = [];
-    if (tempevent.dates && tempevent.dates.length > 0) {
-      temparr = [...tempevent.dates];
+    if (tempevent.new_dates && tempevent.new_dates.length > 0) {
+      temparr = [...tempevent.new_dates];
     }
     let newDate = moment().format("M D YY");
-    temparr.push(newDate);
-    tempevent["dates"] = temparr;
+    temparr.push({ date: newDate, time: "Lunch", from: "12:00", to: "14:00" });
+    tempevent["new_dates"] = temparr;
     setEvent(tempevent);
   };
   const addWte = () => {
@@ -264,12 +267,12 @@ const Singleview = ({ event, setEvent, chefs }) => {
   const handleDateDelete = (key) => {
     let tempevent = { ...event };
     let temparr = [];
-    if (tempevent.dates && tempevent.dates.length > 0) {
-      temparr = [...tempevent.dates];
+    if (tempevent.new_dates && tempevent.new_dates.length > 0) {
+      temparr = [...tempevent.new_dates];
       if (key > -1) {
         temparr.splice(key, 1);
       }
-      tempevent["dates"] = temparr;
+      tempevent["new_dates"] = temparr;
       setEvent(tempevent);
     }
   };
@@ -294,8 +297,11 @@ const Singleview = ({ event, setEvent, chefs }) => {
   const handleEventUpload = async (param) => {
     let tempevent = { ...event };
     let formdata = {};
-    if (param === "dates" && tempevent.dates && tempevent.dates.length > 0) {
-      formdata["dates"] = tempevent.dates;
+    if (param === "new_dates" && tempevent.new_dates && tempevent.new_dates.length > 0) {
+      let newDates = tempevent.new_dates.map((daterow) => {
+        return { date: daterow.date, time: daterow.time, from: daterow.from, to: daterow.to };
+      });
+      formdata["new_dates"] = newDates;
     }
     if (param === "what_to_expect" && tempevent.what_to_expect && tempevent.what_to_expect.length > 0) {
       formdata["what_to_expect"] = tempevent.what_to_expect;
@@ -322,11 +328,20 @@ const Singleview = ({ event, setEvent, chefs }) => {
     formdata[param] = val;
     setEvent(formdata);
   };
+
   const setDate = (val, key) => {
     console.log(val, key, "setdate", moment(val).utcOffset(330), moment().utcOffset());
     let temp = { ...event };
-    temp["dates"][key] = moment(val).utcOffset(moment().utcOffset()).format("Y-MM-DD");
+    temp["new_dates"][key]["date"] = moment(val).utcOffset(moment().utcOffset()).format("Y-MM-DD");
     setEvent(temp);
+  };
+  const setMealTime = (val, key) => {
+    let temp = { ...event };
+    temp["new_dates"][key]["time"] = val.value;
+    setEvent(temp);
+    let tempSelectedMealTime = { ...selectedMealTime };
+    tempSelectedMealTime[key] = val;
+    setSelectedMealTime(tempSelectedMealTime);
   };
   const updateGalleryImage = async (picture, replace) => {
     let temp = [];
@@ -402,18 +417,6 @@ const Singleview = ({ event, setEvent, chefs }) => {
             </FormGroup>
             <FormGroup>
               <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.timefrom" />
-              </p>
-              <TimePicker value={event.timefrom ? event.timefrom : ""} onChange={(val) => setTime(val, "timefrom")} />
-            </FormGroup>
-            <FormGroup>
-              <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.timetill" />
-              </p>
-              <TimePicker value={event.timetill ? event.timetill : ""} onChange={(val) => setTime(val, "timetill")} />
-            </FormGroup>
-            <FormGroup>
-              <p className="text-muted text-small mb-1">
                 <IntlMessages id="forms.seats" />
               </p>
               <input onChange={handleChange} type="number" name="seats" className="form-control" value={event.seats} />
@@ -470,27 +473,67 @@ const Singleview = ({ event, setEvent, chefs }) => {
               <IntlMessages id="pages.dates" />
             </CardTitle>
             <Row>
-              {event.dates &&
-                event.dates.map((date, key) => (
-                  <Colxx xxs="12" md="4">
-                    <div className="position-relative text-right mt-n4 mr-n4">
-                      <Button
-                        onClick={() => {
-                          handleDateDelete(key);
-                        }}
-                        color="primary"
-                        className="icon-button"
-                      >
-                        <i className="simple-icon-trash" />
-                      </Button>
-                    </div>
-                    <DatePicker
-                      className="mb-5"
-                      key={key + "datepikerevent"}
-                      selected={Date.parse(date)}
-                      onChange={(val) => setDate(val, key)}
-                      shouldCloseOnSelect
-                    />
+              {event.new_dates &&
+                event.new_dates.map((daterow, key) => (
+                  <Colxx xxs="12" md="12">
+                    <Row>
+                      <div className="position-relative text-right mt-n4 mr-n4">
+                        <Button
+                          onClick={() => {
+                            handleDateDelete(key);
+                          }}
+                          color="primary"
+                          className="icon-button"
+                        >
+                          <i className="simple-icon-trash" />
+                        </Button>
+                      </div>
+                      <Colxx xxs="12" md="3">
+                        <p className="text-muted text-small mb-0">
+                          <IntlMessages id="forms.date" />
+                        </p>
+                        <DatePicker
+                          className="mb-1"
+                          key={key + "datepikerevent"}
+                          selected={Date.parse(daterow.date)}
+                          onChange={(val) => setDate(val, key)}
+                          shouldCloseOnSelect
+                        />
+                      </Colxx>
+                      <Colxx xxs="12" md="2">
+                        <p className="text-muted text-small mb-0">
+                          <IntlMessages id="menu.meal_time" />
+                        </p>
+                        <Select
+                          components={{ Input: CustomSelectInput }}
+                          className="react-select"
+                          classNamePrefix="react-select"
+                          key={key + "timeevent"}
+                          options={[
+                            { label: "Lunch", value: "Lunch", key: 0 },
+                            { label: "Dinner", value: "Dinner", key: 1 },
+                          ]}
+                          value={selectedMealTime[key]}
+                          onChange={(val) => setMealTime(val, key)}
+                        />
+                      </Colxx>
+                      <Colxx xxs="12" md="3">
+                        <FormGroup>
+                          <p className="text-muted text-small mb-0">
+                            <IntlMessages id="forms.timefrom" />
+                          </p>
+                          <TimePicker value={daterow.from ? daterow.from : ""} onChange={(val) => setTime(val, `daterow[${key}]`)} />
+                        </FormGroup>
+                      </Colxx>
+                      <Colxx xxs="12" md="3">
+                        <FormGroup>
+                          <p className="text-muted text-small mb-0">
+                            <IntlMessages id="forms.timetill" />
+                          </p>
+                          <TimePicker value={daterow.to ? daterow.to : ""} onChange={(val) => setTime(val, `daterow[${key}]`)} />
+                        </FormGroup>
+                      </Colxx>
+                    </Row>
                   </Colxx>
                 ))}
             </Row>
@@ -498,7 +541,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
               onClick={() => {
-                handleEventUpload("dates");
+                handleEventUpload("new_dates");
               }}
             >
               <span className="spinner d-inline-block">

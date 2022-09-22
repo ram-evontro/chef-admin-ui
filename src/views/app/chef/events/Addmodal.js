@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import IntlMessages from "helpers/IntlMessages";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
-import TimePicker from "react-time-picker";
 import { NotificationManager } from "components/common/react-notifications";
 import Select from "react-select";
 import CustomSelectInput from "components/common/CustomSelectInput";
@@ -51,12 +50,6 @@ const Addmodal = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =
     }
     if (!formdata["desc"] || formdata["desc"] === "") {
       tempErrors.desc = "Please enter some description";
-    }
-    if (!formdata["timefrom"] || formdata["timefrom"] === "") {
-      tempErrors.timefrom = "Please enter time from";
-    }
-    if (!formdata["timetill"] || formdata["timetill"] === "") {
-      tempErrors.timetill = "Please enter time till";
     }
     if (!formdata["venue"] || formdata["venue"] === "") {
       tempErrors.venue = "Please enter venue";
@@ -155,32 +148,6 @@ const Addmodal = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =
           </Label>
           <Input type="textarea" name="venue" value={formdata.venue ? formdata.venue : ""} onChange={handleChange} />
           {errors.venue && <div className="invalid-feedback d-block">{errors.venue}</div>}
-        </FormGroup>
-        <FormGroup>
-          <Row>
-            <Colxx xxs="12" md="4">
-              <Label>
-                <IntlMessages id="forms.timefrom" />
-              </Label>
-            </Colxx>
-            <Colxx xxs="12" md="8" className="mb-2">
-              <TimePicker value={formdata.timefrom ? formdata.timefrom : ""} onChange={(val) => setTime(val, "timefrom")} />
-              {errors.timefrom && <div className="invalid-feedback d-block">{errors.timefrom}</div>}
-            </Colxx>
-          </Row>
-        </FormGroup>
-        <FormGroup>
-          <Row>
-            <Colxx xxs="12" md="4">
-              <Label>
-                <IntlMessages id="forms.timetill" />
-              </Label>
-            </Colxx>
-            <Colxx xxs="12" md="8" className="mb-2">
-              <TimePicker value={formdata.timetill ? formdata.timetill : ""} onChange={(val) => setTime(val, "timetill")} />
-              {errors.timetill && <div className="invalid-feedback d-block">{errors.timetill}</div>}
-            </Colxx>
-          </Row>
         </FormGroup>
         <FormGroup>
           <Label>

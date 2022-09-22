@@ -193,6 +193,12 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
         temp["coordinates"] = {};
         temp["coordinates"]["lat"] = mylat;
         temp["coordinates"]["lng"] = mylong;
+        if(!temp['address2'] || (temp['address2']&&temp['address2']===""))
+        {
+          NotificationManager.error("Address section is mandatory for dunzo delivery please fill address first", "Error", 3000, null, null, "");
+          setLoading(false);
+          return;
+        }
         let formdata = { details: temp };
         let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
         spreadUser(data);
@@ -488,7 +494,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.address" />
             </p>
-            <textarea onChange={handleChange} name="address2" className="form-control mb-2"  >{user.address2}</textarea>
+            <textarea onChange={handleChange} name="address2" className="form-control mb-2" value={user.address2} ></textarea>
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.pincode" />
             </p>

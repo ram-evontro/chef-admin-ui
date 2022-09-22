@@ -191,6 +191,12 @@ const Datatable = ({
         Cell: (props) => <>{props.value}</>,
       },
       {
+        Header: "Requested date",
+        accessor: "createdAt",
+        cellClass: "text-muted  w-10",
+        Cell: (props) => <>{moment(props.value).format("MMM , D Y")}</>,
+      },
+      {
         Header: "Actions",
         cellClass: "text-muted  w-10",
         Cell: ({ row }) => (

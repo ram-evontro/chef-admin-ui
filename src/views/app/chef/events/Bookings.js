@@ -113,6 +113,7 @@ const Bookings = ({ diners }) => {
           order_number: diner.order_number,
         };
         row["meal_type"] = diner.meal_type ? diner.meal_type : "NA";
+        row["meal"] = diner.meal ? diner.meal : "NA";
         row["allergen"] = diner.allergen.length > 0 ? diner.allergen.join(",") : "NA";
         tempdata.push(row);
       });
@@ -136,8 +137,15 @@ const Bookings = ({ diners }) => {
         sortType: "basic",
       },
       {
-        Header: "Date",
+        Header: "Date and Time",
         accessor: "date",
+        cellClass: "text-muted w-10",
+        Cell: (props) => <>{props.value}</>,
+        sortType: "basic",
+      },
+      {
+        Header: "Meal Timing",
+        accessor: "meal",
         cellClass: "text-muted w-10",
         Cell: (props) => <>{props.value}</>,
         sortType: "basic",
