@@ -323,9 +323,9 @@ const Singleview = ({ event, setEvent, chefs }) => {
     }
     setIsLoading(false);
   };
-  const setTime = (val, param) => {
+  const setTime = (val, key,param) => {
     let formdata = { ...event };
-    formdata[param] = val;
+    formdata["new_dates"][key][param] = val;
     setEvent(formdata);
   };
 
@@ -522,7 +522,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
                           <p className="text-muted text-small mb-0">
                             <IntlMessages id="forms.timefrom" />
                           </p>
-                          <TimePicker value={daterow.from ? daterow.from : ""} onChange={(val) => setTime(val, `daterow[${key}]`)} />
+                          <TimePicker value={daterow.from ? daterow.from : ""} onChange={(val) => setTime(val, key,'from')} />
                         </FormGroup>
                       </Colxx>
                       <Colxx xxs="12" md="3">
@@ -530,7 +530,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
                           <p className="text-muted text-small mb-0">
                             <IntlMessages id="forms.timetill" />
                           </p>
-                          <TimePicker value={daterow.to ? daterow.to : ""} onChange={(val) => setTime(val, `daterow[${key}]`)} />
+                          <TimePicker value={daterow.to ? daterow.to : ""} onChange={(val) => setTime(val, key,'to')} />
                         </FormGroup>
                       </Colxx>
                     </Row>

@@ -399,7 +399,6 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
                 value={user.intro}
                 id="intro"
                 className="form-control mb-2"
-                id="intro"
                 cols="30"
                 rows="8"
               ></textarea>
@@ -411,7 +410,6 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
                 onChange={handleChange}
                 name="bankdetails"
                 value={user.bankdetails}
-                id="bankdetails"
                 id="bankdetails"
                 cols="30"
                 rows="8"
