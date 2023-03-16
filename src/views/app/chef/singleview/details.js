@@ -109,9 +109,9 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
     ),
   };
   let spreadUser = (data) => {
-    let tempuser = {...data};
+    let tempuser = { ...data };
     Object.assign(tempuser, tempuser.details);
-    tempuser.feedbacks=data.feedbacks;
+    tempuser.feedbacks = data.feedbacks;
     setUser(tempuser);
     if (tempuser.tags) {
       setTagsLO(tempuser.tags);
@@ -193,8 +193,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
         temp["coordinates"] = {};
         temp["coordinates"]["lat"] = mylat;
         temp["coordinates"]["lng"] = mylong;
-        if(!temp['address2'] || (temp['address2']&&temp['address2']===""))
-        {
+        if (!temp["address2"] || (temp["address2"] && temp["address2"] === "")) {
           NotificationManager.error("Address section is mandatory for dunzo delivery please fill address first", "Error", 3000, null, null, "");
           setLoading(false);
           return;
@@ -393,28 +392,24 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
               <p className="text-muted text-small mb-1">
                 <IntlMessages id="forms.intro" />
               </p>
-              <textarea
-                onChange={handleChange}
-                name="intro"
-                value={user.intro}
-                id="intro"
-                className="form-control mb-2"
-                cols="30"
-                rows="8"
-              ></textarea>
+              <textarea onChange={handleChange} name="intro" value={user.intro} id="intro" className="form-control mb-2" cols="30" rows="8"></textarea>
               <p className="text-muted text-small mb-1">
-                <IntlMessages id="forms.bankdetails" />
+                <IntlMessages id="forms.fun_fact" />
               </p>
-              <textarea
-                className="form-control mb-2"
-                onChange={handleChange}
-                name="bankdetails"
-                value={user.bankdetails}
-                id="bankdetails"
-                cols="30"
-                rows="8"
-              ></textarea>
-
+              <input onChange={handleChange} type="text" name="fun_fact" className="form-control mb-2" value={user.fun_fact} />
+              <p className="text-muted text-small mb-1">
+                <IntlMessages id="forms.worked_at" />
+              </p>
+              <input onChange={handleChange} type="text" name="worked_at" className="form-control mb-2" value={user.worked_at} />
+              <p className="text-muted text-small mb-1">
+                <IntlMessages id="forms.culinary_school" />
+              </p>
+              <input onChange={handleChange} type="text" name="culinary_school" className="form-control mb-2" value={user.culinary_school} />
+              <p className="text-muted text-small mb-1">
+                <IntlMessages id="forms.trained_under" />
+              </p>
+              <input onChange={handleChange} type="text" name="trained_under" className="form-control mb-2" value={user.trained_under} />
+              
               <p className="text-muted text-small mb-1">
                 <IntlMessages id="forms.tags" />
               </p>
@@ -492,7 +487,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.address" />
             </p>
-            <textarea onChange={handleChange} name="address2" className="form-control mb-2" value={user.address2} ></textarea>
+            <textarea onChange={handleChange} name="address2" className="form-control mb-2" value={user.address2}></textarea>
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.pincode" />
             </p>

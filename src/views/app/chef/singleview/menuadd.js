@@ -118,12 +118,6 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
     if (!formdata["desc"] || formdata["desc"] === "") {
       tempErrors.desc = "Please enter some description";
     }
-    if (!formdata.cuisine) {
-      tempErrors.cuisine = "Please select cuisine";
-    }
-    if (!formdata.chef_type) {
-      tempErrors.chef_type = "Please select menu type";
-    }
     setErrors(tempErrors);
     if (tempErrors && Object.keys(tempErrors).length === 0) {
       return true;
@@ -202,57 +196,26 @@ const Menuadd = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =>
           <Input type="textarea" name="desc" value={formdata.desc ? formdata.desc : ""} onChange={handleChange} />
           {errors.desc && <div className="invalid-feedback d-block">{errors.desc}</div>}
         </FormGroup>
-        <FormGroup className="mt-3">
+        <FormGroup>
           <Label>
-            <IntlMessages id="forms.meal_type" />
+            <IntlMessages id="forms.course" />
           </Label>
-          <select className="form-control" onChange={handleChange} name="meal_type" value={formdata.meal_type ? formdata.meal_type : ""} id="menu_type">
-            <option value="">Select Value</option>
-            {mealTypes &&
-              mealTypes.map((mealType) => (
-                <option key={mealType.id} value={mealType.name}>
-                  {mealType.name}
-                </option>
-              ))}
-          </select>
-          {errors.meal_type && <div className="invalid-feedback d-block">{errors.meal_type}</div>}
+          <Input type="text" name="course" value={formdata.course ? formdata.course : ""} onChange={handleChange} />
+          {errors.course && <div className="invalid-feedback d-block">{errors.course}</div>}
         </FormGroup>
-        <FormGroup className="mt-3">
+        <FormGroup>
           <Label>
-            <IntlMessages id="forms.cuisine" />
+            <IntlMessages id="forms.drinks" />
           </Label>
-          <select className="form-control" onChange={handleChange} name="cuisine" value={formdata.cuisine ? formdata.cuisine : ""} id="menu_type">
-            <option value="">Select Value</option>
-            {cuisines &&
-              cuisines.map((cuisine) => (
-                <option key={cuisine.id} value={cuisine.name}>
-                  {cuisine.name}
-                </option>
-              ))}
-          </select>
-          {errors.cuisine && <div className="invalid-feedback d-block">{errors.cuisine}</div>}
+          <Input type="text" name="drinks" value={formdata.drinks ? formdata.drinks : ""} onChange={handleChange} />
+          {errors.drinks && <div className="invalid-feedback d-block">{errors.drinks}</div>}
         </FormGroup>
-        <FormGroup className="mt-3">
+        <FormGroup>
           <Label>
-            <IntlMessages id="forms.chef_type" />
+            <IntlMessages id="forms.meal_highlight" />
           </Label>
-          <select
-            className="form-control"
-            onChange={handleChange}
-            name="chef_type"
-            value={formdata && formdata.chef_type ? formdata.chef_type.id : ""}
-            id="chef_type"
-          >
-            <option value="">Select Value</option>
-
-            {chefTypes &&
-              chefTypes.map((chefType) => (
-                <option key={chefType.id} value={chefType.id}>
-                  {chefType.name}
-                </option>
-              ))}
-          </select>
-          {errors.chef_type && <div className="invalid-feedback d-block">{errors.chef_type}</div>}
+          <Input type="text" name="meal_highlight" value={formdata.meal_highlight ? formdata.meal_highlight : ""} onChange={handleChange} />
+          {errors.meal_highlight && <div className="invalid-feedback d-block">{errors.meal_highlight}</div>}
         </FormGroup>
         <FormGroup className="mt-3">
           <Label>
