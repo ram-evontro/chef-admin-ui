@@ -27,11 +27,15 @@ import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
 import BookExp from "./cms/bookexp";
-import ForChef from "./cms/forChefs";
 import AboutUs from "./cms/aboutUs";
 import OurChef from "./cms/ourChefs";
-import TicketedExp from "./cms/ticketedExp";
-import PrivateExp from "./cms/privateExp";
+import Privee from "./cms/privee";
+import SupperClub from "./cms/supperClub";
+import CorporateBookings from "./cms/corporateBookings";
+import Patron from "./cms/patron";
+import GiftCards from "./cms/giftCards";
+import JoinUs from "./cms/joinUs";
+import ContactUs from "./cms/contactUs";
 
 const Cms = ({ match }) => {
   const [bookExperience, setBookExperience] = useState({});
@@ -42,7 +46,7 @@ const Cms = ({ match }) => {
   const [formdata, setFormdata] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState("9");
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -133,27 +137,7 @@ const Cms = ({ match }) => {
                 toggle("1");
               }}
             >
-              Homepage
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={classnames({ active: activeTab === "5" })}
-              onClick={() => {
-                toggle("5");
-              }}
-            >
-              Ticketed Experiences
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={classnames({ active: activeTab === "6" })}
-              onClick={() => {
-                toggle("6");
-              }}
-            >
-              Private Experiences
+              Home
             </NavLink>
           </NavItem>
           <NavItem>
@@ -163,7 +147,7 @@ const Cms = ({ match }) => {
                 toggle("2");
               }}
             >
-              Cook with us
+              Privée
             </NavLink>
           </NavItem>
           <NavItem>
@@ -173,7 +157,7 @@ const Cms = ({ match }) => {
                 toggle("3");
               }}
             >
-              Our Chefs
+              Supper Club
             </NavLink>
           </NavItem>
           <NavItem>
@@ -183,7 +167,67 @@ const Cms = ({ match }) => {
                 toggle("4");
               }}
             >
+              Our Chefs
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "5" })}
+              onClick={() => {
+                toggle("5");
+              }}
+            >
+              Corporate Bookings
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "6" })}
+              onClick={() => {
+                toggle("6");
+              }}
+            >
+              Become a Patron
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "7" })}
+              onClick={() => {
+                toggle("7");
+              }}
+            >
+              Gift Cards
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "8" })}
+              onClick={() => {
+                toggle("8");
+              }}
+            >
+              Join Us
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "9" })}
+              onClick={() => {
+                toggle("9");
+              }}
+            >
               About Us
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "10" })}
+              onClick={() => {
+                toggle("10");
+              }}
+            >
+              Contact Us
             </NavLink>
           </NavItem>
         </Nav>
@@ -193,19 +237,31 @@ const Cms = ({ match }) => {
             <BookExp />
           </TabPane>
           <TabPane tabId="2">
-            <ForChef />
+            <Privee />
           </TabPane>
           <TabPane tabId="3">
-            <OurChef />
+            <SupperClub />
           </TabPane>
           <TabPane tabId="4">
-            <AboutUs />
+            <OurChef />
           </TabPane>
           <TabPane tabId="5">
-            <TicketedExp />
+            <CorporateBookings />
           </TabPane>
           <TabPane tabId="6">
-            <PrivateExp />
+            <Patron />
+          </TabPane>
+          <TabPane tabId="7">
+            <GiftCards />
+          </TabPane>
+          <TabPane tabId="8">
+            <JoinUs />
+          </TabPane>
+          <TabPane tabId="9">
+            <AboutUs />
+          </TabPane>
+          <TabPane tabId="10">
+            <ContactUs/>
           </TabPane>
         </TabContent>
       </div>
