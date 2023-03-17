@@ -686,6 +686,11 @@ module.exports = {
   "forms.course":"Course",
   "forms.drinks":"Drinks",
   "forms.meal_highlight":"Meal Highlight",
+  "forms.slider": "Slider",
+  "forms.image": "Image",
+  "forms.text": "Text",
+  "forms.price_per_course": "Price per course",
+  "forms.min_course": "Minimum courses",
   /* 07.11.Form Components */
   "form-components.custom-inputs": "Custom Inputs",
   "form-components.checkboxes": "Checkboxes",

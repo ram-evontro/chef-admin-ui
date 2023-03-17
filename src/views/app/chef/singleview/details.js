@@ -409,7 +409,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
                 <IntlMessages id="forms.trained_under" />
               </p>
               <input onChange={handleChange} type="text" name="trained_under" className="form-control mb-2" value={user.trained_under} />
-              
+
               <p className="text-muted text-small mb-1">
                 <IntlMessages id="forms.tags" />
               </p>
@@ -478,22 +478,26 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
         <Card className="mb-4">
           <CardBody>
             <CardTitle>
-              <IntlMessages id="maps.address" />
+              <IntlMessages id="forms.slider" />
             </CardTitle>
-            <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.public_address" />
-            </p>
-            <input onChange={handleChange} type="text" name="address1" className="form-control mb-2" value={user.address1} />
-            <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.address" />
-            </p>
-            <textarea onChange={handleChange} name="address2" className="form-control mb-2" value={user.address2}></textarea>
-            <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.pincode" />
-            </p>
-            <input onChange={handleChange} type="text" name="pincode" className="form-control mb-2" value={user.pincode} />
-            <input ref={autoComplete} placeholder="Search a place..." type="text" className="form-control" />
-            <Map zoom={zoom} setLat={setLat} autoComplete={autoComplete} mapKey={mapKey} setLong={setLong} mylat={mylat} mylong={mylong} setZoom={setZoom} />
+            <Row>
+              <Colxx xxs="5">
+                <p className="text-muted text-small mb-1">
+                  <IntlMessages id="forms.image" />
+                </p>
+                <input onChange={handleChange} type="text" name="address1" className="form-control mb-2" value={user.address1} />
+              </Colxx>
+              <Colxx xxs="5">
+                <p className="text-muted text-small mb-1">
+                  <IntlMessages id="forms.text" />
+                </p>
+                <input onChange={handleChange} type="text" name="address1" className="form-control mb-2" value={user.address1} />
+              </Colxx>
+              <Colxx xxs="2">
+               Delete
+              </Colxx>
+            </Row>
+
             <Button
               color="primary"
               className={`btn-shadow mt-2 btn-multiple-state ${loading ? "show-spinner" : ""}`}
@@ -508,6 +512,22 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
               </span>
               <span className="label">
                 <IntlMessages id="forms.update" />
+              </span>
+            </Button>
+            <Button
+              color="primary"
+              className={`btn-shadow ml-3 mt-2 btn-multiple-state ${loading ? "show-spinner" : ""}`}
+              onClick={() => {
+                handleClick("details");
+              }}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.add_more" />
               </span>
             </Button>
           </CardBody>

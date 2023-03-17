@@ -157,9 +157,6 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     formdata["tags"] = tagsLO;
     delete formdata["id"];
     delete formdata["user"];
-    if (formdata["chef_type"]["id"]) {
-      formdata["chef_type"] = formdata["chef_type"]["id"];
-    }
     try {
       let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
       NotificationManager.success("Menu updated successfully", "Success", 3000, null, null, "");
@@ -304,28 +301,32 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
               <IntlMessages id="forms.description" />
             </p>
             <Input onChange={handleChange} type="textarea" name="desc" className="form-control mb-2" value={menu.desc} />
+
             <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.meal_type" />
+              <IntlMessages id="forms.course" />
             </p>
-            <select onChange={handleChange} name="meal_type" className="form-control mb-2" value={menu.meal_type}>
-              {mealTypes &&
-                mealTypes.map((mealType) => (
-                  <option key={mealType.id} value={mealType.name}>
-                    {mealType.name}
-                  </option>
-                ))}
-            </select>
+            <Input type="text" className="form-control mb-2" name="course" value={menu.course ? menu.course : ""} onChange={handleChange} />
+
             <p className="text-muted text-small mb-1">
-              <IntlMessages id="forms.cuisine" />
+              <IntlMessages id="forms.drinks" />
             </p>
-            <select onChange={handleChange} name="cuisine" className="form-control mb-2" value={menu.cuisine}>
-              {cuisines &&
-                cuisines.map((cuisine) => (
-                  <option key={cuisine.id} value={cuisine.name}>
-                    {cuisine.name}
-                  </option>
-                ))}
-            </select>
+            <Input className="form-control mb-2" type="text" name="drinks" value={menu.drinks ? menu.drinks : ""} onChange={handleChange} />
+
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.meal_highlight" />
+            </p>
+            <Input className="form-control mb-2" type="text" name="meal_highlight" value={menu.meal_highlight ? menu.meal_highlight : ""} onChange={handleChange} />
+
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.price_per_course" />
+            </p>
+            <Input className="form-control mb-2" type="number" name="price_per_course" value={menu.price_per_course ? menu.price_per_course : ""} onChange={handleChange} />
+
+            <p className="text-muted text-small mb-1">
+              <IntlMessages id="forms.min_course" />
+            </p>
+            <Input className="form-control mb-2" type="number" name="min_course" value={menu.min_course ? menu.min_course : ""} onChange={handleChange} />
+
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.activefrom" />
             </p>
