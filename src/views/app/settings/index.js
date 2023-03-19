@@ -5,6 +5,8 @@ const Mealtypes = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./
 const Mealtimes = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Mealtimes"));
 const Feedbackparams = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Feedbackparams"));
 const Mealcourses = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Mealcourses"));
+const Countries = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Countries"));
+const Cities = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Cities"));
 const Cuisines = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Cuisines"));
 const Vouchers = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Vouchers"));
 const SmsTemplates = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./SmsTemplates"));
@@ -26,6 +28,8 @@ const Settings = ({ match }) => (
       <Route path={`${match.url}/booking_settings`} render={(props) => <BookingSettings {...props} />} />
       <Route path={`${match.url}/vouchers`} render={(props) => <Vouchers {...props} />} />
       <Route path={`${match.url}/sms_templates`} render={(props) => <SmsTemplates {...props} />} />
+      <Route path={`${match.url}/country`} render={(props) => <Countries {...props} />} />
+      <Route path={`${match.url}/city`} render={(props) => <Cities {...props} />} />
       <Route path={`${match.url}/email_templates`} render={(props) => <EmailTemplates {...props} />} />
       <Route path={`${match.url}/cms`} render={(props) => <Cms {...props} />} />
       <Redirect to="/error" />

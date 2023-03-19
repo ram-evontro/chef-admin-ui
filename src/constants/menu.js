@@ -52,6 +52,12 @@ const data = [
     ],
   },
   {
+    id: "calls",
+    icon: "iconsminds-headphone",
+    label: "menu.calls",
+    to: `${adminRoot}/menu`,
+  },
+  {
     id: "settings",
     icon: "iconsminds-gears",
     label: "menu.settings",
@@ -91,6 +97,36 @@ const data = [
             icon: "simple-icon-arrow-right",
             label: "menu.meal_time",
             to: `${adminRoot}/settings/meal_time`,
+          },
+          {
+            icon: "simple-icon-arrow-right",
+            label: "menu.country",
+            to: `${adminRoot}/settings/country`,
+          },
+          {
+            icon: "simple-icon-arrow-right",
+            label: "menu.city",
+            to: `${adminRoot}/settings/city`,
+          },
+          {
+            icon: "simple-icon-arrow-right",
+            label: "menu.partner_types",
+            to: `${adminRoot}/settings/partner_type`,
+          },
+          {
+            icon: "simple-icon-arrow-right",
+            label: "menu.patron_type",
+            to: `${adminRoot}/settings/patron_type`,
+          },
+          {
+            icon: "simple-icon-arrow-right",
+            label: "menu.occasion_types",
+            to: `${adminRoot}/settings/occasion_type`,
+          },
+          {
+            icon: "simple-icon-arrow-right",
+            label: "menu.addon_categories",
+            to: `${adminRoot}/settings/addon_categories`,
           },
         ],
       },

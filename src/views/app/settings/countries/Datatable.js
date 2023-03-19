@@ -4,8 +4,7 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/display-name */
 import React, { useEffect } from "react";
-import moment from "moment";
-import { Badge, CustomInput } from "reactstrap";
+import { CustomInput } from "reactstrap";
 import { useTable, usePagination, useSortBy, useFilters } from "react-table";
 import classnames from "classnames";
 import DatatablePagination from "../../elements/DataTablePagination";
@@ -23,20 +22,6 @@ const Table = ({
   setSelectedOrderOption,
   selectedOrderOption,
 }) => {
-  let initial_state = {
-    pageIndex: 0,
-    pageSize: selectedPageSize,
-    
-  };
-  if(selectedOrderOption.column)
-  {
-    initial_state['sortBy']= [
-      {
-        id: selectedOrderOption.column,
-        desc: selectedOrderOption.order === "desc" ? true : false,
-      },
-    ];
-  }
   const {
     getTableProps,
     getTableBodyProps,
@@ -49,7 +34,16 @@ const Table = ({
     {
       columns,
       data,
-      initialState: initial_state,
+      initialState: {
+        pageIndex: 0,
+        pageSize: selectedPageSize,
+        sortBy: [
+          {
+            id: selectedOrderOption.column,
+            desc: selectedOrderOption.order === "desc" ? true : false,
+          },
+        ],
+      },
     },
     useFilters,
     useSortBy,
@@ -61,12 +55,15 @@ const Table = ({
       data["column"] = sortBy[0].id;
       data["order"] = sortBy[0].desc ? "desc" : "asc";
       setSelectedOrderOption(data);
+    } else if (sortBy.length == 0) {
+      data["column"] = "";
+      data["order"] = "";
+      setSelectedOrderOption(data);
     }
-
     console.log(sortBy);
   }, [sortBy]);
   return (
-    <>
+    <React.Fragment>
       <table
         {...getTableProps()}
         className={`r-table table table-responsive ${classnames({
@@ -128,38 +125,39 @@ const Table = ({
         }}
         paginationMaxSize={10}
       />
-    </>
+    </React.Fragment>
   );
 };
 
 const Datatable = ({
   items,
   selectedItems,
+  onCheckItem,
   currentPage,
   totalPage,
   onChangePage,
-  onCheckItem,
   selectedPageSize,
   isLoading,
   setSelectedPageSize,
   setSelectedOrderOption,
   selectedOrderOption,
-  updateAction,
+  deleteSingle,
+  editSelected,
 }) => {
   const editFunc = (data) => {
     let newData = { ...data };
     delete newData["Actions"];
-    // editSelected(newData);
+    editSelected(newData);
   };
   const cols = React.useMemo(
     () => [
       {
         Header: "Select",
         accessor: "id",
-        cellClass: "  w-10",
+        cellClass: "text-muted  w-10",
         disableSortBy: true,
         Cell: (props) => (
-          <>
+          <React.Fragment>
             <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
               <CustomInput
                 className="mb-0"
@@ -170,107 +168,35 @@ const Datatable = ({
                 label=""
               />
             </div>
-          </>
+          </React.Fragment>
         ),
       },
       {
-        Header: "Order No",
-        accessor: "order_number",
-        cellClass: "text-muted  w-10",
-        Cell: (props) => (
-          <>
-            <a
-              title="View"
-              href="javascript:;"
-              onClick={() => {
-                updateAction("view", props.row.original.id);
-              }}
-              
-            >
-              {props.value}
-            </a>
-          </>
-        ),
-      },
-      {
-        Header: "Host Name",
-        accessor: "user.name",
-        disableSortBy: true,
-        cellClass: "list-item-heading w-15",
-        Cell: (props) => (
-          <>
-            {props.value}
-            <br />
-            {props.row.original.user.mobile}
-            <br />
-            {props.row.original.user.email}
-          </>
-        ),
-      },
-      {
-        Header: "Type",
-        accessor: "type",
-        cellClass: "text-muted  w-15",
-        Cell: (props) => (
-          <>
-            {props.value === "virtual_dining" ? "Virtual Dining" : props.value === "chef_table"?"Privee":"Supper Club"}
-            <br />
-            Diners:{props.row.original.diner_count}
-          </>
-        ),
-      },
-      {
-        Header: "Experince Date",
-        accessor: "booking_date",
-        cellClass: "text-muted  w-10",
-        Cell: (props) => (
-          <>
-            {moment(props.row.original.booking_date).format("DD MMM YYYY")}
-            <br />
-            {props.row.original.type !== "chef_event" ?props.row.original.meal:props.row.original.event?props.row.original.event.title:''}
-            <br />
-            {props.row.original.type === "virtual_dining" ? <>{props.row.original.menu_selection === "diner" ? "Different Menu" : "Common Menu"}</> : ""}
-            <br />
-            {props.row.original.type === "virtual_dining" ? (
-              <>{props.row.original.delivery_selection === "diner" ? "Different Location" : "Common Location"}</>
-            ) : (
-              ""
-            )}
-          </>
-        ),
-      },
-
-      {
-        Header: "Status",
-        accessor: "status",
-        cellClass: "w-10",
-        Cell: (props) => (
-          <>
-            <Badge
-              color={
-                props.value === "Order Placed" ? "info" : props.value === "Order Paid" ? "success" : props.value === "Order Completed" ? "primary" : "secondary"
-              }
-            >
-              {props.value}
-            </Badge>
-          </>
-        ),
+        Header: "Name",
+        accessor: "name",
+        cellClass: "list-item-heading w-40",
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
         Header: "Actions",
         cellClass: "text-muted  w-10",
-        disableSortBy: true,
         Cell: ({ row }) => (
-          <>
+          <React.Fragment>
             <a
-              title="View"
               href="javascript:;"
               onClick={() => {
-                updateAction("view", row.original.id);
+                editFunc(row.values);
               }}
-              class="glyph-icon simple-icon-eye"
+              class="glyph-icon simple-icon-pencil"
             ></a>
-          </>
+            <a
+              href="javascript:;"
+              onClick={() => {
+                deleteSingle(row.values.id);
+              }}
+              class="ml-3 glyph-icon simple-icon-trash"
+            ></a>
+          </React.Fragment>
         ),
       },
     ],
