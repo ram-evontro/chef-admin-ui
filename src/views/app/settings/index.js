@@ -6,6 +6,8 @@ const Mealtimes = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./
 const Feedbackparams = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Feedbackparams"));
 const Mealcourses = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Mealcourses"));
 const Countries = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Countries"));
+const PartnerTypes = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./PartnerTypes"));
+const PatronTypes = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./PatronTypes"));
 const Cities = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Cities"));
 const Cuisines = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Cuisines"));
 const Vouchers = React.lazy(() => import(/* webpackChunkName: "menuview" */ "./Vouchers"));
@@ -29,6 +31,8 @@ const Settings = ({ match }) => (
       <Route path={`${match.url}/vouchers`} render={(props) => <Vouchers {...props} />} />
       <Route path={`${match.url}/sms_templates`} render={(props) => <SmsTemplates {...props} />} />
       <Route path={`${match.url}/country`} render={(props) => <Countries {...props} />} />
+      <Route path={`${match.url}/partner_type`} render={(props) => <PartnerTypes {...props} />} />
+      <Route path={`${match.url}/patron_type`} render={(props) => <PatronTypes {...props} />} />
       <Route path={`${match.url}/city`} render={(props) => <Cities {...props} />} />
       <Route path={`${match.url}/email_templates`} render={(props) => <EmailTemplates {...props} />} />
       <Route path={`${match.url}/cms`} render={(props) => <Cms {...props} />} />

@@ -199,9 +199,10 @@ module.exports = {
   "menu.country": "Countries",
   "menu.city":"Cities",
   "menu.partner_types":"Partner Type",
-  "menu.patron_type":"Patron Type",
+  "menu.patron_type":"Patron Categories",
   "menu.occasion_types":"Occasions",
   "menu.addon_categories":"Addon Categories",
+  "menu.partner_type":"Partner Type",
   /* 04.Dashboards */
   "dashboards.pending-orders": "Pending Orders",
   "dashboards.completed-orders": "Completed Orders",
@@ -699,6 +700,10 @@ module.exports = {
   "forms.price_per_course": "Price per course",
   "forms.min_course": "Minimum courses",
   "forms.country":"Country",
+  "forms.partner_type":"Partner Type",
+  "forms.partron_type":"Patron Categories",
+  "forms.price_per_month":"Price per month",
+  "forms.duration_in_months":"Duration In Months",
   /* 07.11.Form Components */
   "form-components.custom-inputs": "Custom Inputs",
   "form-components.checkboxes": "Checkboxes",
