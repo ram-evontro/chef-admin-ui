@@ -1,4 +1,4 @@
-export const BASE_URL =  'http://localhost:8000/v1/'; //"https://chefsaporter.com/backend/v1/"; //
+export const BASE_URL =  "https://chefv2.hypervergedemo.site/v1/"
 export const LOGIN = "auth/login";
 export const LOGOUT = "auth/logout";
 export const FORGOT_PASSWORD = "auth/forgot-password";
@@ -70,3 +70,5 @@ export const DASHBOARD = "util/dashboardetails";
 export const BOOKING_BY_MONTH = "util/bookingsbymonth";
 export const INTEGRATIONS = "util/integration_keys";
 export const QUICKBOOKSAUTH = "util/quickbooksauth";
+export const SCHEDULE_CALL = "call_schedule";
+export const REQUEST_CONTACT_US = "contact_us";

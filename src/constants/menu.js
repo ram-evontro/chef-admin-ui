@@ -73,7 +73,7 @@ const data = [
       {
         icon: "simple-icon-people",
         label: "menu.partner",
-        to: `${adminRoot}/request/patron`,
+        to: `${adminRoot}/request/partner`,
       },
     ],
   },

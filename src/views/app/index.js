@@ -18,6 +18,9 @@ const Chef = React.lazy(() =>
 const Diner = React.lazy(() =>
   import(/* webpackChunkName: "viwes-second-menu" */ './diner')
 );
+const Requests = React.lazy(() =>
+  import(/* webpackChunkName: "viwes-second-menu" */ './requests')
+);
 const Settings = React.lazy(() =>
   import(/* webpackChunkName: "viwes-second-menu" */ './settings')
 );
@@ -42,6 +45,10 @@ const App = ({ match }) => {
             <Route
               path={`${match.url}/diner`}
               render={(props) => <Diner {...props} />}
+            />
+            <Route
+              path={`${match.url}/request`}
+              render={(props) => <Requests {...props} />}
             />
             <Route
               path={`${match.url}/chef`}
