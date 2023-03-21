@@ -15,13 +15,6 @@ const data = [
     subs: [],
   },
   {
-    id: "diner",
-    icon: "iconsminds-business-man",
-    label: "menu.diners",
-    to: `${adminRoot}/diner`,
-    subs: [],
-  },
-  {
     id: "chef",
     icon: "iconsminds-chef-hat",
     label: "menu.chef",
@@ -48,14 +41,41 @@ const data = [
         label: "menu.chef_join_requests",
         to: `${adminRoot}/chef/chefrequests`,
       },
-
     ],
   },
   {
     id: "calls",
     icon: "iconsminds-headphone",
-    label: "menu.calls",
+    label: "menu.requests",
     to: `${adminRoot}/menu`,
+    notification:2,
+    subs: [
+      {
+        icon: "simple-icon-phone",
+        label: "menu.schedule_call",
+        to: `${adminRoot}/request/schedule_call`,
+      },
+      {
+        icon: "simple-icon-note",
+        label: "menu.contact_us",
+        to: `${adminRoot}/request/contact_us`,
+      },
+      {
+        icon: "simple-icon-link",
+        label: "menu.join_requests",
+        to: `${adminRoot}/request/join_requests`,
+      },
+      {
+        icon: "simple-icon-badge",
+        label: "menu.patron",
+        to: `${adminRoot}/request/patron`,
+      },
+      {
+        icon: "simple-icon-people",
+        label: "menu.partner",
+        to: `${adminRoot}/request/patron`,
+      },
+    ],
   },
   {
     id: "settings",
@@ -161,6 +181,13 @@ const data = [
         to: `${adminRoot}/settings/cms`,
       },
     ],
+  },
+  {
+    id: "diner",
+    icon: "iconsminds-business-man",
+    label: "menu.diners",
+    to: `${adminRoot}/diner`,
+    subs: [],
   },
   {
     id: "integrations",

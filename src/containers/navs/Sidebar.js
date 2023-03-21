@@ -381,6 +381,7 @@ class Sidebar extends Component {
                           >
                             <i className={item.icon} />{' '}
                             <IntlMessages id={item.label} />
+                            {item.notification?(<span class="badge badge-danger">{item.notification}</span>):''}
                           </a>
                         ) : (
                           <NavLink
@@ -390,6 +391,7 @@ class Sidebar extends Component {
                           >
                             <i className={item.icon} />{' '}
                             <IntlMessages id={item.label} />
+                            {item.notification?(<span class="badge badge-danger">{item.notification}</span>):''}
                           </NavLink>
                         )}
                       </NavItem>

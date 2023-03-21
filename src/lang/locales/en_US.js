@@ -203,6 +203,14 @@ module.exports = {
   "menu.occasion_types":"Occasions",
   "menu.addon_categories":"Addon Categories",
   "menu.partner_type":"Partner Type",
+  "menu.occasion":"Occasion",
+  "menu.addon":"AddOn Categories",
+  "menu.requests":"Requests",
+  "menu.schedule_call":"Schedule Calls",
+  "menu.contact_us":"Contact Us",
+  "menu.join_requests":"Join requests",
+  "menu.patron":"Patron",
+  "menu.partner":"Partner",
   /* 04.Dashboards */
   "dashboards.pending-orders": "Pending Orders",
   "dashboards.completed-orders": "Completed Orders",
@@ -704,6 +712,8 @@ module.exports = {
   "forms.partron_type":"Patron Categories",
   "forms.price_per_month":"Price per month",
   "forms.duration_in_months":"Duration In Months",
+  "forms.occasion":"Occasion",
+  "forms.addons":"Add Ons",
   /* 07.11.Form Components */
   "form-components.custom-inputs": "Custom Inputs",
   "form-components.checkboxes": "Checkboxes",
