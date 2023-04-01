@@ -204,6 +204,42 @@ const Datatable = ({
             {props.value}
           </>
         ),
+      },
+      {
+        Header: "Brand Name",
+        accessor: "brand_name",
+        cellClass: "w-20",
+        Cell: (props) => (
+          <>
+           
+              {props.value}
+           
+          </>
+        ),
+      },
+      {
+        Header: "Instagram",
+        accessor: "instagram_profile_link",
+        cellClass: "w-20",
+        Cell: (props) => (
+          <>
+           
+              {props.value}
+           
+          </>
+        ),
+      },
+      {
+        Header: "About Brand",
+        accessor: "about_your_brand",
+        cellClass: "w-20",
+        Cell: (props) => (
+          <>
+           
+              {props.value}
+           
+          </>
+        ),
       }
     ],
     [selectedItems]
