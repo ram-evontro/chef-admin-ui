@@ -102,7 +102,7 @@ const CorporateBookings = () => {
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.contents[x][name] = val;
     } else {
       tempdata[name] = val;
     }
@@ -113,12 +113,11 @@ const CorporateBookings = () => {
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
+      formdata[imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.CORPORATE_BOOKINGS, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.CORPORATE_BOOKINGS, form);
       setHeader({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -135,34 +134,12 @@ const CorporateBookings = () => {
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
+      formdata["content"][imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.CORPORATE_BOOKINGS, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.CORPORATE_BOOKINGS, form);
       setBookedUs({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-      e.target.value = "";
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImageCorporateFooter= async (e, imageSection, section, component) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-      formdata[imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.CORPORATE_BOOKINGS, form);
-      setCorporateBookingsFooter({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
     } catch (err) {
@@ -191,7 +168,7 @@ const CorporateBookings = () => {
   };
   const fetchFaqData = (data) => {
     let allData = faq;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.contents ? allData.contents.push(data) : (allData.contents = [data]);
     setFaq(allData);
   };
   const deleteHeader = (index) => {
@@ -202,14 +179,14 @@ const CorporateBookings = () => {
   };
   const deleteBookedUs = (index) => {
     let allData = bookedUs;
-    const result = bookedUs.images.filter((element, i) => i != index);
-    allData.images = result;
+    const result = bookedUs.content.filter((element, i) => i != index);
+    allData.content = result;
     setBookedUs({ ...allData });
   };
   const deleteFaq = (index) => {
     let allData = faq;
-    const result = faq.content.filter((element, i) => i != index);
-    allData.content = result;
+    const result = faq.contents.filter((element, i) => i != index);
+    allData.contents = result;
     setFaq({ ...allData });
   };
 
@@ -219,9 +196,7 @@ const CorporateBookings = () => {
   useEffect(async () => {
     setLoading(true);
     try {
-      //   let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.CORPORATE_BOOKINGS);
-      // valueSetter(data.corporate_bookings);
-      let data = {};
+      let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.CORPORATE_BOOKINGS);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -233,12 +208,16 @@ const CorporateBookings = () => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.corporate_bookings ? data.corporate_bookings.header : { images: [] });
-    setJoinMember(data.corporate_bookings ? data.corporate_bookings.join_member : { content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setBookedUs(data.corporate_bookings ? data.corporate_bookings.booked_us : { images: [] });
-    setContactUs(data.corporate_bookings ? data.corporate_bookings.contact_us : { content: [{ title: "title1" }, { title: "title2" }] });
-    setCorporateBookingsFooter(data.corporate_bookings ? data.corporate_bookings.corporate_bookings_footer : {});
-    setFaq(data.corporate_bookings ? data.corporate_bookings.faq : {});
+    let all = {};
+    data.map((ele) => {
+      ele.details.type = ele.type;
+      all[ele.section] = ele;
+    });
+    setHeader(all.header.details);
+    setBookedUs(all.booked_us.details);
+    setContactUs(all.contact_us.details);
+    setCorporateBookingsFooter(all.corporate_bookings_footer.details);
+    setFaq(all.faq.details);
   };
 
   return loading ? (
@@ -258,48 +237,70 @@ const CorporateBookings = () => {
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.corporateBookings.header.image" />
                     </Label>
+                    <Colxx xxs="12" md="4">
+                      <div>
+                        <Button
+                          onClick={() => {
+                            openFileInput("bookingHeaderImage");
+                          }}
+                          className="icon-button"
+                          style={{ float: "right" }}
+                        >
+                          <i className="simple-icon-pencil" />
+                          <br></br>
+                          <input
+                            type="file"
+                            id={"bookingHeaderImage"}
+                            rclassName="d-none"
+                            onChange={(e) => changeImageHeader(e, "image", "header", header)}
+                            style={{ display: "none" }}
+                          />
+                        </Button>
+                        <br></br>
+                        <Col>
+                          <SingleLightbox
+                            large={header.image ? header.image : ""}
+                            thumb={header.image ? header.image : ""}
+                            className="card-img-top"
+                          ></SingleLightbox>
+                        </Col>
+                      </div>
+                    </Colxx>
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.corporateBookings.header.title" />
+                    </Label>
+                    <Input type="text" name="title" value={header.title ? header.title : ""} onChange={handleHeader} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.corporateBookings.header.description" />
+                    </Label>
+                    <Input type="text" name="description" value={header.description ? header.description : ""} onChange={handleHeader} />
                     <Row>
-                      {header.images &&
-                        header.images.map((element, index) => {
+                      {header.content &&
+                        header.content.map((element, index) => {
                           return (
-                            <Colxx xxs="12" md="4">
-                              <div>
-                                <Button
-                                  onClick={() => {
-                                    openFileInput(`bookingHeaderImage${index}`);
-                                  }}
-                                  className="icon-button"
-                                  style={{ float: "right" }}
-                                >
-                                  <i className="simple-icon-pencil" />
-                                  <br></br>
-                                  <input
-                                    type="file"
-                                    id={`bookingHeaderImage${index}`}
-                                    rclassName="d-none"
-                                    onChange={(e) => changeImageHeader(e, index, "header", header)}
-                                    style={{ display: "none" }}
-                                  />
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    deleteHeader(index);
-                                  }}
-                                  className="icon-button"
-                                  style={{ float: "left" }}
-                                >
-                                  <i className="simple-icon-trash" />
-                                  <br></br>
-                                </Button>
-                                <br></br>
-                                <Col>
-                                  <SingleLightbox
-                                    large={header.images[index] ? header.images[index] : ""}
-                                    thumb={header.images[index] ? header.images[index] : ""}
-                                    className="card-img-top"
-                                  ></SingleLightbox>
-                                </Col>
-                              </div>
+                            <Colxx xxs="12">
+                              <Row className="mt-4">
+                                <Colxx>Content - {index + 1}</Colxx>
+                              </Row>
+                              <Label className="mt-2">
+                                <IntlMessages id="bookExperience.corporateBookings.header.title" />
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                value={header.content[index].title ? header.content[index].title : ""}
+                                onChange={(e) => handleHeader(e, index)}
+                              />
+                              <Label className="mt-4">
+                                <IntlMessages id="bookExperience.corporateBookings.header.description" />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={header.content[index].description ? header.content[index].description : ""}
+                                onChange={(e) => handleHeader(e, index)}
+                              />
+                              <br></br>
                             </Colxx>
                           );
                         })}
@@ -351,113 +352,6 @@ const CorporateBookings = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Join as a Member</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporateBookings.joinMember.title" />
-                    </Label>
-                    <Input type="text" name="title" value={joinMember.title ? joinMember.title : ""} onChange={handleJoinMember} />
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.joinMember.content[0].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={joinMember.content ? joinMember.content[0].title : ""}
-                          onChange={(e) => handleJoinMember(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.joinMember.content[1].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={joinMember.content ? joinMember.content[1].title : ""}
-                          onChange={(e) => handleJoinMember(e, 1)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.joinMember.content[2].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={joinMember.content ? joinMember.content[2].title : ""}
-                          onChange={(e) => handleJoinMember(e, 2)}
-                        />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.joinMember.content[0].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={joinMember.content ? joinMember.content[0].description : ""}
-                          onChange={(e) => handleJoinMember(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.joinMember.content[1].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={joinMember.content ? joinMember.content[1].description : ""}
-                          onChange={(e) => handleJoinMember(e, 1)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.joinMember.content[2].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={joinMember.content ? joinMember.content[2].description : ""}
-                          onChange={(e) => handleJoinMember(e, 2)}
-                        />
-                      </Colxx>
-                    </Row>
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Button
-              color="primary"
-              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickForCorporateBookings(e, "join_member", joinMember)}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="bookExperience.corporateBookings.update" />
-              </span>
-            </Button>
-          </center>
-        </Colxx>
-      </Row>
-      <Row>
-        <Col sm="12">
           <h4>Booked with us</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
@@ -479,8 +373,8 @@ const CorporateBookings = () => {
                             <IntlMessages id="bookExperience.corporateBookings.bookedUs.image" />
                           </Label>
                           <Row>
-                            {bookedUs.images &&
-                              bookedUs.images.map((element, index) => {
+                            {bookedUs.content &&
+                              bookedUs.content.map((element, index) => {
                                 return (
                                   <Colxx xxs="12" md="4">
                                     <div>
@@ -514,8 +408,8 @@ const CorporateBookings = () => {
                                       <br></br>
                                       <Col>
                                         <SingleLightbox
-                                          large={bookedUs.images[index] ? bookedUs.images[index] : ""}
-                                          thumb={bookedUs.images[index] ? bookedUs.images[index] : ""}
+                                          large={bookedUs.content[index] ? bookedUs.content[index] : ""}
+                                          thumb={bookedUs.content[index] ? bookedUs.content[index] : ""}
                                           className="card-img-top"
                                         ></SingleLightbox>
                                       </Col>
@@ -535,14 +429,14 @@ const CorporateBookings = () => {
                             color="primary"
                             className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
                             onClick={() => {
-                              openFileInput(`bookedUsImage${bookedUs.images ? bookedUs.images.length : 0}`);
+                              openFileInput(`bookedUsImage${bookedUs.content ? bookedUs.content.length : 0}`);
                             }}
                           >
                             <input
                               type="file"
-                              id={`bookedUsImage${bookedUs.images ? bookedUs.images.length : 0}`}
+                              id={`bookedUsImage${bookedUs.content ? bookedUs.content.length : 0}`}
                               rclassName="d-none"
-                              onChange={(e) => changeImageBookedUs(e, bookedUs.images ? bookedUs.images.length : 0, "booked_us", bookedUs)}
+                              onChange={(e) => changeImageBookedUs(e, bookedUs.content ? bookedUs.content.length : 0, "booked_us", bookedUs)}
                               style={{ display: "none" }}
                             />
                             <span className="label">
@@ -592,8 +486,8 @@ const CorporateBookings = () => {
                   </Colxx>
                 </Row>
                 <Row>
-                  {faq.content &&
-                    faq.content.map((element, index) => {
+                  {faq.contents &&
+                    faq.contents.map((element, index) => {
                       return (
                         <Colxx xxs="12">
                           <Row className="mt-4">
@@ -617,7 +511,7 @@ const CorporateBookings = () => {
                           <Input
                             type="text"
                             name="title"
-                            value={faq.content[index].title ? faq.content[index].title : ""}
+                            value={faq.contents[index].title ? faq.contents[index].title : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <Label className="mt-4">
@@ -626,7 +520,7 @@ const CorporateBookings = () => {
                           <Input
                             type="textarea"
                             name="description"
-                            value={faq.content[index].description ? faq.content[index].description : ""}
+                            value={faq.contents[index].description ? faq.contents[index].description : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <br></br>
@@ -687,20 +581,6 @@ const CorporateBookings = () => {
                       <IntlMessages id="bookExperience.corporateBookings.contactUs.description" />
                     </Label>
                     <Input type="textarea" name="description" value={contactUs.description ? contactUs.description : ""} onChange={handleContactUs} />
-                    <Row>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.contactUs.content[0].title" />
-                        </Label>
-                        <Input type="text" name="title" value={contactUs.content ? contactUs.content[0].title : ""} onChange={(e) => handleContactUs(e, 0)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.corporateBookings.contactUs.content[1].title" />
-                        </Label>
-                        <Input type="text" name="title" value={contactUs.content ? contactUs.content[1].title : ""} onChange={(e) => handleContactUs(e, 1)} />
-                      </Colxx>
-                    </Row>
                   </Colxx>
                 </Row>
               </Form>
@@ -734,33 +614,6 @@ const CorporateBookings = () => {
               <Form>
                 <Row>
                   <Colxx xxs="12">
-                  <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporateBookings.corporateBookingsFooter.image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("corporateBookingsFooter");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="corporateBookingsFooter"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageCorporateFooter(e, "image", "corporate_bookings_footer", corporateBookingsFooter)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox large={corporateBookingsFooter ? corporateBookingsFooter.image : ""} thumb={corporateBookingsFooter ? corporateBookingsFooter.image : ""} className="card-img-top"></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.corporateBookings.corporateBookingsFooter.title" />
                     </Label>
@@ -768,15 +621,6 @@ const CorporateBookings = () => {
                       type="text"
                       name="title"
                       value={corporateBookingsFooter ? corporateBookingsFooter.title : ""}
-                      onChange={handleCorporateBookingsFooter}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporateBookings.corporateBookingsFooter.button" />
-                    </Label>
-                    <Input
-                      type="text"
-                      name="button"
-                      value={corporateBookingsFooter ? corporateBookingsFooter.button : ""}
                       onChange={handleCorporateBookingsFooter}
                     />
                   </Colxx>

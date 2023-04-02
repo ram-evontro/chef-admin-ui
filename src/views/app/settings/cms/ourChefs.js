@@ -36,38 +36,14 @@ const OurChef = () => {
   const [header, setHeader] = useState({});
   const { upload } = fileapi();
 
-  const handleHeader = (e, x = -1) => {
-    let tempdata = { ...header };
+  const handleOurChefs = (e, x = -1) => {
+    let tempdata = { ...ourChefs };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
-    setHeader(tempdata);
+    tempdata[name] = val;
+    setOurChefs(tempdata);
   };
-  const changeImageHeader = async (e, imageSection, section, component) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-      formdata[imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.OUR_CHEFS, form);
-      setHeader({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-      e.target.value = "";
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
+
   const handleClickForChef = async (e, section, component) => {
     setIsLoading(true);
     let newfomdata = { section: section, type: component.type, details: { ...component } };
@@ -92,7 +68,6 @@ const OurChef = () => {
     setLoading(true);
     try {
       let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.OUR_CHEFS);
-      setOurChefs(data.our_chefs);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -104,7 +79,14 @@ const OurChef = () => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.our_chefs.header);
+    let all = {};
+    data.map((ele) => {
+      if (ele.details && ele.details.type) {
+        ele.details.type = ele.type;
+      }
+      all[ele.section] = ele;
+    });
+    setOurChefs(all.our_chefs.details);
   };
 
   return loading ? (
@@ -113,7 +95,7 @@ const OurChef = () => {
     <React.Fragment>
       <Row>
         <Col sm="12">
-          <h4>Header</h4>
+          <h4>Our Chefs</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">
@@ -122,44 +104,9 @@ const OurChef = () => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.ourChefs.header.image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("OurChefs header Image");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="OurChefs header Image"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageHeader(e, "image", "header", header)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox large={header ? header.image : ""} thumb={header ? header.image : ""} className="card-img-top"></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
                       <IntlMessages id="bookExperience.ourChefs.header.title" />
                     </Label>
-                    <Input type="text" name="title" value={header.title ? header.title : ""} onChange={handleHeader} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.ourChefs.header.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={header.description ? header.description : ""} onChange={handleHeader} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.ourChefs.header.link" />
-                    </Label>
-                    <Input type="text" name="link" value={header.link ? header.link : ""} onChange={handleHeader} />
+                    <Input type="text" name="title" value={ourChefs ? ourChefs.title : ""} onChange={handleOurChefs} />
                   </Colxx>
                 </Row>
               </Form>
@@ -169,7 +116,7 @@ const OurChef = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickForChef(e, "header", header)}
+              onClick={(e) => handleClickForChef(e, "our_chefs", ourChefs)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />

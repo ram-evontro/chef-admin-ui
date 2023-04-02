@@ -57,6 +57,13 @@ const GiftCards = () => {
     }
     setWorking(tempdata);
   };
+  const handleHeader = (e) => {
+    let tempdata = { ...header };
+    let val = e.target.value;
+    let name = e.target.name;
+    tempdata[name] = val;
+    setHeader(tempdata);
+  };
   const handleGiftCardsFooter = (e, x = -1) => {
     let tempdata = { ...giftCardsFooter };
     let val = e.target.value;
@@ -106,7 +113,7 @@ const GiftCards = () => {
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.content[x] = val;
     } else {
       tempdata[name] = val;
     }
@@ -129,74 +136,12 @@ const GiftCards = () => {
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-      formdata["images"][imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.GIFT_CARDS, form);
-      setHeader({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-      e.target.value = "";
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImageWorking = async (e, imageSection, section, component, i) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-      formdata.content[i][imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.GIFT_CARDS, form);
-      setWorking({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImageThings = async (e, imageSection, section, component, i) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-      formdata.content[i][imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.GIFT_CARDS, form);
-      setThings({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImageGiftFooter = async (e, imageSection, section, component) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-
       formdata[imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.GIFT_CARDS, form);
-      setGiftCardsFooter({ ...formdata });
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.GIFT_CARDS, form);
+      setHeader({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
     } catch (err) {
@@ -230,7 +175,7 @@ const GiftCards = () => {
   };
   const fetchPointsData = (data) => {
     let allData = points;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.content ? allData.content.push(data.title) : (allData.content = [data.title]);
     setPoints(allData);
   };
   const fetchAmountData = (data) => {
@@ -268,9 +213,7 @@ const GiftCards = () => {
   useEffect(async () => {
     setLoading(true);
     try {
-      //   let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.GIFT_CARDS);
-      //   valueSetter(data);
-      let data = {};
+      let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.GIFT_CARDS);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -282,18 +225,17 @@ const GiftCards = () => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.gift_cards ? data.gift_cards.header : { images: [] });
-    setWorking(data.gift_cards ? data.gift_cards.working : { content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setThings(
-      data.gift_cards
-        ? data.gift_cards.things
-        : { content: [{ description: "description1" }, { description: "description2" }, { description: "description3" }, { description: "description4" }] }
-    );
-    setGiftCardsFooter(data.gift_cards ? data.gift_cards.gift_footer : {});
-    setAmount(data.gift_cards ? data.gift_cards.amount : {});
-    setOccasion(data.gift_cards ? data.gift_cards.occasion : {});
-    setPoints(data.gift_cards ? data.gift_cards.points : {});
-    setRecipient(data.gift_cards ? data.gift_cards.recipient : {});
+    let all = {};
+    data.map((ele) => {
+      ele.details.type= ele.type;
+      all[ele.section] = ele;
+    });
+    setHeader(all.header.details);
+    setWorking(all.working.details);
+    setPoints(all.things_to_note.details);
+    setGiftCardsFooter(all.gift_footer.details);
+    setOccasion(all.occasion.details);
+    setRecipient(all.recipient.details);
   };
 
   return loading ? (
@@ -309,98 +251,93 @@ const GiftCards = () => {
             <CardBody>
               <Form>
                 <Row>
-                  <Colxx xxs="12">
+                  <Colxx xxs="12" md="6">
+                    <div>
+                      <Button
+                        onClick={() => {
+                          openFileInput("giftCardImage0");
+                        }}
+                        className="icon-button"
+                        style={{ float: "right" }}
+                      >
+                        <i className="simple-icon-pencil" />
+                        <br></br>
+                        <input
+                          type="file"
+                          id="giftCardImage0"
+                          rclassName="d-none" 
+                          onChange={(e) => changeImageHeader(e, "image", "header", header)}
+                          style={{ display: "none" }}
+                        />
+                      </Button>
+                      <br></br>
+                      <Col md={11}>
+                        <SingleLightbox
+                          large={header ? header.image : ""}
+                          thumb={header ? header.image : ""}
+                          className="card-img-top"
+                        ></SingleLightbox>
+                      </Col>
+                    </div>
+                  </Colxx>
+                </Row>
+                <Row>
+                  <Colxx xxs="12" md="6">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.header.image" />
+                      <IntlMessages id="bookExperience.giftCards.header.title" />
                     </Label>
-                    <Row>
-                      {header.images &&
-                        header.images.map((element, index) => {
-                          return (
-                            <Colxx xxs="12" md="4">
-                              <div>
-                                <Button
-                                  onClick={() => {
-                                    openFileInput(`giftCardsHeaderImage${index}`);
-                                  }}
-                                  className="icon-button"
-                                  style={{ float: "right" }}
-                                >
-                                  <i className="simple-icon-pencil" />
-                                  <br></br>
-                                  <input
-                                    type="file"
-                                    id={`giftCardsHeaderImage${index}`}
-                                    rclassName="d-none"
-                                    onChange={(e) => changeImageHeader(e, index, "header", header)}
-                                    style={{ display: "none" }}
-                                  />
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    deleteHeader(index);
-                                  }}
-                                  className="icon-button"
-                                  style={{ float: "left" }}
-                                >
-                                  <i className="simple-icon-trash" />
-                                  <br></br>
-                                </Button>
-                                <br></br>
-                                <Col>
-                                  <SingleLightbox
-                                    large={header.images[index] ? header.images[index] : ""}
-                                    thumb={header.images[index] ? header.images[index] : ""}
-                                    className="card-img-top"
-                                  ></SingleLightbox>
-                                </Col>
-                              </div>
-                            </Colxx>
-                          );
-                        })}
-                    </Row>
+                    <Input
+                      type="text"
+                      name="title"
+                      value={header ? header.title : ""}
+                      onChange={handleHeader}
+                    />
+                  </Colxx>
+                </Row>
+                <Row>
+                  <Colxx xxs="12" md="6">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.giftCards.header.description" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="description"
+                      value={header ? header.description : ""}
+                      onChange={handleHeader}
+                    />
+                  </Colxx>
+                </Row>
+                <Row>
+                  <Colxx xxs="12" md="6">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.giftCards.header.button_text" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="button_text"
+                      value={header ? header.button_text : ""}
+                      onChange={handleHeader}
+                    />
                   </Colxx>
                 </Row>
               </Form>
             </CardBody>
           </Card>
           <center>
-            <Row>
-              <Colxx>
-                <Button
-                  color="primary"
-                  className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => handleClickForGiftCards(e, "header", header)}
-                >
-                  <span className="spinner d-inline-block">
-                    <span className="bounce1" />
-                    <span className="bounce2" />
-                    <span className="bounce3" />
-                  </span>
-                  <span className="label">
-                    <IntlMessages id="bookExperience.giftCards.update" />
-                  </span>
-                </Button>
-                <Button
-                  color="primary"
-                  className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={() => {
-                    openFileInput(`giftCardsHeaderImage${header.images ? header.images.length : 0}`);
-                  }}
-                >
-                  <input
-                    type="file"
-                    id={`giftCardsHeaderImage${header.images ? header.images.length : 0}`}
-                    rclassName="d-none"
-                    onChange={(e) => changeImageHeader(e, header.images ? header.images.length : 0, "header", header)}
-                    style={{ display: "none" }}
-                  />
-                  <span className="label">
-                    <IntlMessages id="bookExperience.addNew" />
-                  </span>
-                </Button>
-              </Colxx>
-            </Row>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickForGiftCards(e, "header", header)}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.update" />
+              </span>
+            </Button>
           </center>
         </Colxx>
       </Row>
@@ -422,111 +359,42 @@ const GiftCards = () => {
                 </Row>
                 <Row>
                   <Colxx xxs="12" md="4">
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftWorkingImage0");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftWorkingImage0"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageWorking(e, "image", "working", working, 0)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={working.content ? working.content[0].image : ""}
-                          thumb={working.content ? working.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.giftCards.working.content[0].title" />
+                    </Label>
+                    <Input type="text" name="title" value={working.content ? working.content[0].title : ""} onChange={(e) => handleWorking(e, 0)} />
                   </Colxx>
                   <Colxx xxs="12" md="4">
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftWorkingImage1");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftWorkingImage1"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageWorking(e, "image", "working", working, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={working.content ? working.content[1].image : ""}
-                          thumb={working.content ? working.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.giftCards.working.content[1].title" />
+                    </Label>
+                    <Input type="text" name="title" value={working.content ? working.content[1].title : ""} onChange={(e) => handleWorking(e, 1)} />
                   </Colxx>
                   <Colxx xxs="12" md="4">
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftWorkingImage2");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftWorkingImage2"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageWorking(e, "image", "working", working, 2)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={working.content ? working.content[2].image : ""}
-                          thumb={working.content ? working.content[2].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.giftCards.working.content[2].title" />
+                    </Label>
+                    <Input type="text" name="title" value={working.content ? working.content[2].title : ""} onChange={(e) => handleWorking(e, 2)} />
                   </Colxx>
                 </Row>
                 <Row>
                   <Colxx xxs="12" md="4">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.working.content[0].description" />
+                      <IntlMessages id="bookExperience.giftCards.working.content[0].subtitle" />
                     </Label>
-                    <Input type="text" name="description" value={working.content ? working.content[0].description : ""} onChange={(e) => handleWorking(e, 0)} />
+                    <Input type="text" name="subtitle" value={working.content ? working.content[0].subtitle : ""} onChange={(e) => handleWorking(e, 0)} />
                   </Colxx>
                   <Colxx xxs="12" md="4">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.working.content[1].description" />
+                      <IntlMessages id="bookExperience.giftCards.working.content[1].subtitle" />
                     </Label>
-                    <Input type="text" name="description" value={working.content ? working.content[1].description : ""} onChange={(e) => handleWorking(e, 1)} />
+                    <Input type="text" name="subtitle" value={working.content ? working.content[1].subtitle : ""} onChange={(e) => handleWorking(e, 1)} />
                   </Colxx>
                   <Colxx xxs="12" md="4">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.working.content[2].description" />
+                      <IntlMessages id="bookExperience.giftCards.working.content[2].subtitle" />
                     </Label>
-                    <Input type="text" name="description" value={working.content ? working.content[2].description : ""} onChange={(e) => handleWorking(e, 2)} />
+                    <Input type="text" name="subtitle" value={working.content ? working.content[2].subtitle : ""} onChange={(e) => handleWorking(e, 2)} />
                   </Colxx>
                 </Row>
               </Form>
@@ -550,82 +418,6 @@ const GiftCards = () => {
           </center>
         </Colxx>
       </Row>
-      <Row>
-        <Col sm="12">
-          <h4>Gift Card Amounts</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  {amount.content &&
-                    amount.content.map((element, index) => {
-                      return (
-                        <Colxx xxs="12">
-                          <Row className="mt-4">
-                            <Colxx>Button - {index + 1}</Colxx>
-                            <Colxx>
-                              <Button
-                                onClick={() => {
-                                  deleteAmount(index);
-                                }}
-                                className="icon-button"
-                                style={{ float: "right" }}
-                              >
-                                <i className="simple-icon-trash" />
-                                <br></br>
-                              </Button>
-                            </Colxx>
-                          </Row>
-                          <Label className="mt-2">
-                            <IntlMessages id="bookExperience.giftCards.amount.title" />
-                          </Label>
-                          <Input
-                            type="text"
-                            name="title"
-                            value={amount.content[index].title ? amount.content[index].title : ""}
-                            onChange={(e) => handleAmount(e, index)}
-                          />
-                          <br></br>
-                        </Colxx>
-                      );
-                    })}
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Row>
-              <Colxx>
-                <Button
-                  color="primary"
-                  className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => handleClickForGiftCards(e, "amount", amount)}
-                >
-                  <span className="spinner d-inline-block">
-                    <span className="bounce1" />
-                    <span className="bounce2" />
-                    <span className="bounce3" />
-                  </span>
-                  <span className="label">
-                    <IntlMessages id="bookExperience.giftCards.update" />
-                  </span>
-                </Button>
-                <Button
-                  color="primary"
-                  className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => setAmountModalOpen(!amountModalOpen)}
-                >
-                  <span className="label">
-                    <IntlMessages id="bookExperience.addNew" />
-                  </span>
-                </Button>
-              </Colxx>
-            </Row>
-          </center>
-        </Colxx>
-      </Row>
       <Modal
         fetchData={fetchAmountData}
         modalOpen={amountModalOpen}
@@ -633,179 +425,6 @@ const GiftCards = () => {
         isDescription={false}
         title={"Amount"}
       />
-      <Row>
-        <Col sm="12">
-          <h4>Things to know</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12" md="3">
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftThingsImage0");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftThingsImage0"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageThings(e, "image", "things", things, 0)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={things.content ? things.content[0].image : ""}
-                          thumb={things.content ? things.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                  </Colxx>
-                  <Colxx xxs="12" md="3">
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftThingsImage1");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftThingsImage1"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageThings(e, "image", "things", things, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={things.content ? things.content[1].image : ""}
-                          thumb={things.content ? things.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                  </Colxx>
-                  <Colxx xxs="12" md="3">
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftThingsImage2");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftThingsImage2"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageThings(e, "image", "things", things, 2)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={things.content ? things.content[2].image : ""}
-                          thumb={things.content ? things.content[2].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                  </Colxx>
-                  <Colxx xxs="12" md="3">
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftThingsImage3");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftThingsImage3"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageThings(e, "image", "things", things, 3)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={things.content ? things.content[3].image : ""}
-                          thumb={things.content ? things.content[3].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                  </Colxx>
-                </Row>
-                <Row>
-                  <Colxx xxs="12" md="3">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.things.content[0].description" />
-                    </Label>
-                    <Input type="text" name="description" value={things.content ? things.content[0].description : ""} onChange={(e) => handleThings(e, 0)} />
-                  </Colxx>
-                  <Colxx xxs="12" md="3">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.things.content[1].description" />
-                    </Label>
-                    <Input type="text" name="description" value={things.content ? things.content[1].description : ""} onChange={(e) => handleThings(e, 1)} />
-                  </Colxx>
-                  <Colxx xxs="12" md="3">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.things.content[2].description" />
-                    </Label>
-                    <Input type="text" name="description" value={things.content ? things.content[2].description : ""} onChange={(e) => handleThings(e, 2)} />
-                  </Colxx>
-                  <Colxx xxs="12" md="3">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.things.content[3].description" />
-                    </Label>
-                    <Input type="text" name="description" value={things.content ? things.content[3].description : ""} onChange={(e) => handleThings(e, 3)} />
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Button
-              color="primary"
-              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickForGiftCards(e, "things", things)}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="bookExperience.giftCards.update" />
-              </span>
-            </Button>
-          </center>
-        </Colxx>
-      </Row>
       <Row>
         <Col sm="12">
           <h4>Things to note (Points)</h4>
@@ -848,7 +467,7 @@ const GiftCards = () => {
                           <Input
                             type="text"
                             name="title"
-                            value={points.content[index].title ? points.content[index].title : ""}
+                            value={points.content[index] ? points.content[index] : ""}
                             onChange={(e) => handlePoints(e, index)}
                           />
                           <br></br>
@@ -865,7 +484,7 @@ const GiftCards = () => {
                 <Button
                   color="primary"
                   className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => handleClickForGiftCards(e, "points", points)}
+                  onClick={(e) => handleClickForGiftCards(e, "things_to_note", points)}
                 >
                   <span className="spinner d-inline-block">
                     <span className="bounce1" />
@@ -934,12 +553,12 @@ const GiftCards = () => {
                             </Colxx>
                           </Row>
                           <Label className="mt-2">
-                            <IntlMessages id="bookExperience.giftCards.occasion.button" />
+                            <IntlMessages id="bookExperience.giftCards.occasion.name" />
                           </Label>
                           <Input
                             type="text"
-                            name="button"
-                            value={occasion.content[index].button ? occasion.content[index].button : ""}
+                            name="name"
+                            value={occasion.content[index].name ? occasion.content[index].name : ""}
                             onChange={(e) => handleOccasion(e, index)}
                           />
                           <Label className="mt-2">
@@ -1004,8 +623,8 @@ const GiftCards = () => {
         modalOpen={occasionModalOpen}
         toggleModal={() => setOccasionModalOpen(!occasionModalOpen)}
         isDescription={true}
-        isButton={true}
         title={"Occasion"}
+        isName={true}
       />
       <Row>
         <Col sm="12">
@@ -1059,44 +678,9 @@ const GiftCards = () => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.giftCardsFooter.image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("giftCardsFooterImage");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="giftCardsFooterImage"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageGiftFooter(e, "image", "gift_footer", giftCardsFooter)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={giftCardsFooter ? giftCardsFooter.image : ""}
-                          thumb={giftCardsFooter ? giftCardsFooter.image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
-                    <Label className="mt-4">
                       <IntlMessages id="bookExperience.giftCards.giftCardsFooter.title" />
                     </Label>
-                    <Input type="text" name="title" value={giftCardsFooter ? giftCardsFooter.title : ""} onChange={handleGiftCardsFooter} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.giftCards.giftCardsFooter.button" />
-                    </Label>
-                    <Input type="text" name="button" value={giftCardsFooter ? giftCardsFooter.button : ""} onChange={handleGiftCardsFooter} />
+                    <Input type="text" name="text" value={giftCardsFooter ? giftCardsFooter.text : ""} onChange={handleGiftCardsFooter} />
                   </Colxx>
                 </Row>
               </Form>

@@ -109,11 +109,11 @@ const SupperClub = () => {
     let tempdata = { ...reviews };
     let val = e.target.value;
     let name = e.target.name;
-    if (e.target.name === "ratings" && val != "" && (val < 1 || val > 5)) {
+    if (e.target.name === "rating" && val != "" && (val < 1 || val > 5)) {
       return;
     }
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.reviews[x][name] = val;
     } else {
       tempdata[name] = val;
     }
@@ -124,7 +124,7 @@ const SupperClub = () => {
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.contents[x][name] = val;
     } else {
       tempdata[name] = val;
     }
@@ -168,12 +168,11 @@ const SupperClub = () => {
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
       formdata[imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
       setHeader({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -195,9 +194,8 @@ const SupperClub = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
       setExpect({ ...formdata });
-
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
     } catch (err) {
@@ -214,39 +212,17 @@ const SupperClub = () => {
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
 
-      formdata["images"][imageSection] = fileurl;
+      formdata["content"][imageSection] = fileurl;
     }
 
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
       setLooks({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
     } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImageStayKnow = async (e, imageSection, section, component) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
-    }
-
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
-      setStayKnow({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
-    } catch (err) {
       console.log(err);
       console.log(err.response);
       if (err.response) {
@@ -263,7 +239,7 @@ const SupperClub = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB, form);
       setBehindScenes({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -299,12 +275,12 @@ const SupperClub = () => {
 
   const fetchData = (data) => {
     let allData = reviews;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.reviews ? allData.reviews.push(data) : (allData.reviews = [data]);
     setReviews(allData);
   };
   const fetchFaqData = (data) => {
     let allData = faq;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.contents ? allData.contents.push(data) : (allData.contents = [data]);
     setFaq(allData);
   };
   const fetchBehindScenesData = async (data) => {
@@ -318,20 +294,20 @@ const SupperClub = () => {
   };
   const deleteReview = (index) => {
     let allData = reviews;
-    const result = reviews.content.filter((element, i) => i != index);
-    allData.content = result;
+    const result = reviews.reviews.filter((element, i) => i != index);
+    allData.reviews = result;
     setReviews({ ...allData });
   };
   const deleteFaq = (index) => {
     let allData = faq;
-    const result = faq.content.filter((element, i) => i != index);
-    allData.content = result;
+    const result = faq.contents.filter((element, i) => i != index);
+    allData.contents = result;
     setFaq({ ...allData });
   };
   const deleteLooks = (index) => {
     let allData = looks;
-    const result = looks.images.filter((element, i) => i != index);
-    allData.images = result;
+    const result = looks.content.filter((element, i) => i != index);
+    allData.content = result;
     setLooks({ ...allData });
   };
   const deleteBehindScenes = (index) => {
@@ -350,9 +326,7 @@ const SupperClub = () => {
   useEffect(async () => {
     setLoading(true);
     try {
-      //   let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB);
-      // valueSetter(data.supper_club);
-      let data = {};
+      let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.SUPPER_CLUB);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -364,16 +338,21 @@ const SupperClub = () => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.supper_club ? data.supper_club.header : {});
-    setUpcoming(data.supper_club ? data.supper_club.upcoming : {});
-    setCooking(data.supper_club ? data.supper_club.cooking : {});
-    setExpect(data.supper_club ? data.supper_club.expect : { content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setSupperFooter(data.supper_club ? data.supper_club.supper_footer : {});
-    setFaq(data.supper_club ? data.supper_club.faq : {});
-    setReviews(data.supper_club ? data.supper_club.reviews : { content: [] });
-    setLooks(data.supper_club ? data.supper_club.looks : { images: [] });
-    setStayKnow(data.supper_club ? data.supper_club.stayKnow : { images: [] });
-    setBehindScenes(data.supper_club ? data.supper_club.behindScenes : {});
+    let all = {};
+    data.map((ele) => {
+      ele.details.type= ele.type;
+      all[ele.section] = ele;
+    });
+    setHeader(all.header.details);
+    setUpcoming(all.upcoming_supper_club.details);
+    setCooking(all.cooking.details);
+    setExpect(all.expect.details);
+    setReviews(all.reviews.details);
+    setLooks(all.looks.details);
+    setBehindScenes(all.behind_scenes.details);
+    // setSupperFooter(all.supper_club ? all.supper_club.supper_footer : {});
+    setFaq(all.faq.details);
+    // setStayKnow(all.supper_club ? all.supper_club.stayKnow : { images: [] });
   };
   return loading ? (
     <div className="loading" />
@@ -420,10 +399,6 @@ const SupperClub = () => {
                       <IntlMessages id="bookExperience.supperClub.header.title" />
                     </Label>
                     <Input type="text" name="title" value={header.title ? header.title : ""} onChange={handleHeader} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.supperClub.header.searchText" />
-                    </Label>
-                    <Input type="text" name="searchText" value={header.searchText ? header.searchText : ""} onChange={handleHeader} />
                   </Colxx>
                 </Row>
               </Form>
@@ -470,7 +445,7 @@ const SupperClub = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickForSupperClub(e, "upcoming", upcoming)}
+              onClick={(e) => handleClickForSupperClub(e, "upcoming_supper_club", upcoming)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -561,61 +536,30 @@ const SupperClub = () => {
                         <SingleLightbox large={expect ? expect.image : ""} thumb={expect ? expect.image : ""} className="card-img-top"></SingleLightbox>
                       </Col>
                     </div>
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.supperClub.expect.content[0].title" />
-                        </Label>
-                        <Input type="text" name="title" value={expect.content ? expect.content[0].title : ""} onChange={(e) => handleExpect(e, 0)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.supperClub.expect.content[1].title" />
-                        </Label>
-                        <Input type="text" name="title" value={expect.content ? expect.content[1].title : ""} onChange={(e) => handleExpect(e, 1)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.supperClub.expect.content[2].title" />
-                        </Label>
-                        <Input type="text" name="title" value={expect.content ? expect.content[2].title : ""} onChange={(e) => handleExpect(e, 2)} />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.supperClub.expect.content[0].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={expect.content ? expect.content[0].description : ""}
-                          onChange={(e) => handleExpect(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.supperClub.expect.content[1].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={expect.content ? expect.content[1].description : ""}
-                          onChange={(e) => handleExpect(e, 1)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.supperClub.expect.content[2].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={expect.content ? expect.content[2].description : ""}
-                          onChange={(e) => handleExpect(e, 2)}
-                        />
-                      </Colxx>
-                    </Row>
+                    {expect.content &&
+                      expect.content.map((data, index) => {
+                        return (
+                          <Row>
+                            <Colxx xxs="12" md="6">
+                              <Label className="mt-4">
+                                <IntlMessages id={`bookExperience.supperClub.expect.content[${index}].title`} />
+                              </Label>
+                              <Input type="text" name="title" value={expect.content ? expect.content[index].title : ""} onChange={(e) => handleExpect(e, index)} />
+                            </Colxx>
+                            <Colxx xxs="12" md="6">
+                              <Label className="mt-4">
+                                <IntlMessages id={`bookExperience.supperClub.expect.content[${index}].description`} />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={expect.content ? expect.content[index].description : ""}
+                                onChange={(e) => handleExpect(e, index)}
+                              />
+                            </Colxx>
+                          </Row>
+                        );
+                      })}
                   </Colxx>
                 </Row>
               </Form>
@@ -648,8 +592,8 @@ const SupperClub = () => {
             <CardBody>
               <Form>
                 <Row>
-                  {reviews.content &&
-                    reviews.content.map((review, index) => {
+                  {reviews.reviews &&
+                    reviews.reviews.map((review, index) => {
                       return (
                         <Colxx xxs="12">
                           <Row className="mt-4">
@@ -673,16 +617,16 @@ const SupperClub = () => {
                           <Input
                             type="text"
                             name="title"
-                            value={reviews.content[index].title ? reviews.content[index].title : ""}
+                            value={reviews.reviews[index].title ? reviews.reviews[index].title : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
-                            <IntlMessages id="bookExperience.supperClub.reviews.ratings" />
+                            <IntlMessages id="bookExperience.supperClub.reviews.rating" />
                           </Label>
                           <Input
                             type="number"
-                            name="ratings"
-                            value={reviews.content[index].ratings ? reviews.content[index].ratings : ""}
+                            name="rating"
+                            value={reviews.reviews[index].rating ? reviews.reviews[index].rating : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
@@ -691,16 +635,16 @@ const SupperClub = () => {
                           <Input
                             type="textarea"
                             name="description"
-                            value={reviews.content[index].description ? reviews.content[index].description : ""}
+                            value={reviews.reviews[index].description ? reviews.reviews[index].description : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
-                            <IntlMessages id="bookExperience.supperClub.reviews.designation" />
+                            <IntlMessages id="bookExperience.supperClub.reviews.reviewer" />
                           </Label>
                           <Input
                             type="text"
-                            name="designation"
-                            value={reviews.content[index].designation ? reviews.content[index].designation : ""}
+                            name="reviewer"
+                            value={reviews.reviews[index].reviewer ? reviews.reviews[index].reviewer : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <br></br>
@@ -764,8 +708,8 @@ const SupperClub = () => {
                           <IntlMessages id="bookExperience.supperClub.looks.image" />
                         </Label>
                         <Row>
-                          {looks.images &&
-                            looks.images.map((element, index) => {
+                          {looks.content &&
+                            looks.content.map((element, index) => {
                               return (
                                 <Colxx xxs="12" md="4">
                                   <div>
@@ -799,8 +743,8 @@ const SupperClub = () => {
                                     <br></br>
                                     <Col>
                                       <SingleLightbox
-                                        large={looks.images[index] ? looks.images[index] : ""}
-                                        thumb={looks.images[index] ? looks.images[index] : ""}
+                                        large={looks.content[index] ? looks.content[index] : ""}
+                                        thumb={looks.content[index] ? looks.content[index] : ""}
                                         className="card-img-top"
                                       ></SingleLightbox>
                                     </Col>
@@ -816,14 +760,14 @@ const SupperClub = () => {
                                 color="primary"
                                 className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
                                 onClick={() => {
-                                  openFileInput(`looksImage${looks.images ? looks.images.length : 0}`);
+                                  openFileInput(`looksImage${looks.content ? looks.content.length : 0}`);
                                 }}
                               >
                                 <input
                                   type="file"
-                                  id={`looksImage${looks.images ? looks.images.length : 0}`}
+                                  id={`looksImage${looks.content ? looks.content.length : 0}`}
                                   rclassName="d-none"
-                                  onChange={(e) => changeImageLooks(e, looks.images ? looks.images.length : 0, "looks", looks)}
+                                  onChange={(e) => changeImageLooks(e, looks.content ? looks.content.length : 0, "looks", looks)}
                                   style={{ display: "none" }}
                                 />
                                 <span className="label">
@@ -898,21 +842,21 @@ const SupperClub = () => {
                                     </Colxx>
                                   </Row>
                                   <Label className="mt-2">
-                                    <IntlMessages id="bookExperience.supperClub.behindScenes.title" />
+                                    <IntlMessages id="bookExperience.supperClub.behindScenes.name" />
                                   </Label>
                                   <Input
                                     type="text"
-                                    name="title"
-                                    value={behindScenes.content[index].title ? behindScenes.content[index].title : ""}
+                                    name="name"
+                                    value={behindScenes.content[index].name ? behindScenes.content[index].name : ""}
                                     onChange={(e) => handleBehindScenes(e, index)}
                                   />
                                   <Label className="mt-4">
-                                    <IntlMessages id="bookExperience.supperClub.behindScenes.description" />
+                                    <IntlMessages id="bookExperience.supperClub.behindScenes.location" />
                                   </Label>
                                   <Input
-                                    type="textarea"
-                                    name="description"
-                                    value={behindScenes.content[index].description ? behindScenes.content[index].description : ""}
+                                    type="text"
+                                    name="location"
+                                    value={behindScenes.content[index].location ? behindScenes.content[index].location : ""}
                                     onChange={(e) => handleBehindScenes(e, index)}
                                   />
                                   <div>
@@ -990,9 +934,11 @@ const SupperClub = () => {
         modalOpen={behindScenesModalOpen}
         toggleModal={() => setBehindScenesModalOpen(!behindScenesModalOpen)}
         isImage={true}
-        title={"Scene"}
+        isDescription={false}
+        title={"Behind the scene"}
+        isBehindScene={true}
       />
-      <Row>
+      {/* <Row>
         <Col sm="12">
           <h4>Stay In The Know</h4>
         </Col>
@@ -1109,7 +1055,7 @@ const SupperClub = () => {
             </Button>
           </center>
         </Colxx>
-      </Row>
+      </Row> */}
       <Row>
         <Col sm="12">
           <h4>FAQ</h4>
@@ -1127,8 +1073,8 @@ const SupperClub = () => {
                   </Colxx>
                 </Row>
                 <Row>
-                  {faq.content &&
-                    faq.content.map((element, index) => {
+                  {faq.contents &&
+                    faq.contents.map((element, index) => {
                       return (
                         <Colxx xxs="12">
                           <Row className="mt-4">
@@ -1152,7 +1098,7 @@ const SupperClub = () => {
                           <Input
                             type="text"
                             name="title"
-                            value={faq.content[index].title ? faq.content[index].title : ""}
+                            value={faq.contents[index].title ? faq.contents[index].title : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <Label className="mt-4">
@@ -1161,7 +1107,7 @@ const SupperClub = () => {
                           <Input
                             type="textarea"
                             name="description"
-                            value={faq.content[index].description ? faq.content[index].description : ""}
+                            value={faq.contents[index].description ? faq.contents[index].description : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <br></br>
@@ -1204,7 +1150,7 @@ const SupperClub = () => {
         </Colxx>
       </Row>
       <Modal fetchData={fetchFaqData} modalOpen={faqModalOpen} toggleModal={() => setFaqModalOpen(!faqModalOpen)} />
-      <Row>
+      {/* <Row>
         <Col sm="12">
           <h4>Supper Club Footer</h4>
         </Col>
@@ -1244,7 +1190,7 @@ const SupperClub = () => {
             </Button>
           </center>
         </Colxx>
-      </Row>
+      </Row> */}
     </React.Fragment>
   );
 };

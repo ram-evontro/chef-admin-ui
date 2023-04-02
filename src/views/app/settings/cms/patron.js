@@ -36,6 +36,7 @@ const Patron = () => {
   const [header, setHeader] = useState({});
   const [becomePatron, setBecomePatron] = useState({});
   const [membershipTypes, setMembershipTypes] = useState({});
+  const [benifits, setBenifits] = useState({});
   const [patronFooter, setPatronFooter] = useState({});
   const [faq, setFaq] = useState({});
   const [faqModalOpen, setFaqModalOpen] = useState(false);
@@ -51,17 +52,6 @@ const Patron = () => {
       tempdata[name] = val;
     }
     setBecomePatron(tempdata);
-  };
-  const handleMembershipTypes = (e, x = -1) => {
-    let tempdata = { ...membershipTypes };
-    let val = e.target.value;
-    let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
-    setMembershipTypes(tempdata);
   };
   const handlePatronFooter = (e, x = -1) => {
     let tempdata = { ...patronFooter };
@@ -79,76 +69,22 @@ const Patron = () => {
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.contents[x][name] = val;
     } else {
       tempdata[name] = val;
     }
     setFaq(tempdata);
   };
-
-  const changeImageHeader = async (e, imageSection, section, component) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
+  const handleBenifits = (e, x = -1) => {
+    let tempdata = { ...benifits };
+    let val = e.target.value;
+    let name = e.target.name;
+    if (x !== -1) {
+      tempdata.content[x][name] = val;
+    } else {
+      tempdata[name] = val;
     }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PATRON, form);
-      setHeader({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-      e.target.value = "";
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImageBecomePatron = async (e, imageSection, section, component, i) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-      formdata.content[i][imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PATRON, form);
-      setBecomePatron({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImagePatronFooter = async (e, imageSection, section, component) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-
-      formdata[imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PATRON, form);
-      setPatronFooter({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-      e.target.value = "";
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
+    setBenifits(tempdata);
   };
   const handleClickForPatron = async (e, section, component) => {
     setIsLoading(true);
@@ -166,34 +102,24 @@ const Patron = () => {
     }
     setIsLoading(false);
   };
-  
-const fetchFaqData = (data) => {
+  const fetchFaqData = (data) => {
     let allData = faq;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.contents ? allData.contents.push(data) : (allData.contents = [data]);
     setFaq(allData);
   };
   const deleteFaq = (index) => {
     let allData = faq;
-    const result = faq.content.filter((element, i) => i != index);
-    allData.content = result;
+    const result = faq.contents.filter((element, i) => i != index);
+    allData.contents = result;
     setFaq({ ...allData });
   };
-  const deleteHeader = (index) => {
-    let allData = header;
-    const result = header.images.filter((element, i) => i != index);
-    allData.images = result;
-    setHeader({ ...allData });
-  };
-
   const openFileInput = (image) => {
     document.getElementById(image).click();
   };
   useEffect(async () => {
     setLoading(true);
     try {
-      //   let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.PATRON);
-      //   valueSetter(data);
-      let data = {};
+      let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.PATRON);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -205,121 +131,23 @@ const fetchFaqData = (data) => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.patron ? data.patron.header : { images: [] });
-    setBecomePatron(data.patron ? data.patron.become_patron : { content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setMembershipTypes(data.patron ? data.patron.membership_types : { content: [{ title: "title1" }, { title: "title2" }] });
-    setFaq(data.patron ? data.patron.faq : {});
-    setPatronFooter(data.patron ? data.patron.patron_footer : {});
+    let all = {};
+    data.map((ele) => {
+      if (!all[ele.section]) {
+        ele.details.type = ele.type;
+        all[ele.section] = ele;
+      }
+    });
+    setBecomePatron(all.become_patron.details);
+    setBenifits(all.benifits.details);
+    setFaq(all.faq.details);
+    setPatronFooter(all.patron_footer.details);
   };
 
   return loading ? (
     <div className="loading" />
   ) : (
     <React.Fragment>
-      <Row>
-        <Col sm="12">
-          <h4>Header</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patron.header.image" />
-                    </Label>
-                    <Row>
-                      {header.images &&
-                        header.images.map((element, index) => {
-                          return (
-                            <Colxx xxs="12" md="4">
-                              <div>
-                                <Button
-                                  onClick={() => {
-                                    openFileInput(`patronHeaderImage${index}`);
-                                  }}
-                                  className="icon-button"
-                                  style={{ float: "right" }}
-                                >
-                                  <i className="simple-icon-pencil" />
-                                  <br></br>
-                                  <input
-                                    type="file"
-                                    id={`patronHeaderImage${index}`}
-                                    rclassName="d-none"
-                                    onChange={(e) => changeImageHeader(e, index, "header", header)}
-                                    style={{ display: "none" }}
-                                  />
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    deleteHeader(index);
-                                  }}
-                                  className="icon-button"
-                                  style={{ float: "left" }}
-                                >
-                                  <i className="simple-icon-trash" />
-                                  <br></br>
-                                </Button>
-                                <br></br>
-                                <Col>
-                                  <SingleLightbox
-                                    large={header.images[index] ? header.images[index] : ""}
-                                    thumb={header.images[index] ? header.images[index] : ""}
-                                    className="card-img-top"
-                                  ></SingleLightbox>
-                                </Col>
-                              </div>
-                            </Colxx>
-                          );
-                        })}
-                    </Row>
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Row>
-              <Colxx>
-                <Button
-                  color="primary"
-                  className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => handleClickForPatron(e, "header", header)}
-                >
-                  <span className="spinner d-inline-block">
-                    <span className="bounce1" />
-                    <span className="bounce2" />
-                    <span className="bounce3" />
-                  </span>
-                  <span className="label">
-                    <IntlMessages id="bookExperience.patron.update" />
-                  </span>
-                </Button>
-                <Button
-                  color="primary"
-                  className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={() => {
-                    openFileInput(`patronHeaderImage${header.images ? header.images.length : 0}`);
-                  }}
-                >
-                  <input
-                    type="file"
-                    id={`patronHeaderImage${header.images ? header.images.length : 0}`}
-                    rclassName="d-none"
-                    onChange={(e) => changeImageHeader(e, header.images ? header.images.length : 0, "header", header)}
-                    style={{ display: "none" }}
-                  />
-                  <span className="label">
-                    <IntlMessages id="bookExperience.addNew" />
-                  </span>
-                </Button>
-              </Colxx>
-            </Row>
-          </center>
-        </Colxx>
-      </Row>
       <Row>
         <Col sm="12">
           <h4>Become Patron</h4>
@@ -334,180 +162,6 @@ const fetchFaqData = (data) => {
                       <IntlMessages id="bookExperience.patron.becomePatron.title" />
                     </Label>
                     <Input type="text" name="title" value={becomePatron.title ? becomePatron.title : ""} onChange={handleBecomePatron} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patron.becomePatron.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={becomePatron.description ? becomePatron.description : ""} onChange={handleBecomePatron} />
-                  </Colxx>
-                </Row>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patron.becomePatron.image" />
-                    </Label>
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <div>
-                          <Button
-                            onClick={() => {
-                              openFileInput("becomePatronImage0");
-                            }}
-                            className="icon-button"
-                            style={{ float: "right" }}
-                          >
-                            <i className="simple-icon-pencil" />
-                            <br></br>
-                            <input
-                              type="file"
-                              id="becomePatronImage0"
-                              rclassName="d-none"
-                              onChange={(e) => changeImageBecomePatron(e, "image", "become_patron", becomePatron, 0)}
-                              style={{ display: "none" }}
-                            />
-                          </Button>
-                          <br></br>
-                          <Col md={11}>
-                            <SingleLightbox
-                              large={becomePatron && becomePatron.content ? becomePatron.content[0].image : ""}
-                              thumb={becomePatron && becomePatron.content ? becomePatron.content[0].image : ""}
-                              className="card-img-top"
-                            ></SingleLightbox>
-                          </Col>
-                        </div>
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <div>
-                          <Button
-                            onClick={() => {
-                              openFileInput("becomePatronImage1");
-                            }}
-                            className="icon-button"
-                            style={{ float: "right" }}
-                          >
-                            <i className="simple-icon-pencil" />
-                            <br></br>
-                            <input
-                              type="file"
-                              id="becomePatronImage1"
-                              rclassName="d-none"
-                              onChange={(e) => changeImageBecomePatron(e, "image", "become_patron", becomePatron, 1)}
-                              style={{ display: "none" }}
-                            />
-                          </Button>
-                          <br></br>
-                          <Col md={11}>
-                            <SingleLightbox
-                              large={becomePatron && becomePatron.content ? becomePatron.content[1].image : ""}
-                              thumb={becomePatron && becomePatron.content ? becomePatron.content[1].image : ""}
-                              className="card-img-top"
-                            ></SingleLightbox>
-                          </Col>
-                        </div>
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <div>
-                          <Button
-                            onClick={() => {
-                              openFileInput("becomePatronImage2");
-                            }}
-                            className="icon-button"
-                            style={{ float: "right" }}
-                          >
-                            <i className="simple-icon-pencil" />
-                            <br></br>
-                            <input
-                              type="file"
-                              id="becomePatronImage2"
-                              rclassName="d-none"
-                              onChange={(e) => changeImageBecomePatron(e, "image", "become_patron", becomePatron, 2)}
-                              style={{ display: "none" }}
-                            />
-                          </Button>
-                          <br></br>
-                          <Col md={11}>
-                            <SingleLightbox
-                              large={becomePatron && becomePatron.content ? becomePatron.content[2].image : ""}
-                              thumb={becomePatron && becomePatron.content ? becomePatron.content[2].image : ""}
-                              className="card-img-top"
-                            ></SingleLightbox>
-                          </Col>
-                        </div>
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.becomePatron.content[0].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={becomePatron.content ? becomePatron.content[0].title : ""}
-                          onChange={(e) => handleBecomePatron(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.becomePatron.content[1].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={becomePatron.content ? becomePatron.content[1].title : ""}
-                          onChange={(e) => handleBecomePatron(e, 1)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.becomePatron.content[2].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={becomePatron.content ? becomePatron.content[2].title : ""}
-                          onChange={(e) => handleBecomePatron(e, 2)}
-                        />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.becomePatron.content[0].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={becomePatron.content ? becomePatron.content[0].description : ""}
-                          onChange={(e) => handleBecomePatron(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.becomePatron.content[1].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={becomePatron.content ? becomePatron.content[1].description : ""}
-                          onChange={(e) => handleBecomePatron(e, 1)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.becomePatron.content[2].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={becomePatron.content ? becomePatron.content[2].description : ""}
-                          onChange={(e) => handleBecomePatron(e, 2)}
-                        />
-                      </Colxx>
-                    </Row>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patron.becomePatron.link" />
-                    </Label>
-                    <Input type="text" name="link" value={becomePatron.link ? becomePatron.link : ""} onChange={handleBecomePatron} />
                   </Colxx>
                 </Row>
               </Form>
@@ -533,7 +187,7 @@ const fetchFaqData = (data) => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Membership Types</h4>
+          <h4>Benifits</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">
@@ -542,133 +196,42 @@ const fetchFaqData = (data) => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patron.membershipTypes.title" />
+                      <IntlMessages id="bookExperience.patron.benifits.description" />
                     </Label>
-                    <Input type="text" name="title" value={membershipTypes.title ? membershipTypes.title : ""} onChange={handleMembershipTypes} />
+                    <Input type="textarea" name="description" value={benifits.description ? benifits.description : ""} onChange={handleBenifits} />
                   </Colxx>
                 </Row>
                 <Row>
                   <Colxx xxs="12">
-                    <Row>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[0].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={membershipTypes.content ? membershipTypes.content[0].title : ""}
-                          onChange={(e) => handleMembershipTypes(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[1].title" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="title"
-                          value={membershipTypes.content ? membershipTypes.content[1].title : ""}
-                          onChange={(e) => handleMembershipTypes(e, 1)}
-                        />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[0].subTitle" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="sub_title"
-                          value={membershipTypes.content ? membershipTypes.content[0].sub_title : ""}
-                          onChange={(e) => handleMembershipTypes(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[1].subTitle" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="sub_title"
-                          value={membershipTypes.content ? membershipTypes.content[1].sub_title : ""}
-                          onChange={(e) => handleMembershipTypes(e, 1)}
-                        />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[0].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={membershipTypes.content ? membershipTypes.content[0].description : ""}
-                          onChange={(e) => handleMembershipTypes(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[1].description" />
-                        </Label>
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={membershipTypes.content ? membershipTypes.content[1].description : ""}
-                          onChange={(e) => handleMembershipTypes(e, 1)}
-                        />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[0].price" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="price"
-                          value={membershipTypes.content ? membershipTypes.content[0].price : ""}
-                          onChange={(e) => handleMembershipTypes(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[1].price" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="price"
-                          value={membershipTypes.content ? membershipTypes.content[1].price : ""}
-                          onChange={(e) => handleMembershipTypes(e, 1)}
-                        />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[0].popularity" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="popularity"
-                          value={membershipTypes.content ? membershipTypes.content[0].popularity : ""}
-                          onChange={(e) => handleMembershipTypes(e, 0)}
-                        />
-                      </Colxx>
-                      <Colxx xxs="12" md="6">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.patron.membershipTypes.content[1].popularity" />
-                        </Label>
-                        <Input
-                          type="text"
-                          name="popularity"
-                          value={membershipTypes.content ? membershipTypes.content[1].popularity : ""}
-                          onChange={(e) => handleMembershipTypes(e, 1)}
-                        />
-                      </Colxx>
-                    </Row>
+                    {benifits.content &&
+                      benifits.content.map((element, index) => {
+                        return (
+                          <Row>
+                            <Colxx xxs="12">
+                              <Label className="mt-4">
+                                <IntlMessages id={`bookExperience.patron.benifits.content[${index}].title`} />
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                value={benifits.content ? benifits.content[index].title : ""}
+                                onChange={(e) => handleBenifits(e, index)}
+                              />
+                            </Colxx>
+                            <Colxx xxs="12">
+                              <Label className="mt-4">
+                                <IntlMessages id={`bookExperience.patron.benifits.content[${index}].description`} />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={benifits.content ? benifits.content[index].description : ""}
+                                onChange={(e) => handleBenifits(e, index)}
+                              />
+                            </Colxx>
+                          </Row>
+                        );
+                      })}
                   </Colxx>
                 </Row>
               </Form>
@@ -678,7 +241,7 @@ const fetchFaqData = (data) => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickForPatron(e, "membership_types", membershipTypes)}
+              onClick={(e) => handleClickForPatron(e, "benifits", benifits)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -709,8 +272,8 @@ const fetchFaqData = (data) => {
                   </Colxx>
                 </Row>
                 <Row>
-                  {faq.content &&
-                    faq.content.map((element, index) => {
+                  {faq.contents &&
+                    faq.contents.map((element, index) => {
                       return (
                         <Colxx xxs="12">
                           <Row className="mt-4">
@@ -734,7 +297,7 @@ const fetchFaqData = (data) => {
                           <Input
                             type="text"
                             name="title"
-                            value={faq.content[index].title ? faq.content[index].title : ""}
+                            value={faq.contents[index].title ? faq.contents[index].title : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <Label className="mt-4">
@@ -743,7 +306,7 @@ const fetchFaqData = (data) => {
                           <Input
                             type="textarea"
                             name="description"
-                            value={faq.content[index].description ? faq.content[index].description : ""}
+                            value={faq.contents[index].description ? faq.contents[index].description : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <br></br>
@@ -785,7 +348,7 @@ const fetchFaqData = (data) => {
           </center>
         </Colxx>
       </Row>
-      <FaqModal fetchData={fetchFaqData} modalOpen={faqModalOpen} toggleModal={() => setFaqModalOpen(!faqModalOpen)} title={"FAQ"}/>
+      <FaqModal fetchData={fetchFaqData} modalOpen={faqModalOpen} toggleModal={() => setFaqModalOpen(!faqModalOpen)} title={"FAQ"} />
       <Row>
         <Col sm="12">
           <h4>Patron Footer</h4>
@@ -796,41 +359,10 @@ const fetchFaqData = (data) => {
               <Form>
                 <Row>
                   <Colxx xxs="12">
-                  <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patron.patronFooter.image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("patronFooterImage");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="patronFooterImage"
-                          rclassName="d-none"
-                          onChange={(e) => changeImagePatronFooter(e, "image", "patron_footer", patronFooter)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={patronFooter ? patronFooter.image : ""}
-                          thumb={patronFooter ? patronFooter.image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <br></br>
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.patron.patronFooter.title" />
                     </Label>
-                    <Input type="text" name="title" value={patronFooter.title ? patronFooter.title : ""} onChange={handlePatronFooter} />
+                    <Input type="text" name="text" value={patronFooter.text ? patronFooter.text : ""} onChange={handlePatronFooter} />
                   </Colxx>
                 </Row>
               </Form>

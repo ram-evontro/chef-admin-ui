@@ -46,6 +46,7 @@ const BookExp = () => {
   const [newsReviews, setNewsReviews] = useState({});
   const [newsReviewsModalOpen, setNewsReviewsModalOpen] = useState(false);
   const [foodDrools, setFoodDrools] = useState({});
+  const [privateDining, setPrivateDining] = useState({});
   const [gift, setGift] = useState({});
   const [corporate, setCorporate] = useState({});
   const [joinTable, setJoinTable] = useState({});
@@ -55,74 +56,50 @@ const BookExp = () => {
   const [bookExperience, setBookExperience] = useState({});
   const { upload } = fileapi();
 
-  const handleHeader = (e, x = -1, forbutton = false) => {
+  const handleHeader = (e) => {
     let tempdata = { ...header };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      if (!forbutton) {
-        tempdata.content[x][name] = val;
-      } else {
-        tempdata.buttons[x] = val;
-      }
-    } else {
-      tempdata[name] = val;
-    }
+    tempdata[name] = val;
     setHeader(tempdata);
   };
-  const handleBookingTypes = (e, x = -1) => {
+  const handleBookingTypes = (e, type) => {
     let tempdata = { ...bookingTypes };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
+    tempdata[type][name] = val;
     setBookingTypes(tempdata);
   };
-  const handleContinueBrowsing = (e, x = -1) => {
+  const handleContinueBrowsing = (e) => {
     let tempdata = { ...continueBrowsing };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
+    tempdata[name] = val;
     setContinueBrowsing(tempdata);
   };
-  const handleUpcomingSupperClubs = (e, x = -1) => {
+  const handleUpcomingSupperClubs = (e) => {
     let tempdata = { ...upcomingSupperClubs };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
+    tempdata[name] = val;
     setUpcomingSupperClubs(tempdata);
   };
-  const handleChefsPrivateDining = (e, x = -1) => {
+  const handleChefsPrivateDining = (e) => {
     let tempdata = { ...chefsPrivateDining };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
+    tempdata[name] = val;
     setChefsPrivateDining(tempdata);
   };
   const handleReviews = (e, x = -1) => {
     let tempdata = { ...reviews };
     let val = e.target.value;
     let name = e.target.name;
-    if (e.target.name === "ratings" && val != "" && (val < 1 || val > 5)) {
+    if (e.target.name === "rating" && val != "" && (val < 1 || val > 5)) {
       return;
     }
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.reviews[x][name] = val;
     } else {
       tempdata[name] = val;
     }
@@ -139,20 +116,19 @@ const BookExp = () => {
     }
     setConsciousDining(tempdata);
   };
-  const handleFoodDrools = (e, x = -1, forbutton = false) => {
+  const handleFoodDrools = (e) => {
     let tempdata = { ...foodDrools };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      if (!forbutton) {
-        tempdata.content[x][name] = val;
-      } else {
-        tempdata.buttons[x] = val;
-      }
-    } else {
-      tempdata[name] = val;
-    }
+    tempdata[name] = val;
     setFoodDrools(tempdata);
+  };
+  const handlePrivateDining = (e) => {
+    let tempdata = { ...privateDining };
+    let val = e.target.value;
+    let name = e.target.name;
+    tempdata[name] = val;
+    setPrivateDining(tempdata);
   };
   const handleNewsReviews = (e, x = -1) => {
     let tempdata = { ...newsReviews };
@@ -165,15 +141,11 @@ const BookExp = () => {
     }
     setNewsReviews(tempdata);
   };
-  const handleGift = (e, x = -1) => {
+  const handleGift = (e, type) => {
     let tempdata = { ...gift };
     let val = e.target.value;
     let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
+    tempdata[type][name] = val;
     setGift(tempdata);
   };
   const handleCorporate = (e, x = -1) => {
@@ -198,17 +170,6 @@ const BookExp = () => {
     }
     setJoinTable(tempdata);
   };
-  const handlePatronPrivilage = (e, x = -1) => {
-    let tempdata = { ...patronPrivilage };
-    let val = e.target.value;
-    let name = e.target.name;
-    if (x !== -1) {
-      tempdata.content[x][name] = val;
-    } else {
-      tempdata[name] = val;
-    }
-    setPatronPrivilage(tempdata);
-  };
   const handleBlog = (e, x = -1) => {
     let tempdata = { ...blog };
     let val = e.target.value;
@@ -231,10 +192,9 @@ const BookExp = () => {
     }
     setHomeFooter(tempdata);
   };
-
-  const handleClickBookExp = async (e, section, component) => {
+  const handleClickBookExp = async (e, section, component, type) => {
     setIsLoading(true);
-    let newfomdata = { section: section, type: component.type, details: { ...component } };
+    let newfomdata = { section: section, type: type, details: { ...component } };
     try {
       await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, newfomdata);
       NotificationManager.success("Saved successfully", "Saved", 3000, null, null, "");
@@ -248,16 +208,15 @@ const BookExp = () => {
     }
     setIsLoading(false);
   };
-  const changeImageHeader = async (e, imageSection, section, component) => {
+  const changeImageHeader = async (e, imageSection, section, component, type) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
+      formdata[imageSection] = fileurl;
     }
     try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
+      var form = { section: section, type: type, details: { ...formdata } };
       let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
       setHeader({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
@@ -270,16 +229,16 @@ const BookExp = () => {
       }
     }
   };
-  const changeImageBookingTypes = async (e, imageSection, section, component, i) => {
+  const changeImageBookingTypes = async (e, imageSection, section, component, i, type) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-      formdata.content[i][imageSection] = fileurl;
+      formdata[i][imageSection] = fileurl;
     }
     try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+      var form = { section: section, type: type, details: { ...formdata } };
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
       setBookingTypes({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -291,17 +250,16 @@ const BookExp = () => {
       }
     }
   };
-  const changeImageConsciousDining = async (e, imageSection, section, component) => {
+  const changeImageConsciousDining = async (e, imageSection, section, component, type) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
+      formdata.content[imageSection].image = fileurl;
     }
     try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+      var form = { section: section, type: type, details: { ...formdata } };
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
       setConsciousDining({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -313,17 +271,16 @@ const BookExp = () => {
       }
     }
   };
-  const changeImageFoodDrools = async (e, imageSection, section, component) => {
+  const changeImageFoodDrools = async (e, imageSection, section, component, type) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
+      formdata.content[imageSection] = fileurl;
     }
     try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+      var form = { section: section, type: type, details: { ...formdata } };
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
       setFoodDrools({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -335,16 +292,37 @@ const BookExp = () => {
       }
     }
   };
-  const changeImageCorporate = async (e, imageSection, section, component) => {
+  const changeImagePrivateDining = async (e, imageSection, section, component, type) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-      formdata[imageSection] = fileurl;
+      formdata.images[imageSection] = fileurl;
     }
     try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+      var form = { section: section, type: type, details: { ...formdata } };
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+      setPrivateDining({ ...formdata });
+      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
+      e.target.value = "";
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
+  };
+  const changeImageCorporate = async (e, imageSection, section, component, i, type) => {
+    e.preventDefault();
+    let formdata = { ...component };
+    if (e.target.files[0]) {
+      let fileurl = await upload(e.target.files[0]);
+      formdata.content[i][imageSection] = fileurl;
+    }
+    try {
+      var form = { section: section, type: type, details: { ...formdata } };
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
       setCorporate({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -365,7 +343,7 @@ const BookExp = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
       setJoinTable({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -377,7 +355,7 @@ const BookExp = () => {
       }
     }
   };
-  const changeImageBlog = async (e, imageSection, section, component, i) => {
+  const changeImageBlog = async (e, imageSection, section, component, i, type) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
@@ -385,8 +363,8 @@ const BookExp = () => {
       formdata.content[i][imageSection] = fileurl;
     }
     try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
+      var form = { section: section, type: type, details: { ...formdata } };
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, form);
       setBlog({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -398,10 +376,9 @@ const BookExp = () => {
       }
     }
   };
-
   const fetchData = (data) => {
     let allData = reviews;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.reviews ? allData.reviews.push(data) : (allData.reviews = [data]);
     setReviews(allData);
   };
   const fetchNewsReviewsData = (data) => {
@@ -411,8 +388,8 @@ const BookExp = () => {
   };
   const deleteReview = (index) => {
     let allData = reviews;
-    const result = reviews.content.filter((element, i) => i != index);
-    allData.content = result;
+    const result = reviews.reviews.filter((element, i) => i != index);
+    allData.reviews = result;
     setReviews({ ...allData });
   };
   const deleteNewsReviews = (index) => {
@@ -423,9 +400,15 @@ const BookExp = () => {
   };
   const deleteFoodDrool = (index) => {
     let allData = foodDrools;
-    const result = foodDrools.images.filter((element, i) => i != index);
-    allData.images = result;
+    const result = foodDrools.content.filter((element, i) => i != index);
+    allData.content = result;
     setFoodDrools({ ...allData });
+  };
+  const deletePrivateDining = (index) => {
+    let allData = privateDining;
+    const result = privateDining.images.filter((element, i) => i != index);
+    allData.images = result;
+    setPrivateDining({ ...allData });
   };
 
   const openFileInput = (image) => {
@@ -436,7 +419,7 @@ const BookExp = () => {
     setLoading(true);
     try {
       let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE);
-      setBookExperience(data.book_experience);
+      setBookExperience(data);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -449,21 +432,25 @@ const BookExp = () => {
   }, []);
 
   const valueSetter = (data) => {
-    setHeader(data.book_experience.header);
-    setBookingTypes(data.book_experience.booking_types ?? { content: [{ title: "title1" }, { title: "title2" }] });
-    setContinueBrowsing(data.book_experience.continue_browsing);
-    setUpcomingSupperClubs(data.book_experience.upcoming_supper_clubs);
-    setChefsPrivateDining(data.book_experience.chefs_private_dining);
-    setReviews(data.book_experience.reviews ?? { content: [] });
-    setConsciousDining(data.book_experience.conscious_dining ?? { images: [], content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setNewsReviews(data.book_experience.news_reviews ?? {});
-    setFoodDrools(data.book_experience.food_drools ?? { images: [] });
-    setGift(data.book_experience.gift);
-    setCorporate(data.book_experience.corporate ?? {});
-    setJoinTable(data.book_experience.join_table ?? {});
-    setPatronPrivilage(data.book_experience.patron_privilage ?? {});
-    setBlog(data.book_experience.blog ?? { content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setHomeFooter(data.book_experience.home_footer ?? {});
+    let all = {};
+    data.map((ele) => {
+      all[ele.section] = ele;
+    });
+    setHeader(all.header.details);
+    setBookingTypes(all.booking_types.details);
+    setContinueBrowsing(all.continue_browsing.details);
+    setUpcomingSupperClubs(all.upcoming_supper_clubs.details);
+    setChefsPrivateDining(all.chefs_private_dining.details);
+    setReviews(all.reviews.details);
+    setConsciousDining(all.what_we_cook.details);
+    setNewsReviews(all.news_reviews.details);
+    setFoodDrools(all.food_drools.details);
+    setPrivateDining(all.private_dining.details);
+    setGift(all.gift.details);
+    setPatronPrivilage(all.gift.details);
+    setCorporate(all.corporate.details);
+    setBlog(all.blog.details);
+    setHomeFooter(all.home_footer.details);
   };
   return loading ? (
     <div className="loading" />
@@ -483,11 +470,11 @@ const BookExp = () => {
                       <IntlMessages id="bookExperience.header.image" />
                     </Label>
                     <Row>
-                      <Colxx xxs="12" md="4">
+                      <Colxx xxs="12">
                         <div>
                           <Button
                             onClick={() => {
-                              openFileInput("headerImage0");
+                              openFileInput("headerImage");
                             }}
                             className="icon-button"
                             style={{ float: "right" }}
@@ -496,75 +483,17 @@ const BookExp = () => {
                             <br></br>
                             <input
                               type="file"
-                              id="headerImage0"
+                              id="headerImage"
                               rclassName="d-none"
-                              onChange={(e) => changeImageHeader(e, 0, "header", header)}
+                              onChange={(e) => changeImageHeader(e, "image", "header", header, "header")}
                               style={{ display: "none" }}
                             />
                           </Button>
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={header && header.images ? header.images[0] : ""}
-                              thumb={header && header.images ? header.images[0] : ""}
-                              className="card-img-top"
-                            ></SingleLightbox>
-                          </Col>
-                        </div>
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <div>
-                          <Button
-                            onClick={() => {
-                              openFileInput("headerImage1");
-                            }}
-                            className="icon-button"
-                            style={{ float: "right" }}
-                          >
-                            <i className="simple-icon-pencil" />
-                            <br></br>
-                            <input
-                              type="file"
-                              id="headerImage1"
-                              rclassName="d-none"
-                              onChange={(e) => changeImageHeader(e, 1, "header", header)}
-                              style={{ display: "none" }}
-                            />
-                          </Button>
-                          <br></br>
-                          <Col md={11}>
-                            <SingleLightbox
-                              large={header && header.images ? header.images[1] : ""}
-                              thumb={header && header.images ? header.images[1] : ""}
-                              className="card-img-top"
-                            ></SingleLightbox>
-                          </Col>
-                        </div>
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <div>
-                          <Button
-                            onClick={() => {
-                              openFileInput("headerImage2");
-                            }}
-                            className="icon-button"
-                            style={{ float: "right" }}
-                          >
-                            <i className="simple-icon-pencil" />
-                            <br></br>
-                            <input
-                              type="file"
-                              id="headerImage2"
-                              rclassName="d-none"
-                              onChange={(e) => changeImageHeader(e, 2, "header", header)}
-                              style={{ display: "none" }}
-                            />
-                          </Button>
-                          <br></br>
-                          <Col md={11}>
-                            <SingleLightbox
-                              large={header && header.images ? header.images[2] : ""}
-                              thumb={header && header.images ? header.images[2] : ""}
+                              large={header && header.image ? header.image : ""}
+                              thumb={header && header.image ? header.image : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -572,23 +501,11 @@ const BookExp = () => {
                       </Colxx>
                     </Row>
                     <Row>
-                      <Colxx xxs="12" md="4">
+                      <Colxx xxs="12">
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.header.content[0].title" />
                         </Label>
-                        <Input type="text" name="title" value={header.content ? header.content[0].title : ""} onChange={(e) => handleHeader(e, 0)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.header.content[1].title" />
-                        </Label>
-                        <Input type="text" name="title" value={header.content ? header.content[1].title : ""} onChange={(e) => handleHeader(e, 1)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.header.content[2].title" />
-                        </Label>
-                        <Input type="text" name="title" value={header.content ? header.content[2].title : ""} onChange={(e) => handleHeader(e, 2)} />
+                        <Input type="text" name="title" value={header ? header.title : ""} onChange={handleHeader} />
                       </Colxx>
                     </Row>
                   </Colxx>
@@ -600,7 +517,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "header", header)}
+              onClick={(e) => handleClickBookExp(e, "header", header, "header")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -638,15 +555,15 @@ const BookExp = () => {
                           type="file"
                           id="bookingTypeImage0"
                           rclassName="d-none"
-                          onChange={(e) => changeImageBookingTypes(e, "image", "booking_types", bookingTypes, 0)}
+                          onChange={(e) => changeImageBookingTypes(e, "image", "booking_types", bookingTypes, "privee", "booking_types")}
                           style={{ display: "none" }}
                         />
                       </Button>
                       <br></br>
                       <Col md={11}>
                         <SingleLightbox
-                          large={bookingTypes && bookingTypes.content ? bookingTypes.content[0].image : ""}
-                          thumb={bookingTypes && bookingTypes.content ? bookingTypes.content[0].image : ""}
+                          large={bookingTypes && bookingTypes.privee ? bookingTypes.privee.image : ""}
+                          thumb={bookingTypes && bookingTypes.privee ? bookingTypes.privee.image : ""}
                           className="card-img-top"
                         ></SingleLightbox>
                       </Col>
@@ -667,15 +584,15 @@ const BookExp = () => {
                           type="file"
                           id="bookingTypeImage1"
                           rclassName="d-none"
-                          onChange={(e) => changeImageBookingTypes(e, "image", "booking_types", bookingTypes, 1)}
+                          onChange={(e) => changeImageBookingTypes(e, "image", "booking_types", bookingTypes, "supper_club", "booking_types")}
                           style={{ display: "none" }}
                         />
                       </Button>
                       <br></br>
                       <Col md={11}>
                         <SingleLightbox
-                          large={bookingTypes && bookingTypes.content ? bookingTypes.content[1].image : ""}
-                          thumb={bookingTypes && bookingTypes.content ? bookingTypes.content[1].image : ""}
+                          large={bookingTypes && bookingTypes.supper_club ? bookingTypes.supper_club.image : ""}
+                          thumb={bookingTypes && bookingTypes.supper_club ? bookingTypes.supper_club.image : ""}
                           className="card-img-top"
                         ></SingleLightbox>
                       </Col>
@@ -690,8 +607,8 @@ const BookExp = () => {
                     <Input
                       type="text"
                       name="title"
-                      value={bookingTypes.content ? bookingTypes.content[0].title : ""}
-                      onChange={(e) => handleBookingTypes(e, 0)}
+                      value={bookingTypes.privee ? bookingTypes.privee.title : ""}
+                      onChange={(e) => handleBookingTypes(e, "privee")}
                     />
                   </Colxx>
                   <Colxx xxs="12" md="6">
@@ -701,8 +618,8 @@ const BookExp = () => {
                     <Input
                       type="text"
                       name="title"
-                      value={bookingTypes.content ? bookingTypes.content[1].title : ""}
-                      onChange={(e) => handleBookingTypes(e, 1)}
+                      value={bookingTypes.supper_club ? bookingTypes.supper_club.title : ""}
+                      onChange={(e) => handleBookingTypes(e, "supper_club")}
                     />
                   </Colxx>
                 </Row>
@@ -714,8 +631,8 @@ const BookExp = () => {
                     <Input
                       type="text"
                       name="description"
-                      value={bookingTypes.content ? bookingTypes.content[0].description : ""}
-                      onChange={(e) => handleBookingTypes(e, 0)}
+                      value={bookingTypes.privee ? bookingTypes.privee.description : ""}
+                      onChange={(e) => handleBookingTypes(e, "privee")}
                     />
                   </Colxx>
                   <Colxx xxs="12" md="6">
@@ -725,8 +642,8 @@ const BookExp = () => {
                     <Input
                       type="text"
                       name="description"
-                      value={bookingTypes.content ? bookingTypes.content[1].description : ""}
-                      onChange={(e) => handleBookingTypes(e, 1)}
+                      value={bookingTypes.supper_club ? bookingTypes.supper_club.description : ""}
+                      onChange={(e) => handleBookingTypes(e, "supper_club")}
                     />
                   </Colxx>
                 </Row>
@@ -737,9 +654,9 @@ const BookExp = () => {
                     </Label>
                     <Input
                       type="text"
-                      name="button"
-                      value={bookingTypes.content ? bookingTypes.content[0].button : ""}
-                      onChange={(e) => handleBookingTypes(e, 0)}
+                      name="button_text"
+                      value={bookingTypes.privee ? bookingTypes.privee.button_text : ""}
+                      onChange={(e) => handleBookingTypes(e, "privee")}
                     />
                   </Colxx>
                   <Colxx xxs="12" md="6">
@@ -748,9 +665,9 @@ const BookExp = () => {
                     </Label>
                     <Input
                       type="text"
-                      name="button"
-                      value={bookingTypes.content ? bookingTypes.content[1].button : ""}
-                      onChange={(e) => handleBookingTypes(e, 1)}
+                      name="button_text"
+                      value={bookingTypes.supper_club ? bookingTypes.supper_club.button_text : ""}
+                      onChange={(e) => handleBookingTypes(e, "supper_club")}
                     />
                   </Colxx>
                 </Row>
@@ -761,7 +678,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "booking_types", bookingTypes)}
+              onClick={(e) => handleClickBookExp(e, "booking_types", bookingTypes, "booking_types")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -802,7 +719,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "continue_browsing", continueBrowsing)}
+              onClick={(e) => handleClickBookExp(e, "continue_browsing", continueBrowsing, "continue_browsing")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -848,7 +765,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "upcoming_supper_clubs", upcomingSupperClubs)}
+              onClick={(e) => handleClickBookExp(e, "upcoming_supper_clubs", upcomingSupperClubs, "upcoming_supper_clubs")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -885,7 +802,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "chefs_private_dining", chefsPrivateDining)}
+              onClick={(e) => handleClickBookExp(e, "chefs_private_dining", chefsPrivateDining, "chefs_private_dining")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -908,8 +825,8 @@ const BookExp = () => {
             <CardBody>
               <Form>
                 <Row>
-                  {reviews.content &&
-                    reviews.content.map((review, index) => {
+                  {reviews.reviews &&
+                    reviews.reviews.map((review, index) => {
                       return (
                         <Colxx xxs="12">
                           <Row className="mt-4">
@@ -934,7 +851,7 @@ const BookExp = () => {
                           <Input
                             type="text"
                             name="title"
-                            value={reviews.content[index].title ? reviews.content[index].title : ""}
+                            value={reviews.reviews[index].title ? reviews.reviews[index].title : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
@@ -942,8 +859,8 @@ const BookExp = () => {
                           </Label>
                           <Input
                             type="number"
-                            name="ratings"
-                            value={reviews.content[index].ratings ? reviews.content[index].ratings : ""}
+                            name="rating"
+                            value={reviews.reviews[index].rating ? reviews.reviews[index].rating : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
@@ -952,16 +869,16 @@ const BookExp = () => {
                           <Input
                             type="textarea"
                             name="description"
-                            value={reviews.content[index].description ? reviews.content[index].description : ""}
+                            value={reviews.reviews[index].description ? reviews.reviews[index].description : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
-                            <IntlMessages id="bookExperience.reviews.designation" />
+                            <IntlMessages id="bookExperience.reviews.reviewer" />
                           </Label>
                           <Input
                             type="text"
-                            name="designation"
-                            value={reviews.content[index].designation ? reviews.content[index].designation : ""}
+                            name="reviewer"
+                            value={reviews.reviews[index].reviewer ? reviews.reviews[index].reviewer : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <br></br>
@@ -978,7 +895,7 @@ const BookExp = () => {
                 <Button
                   color="primary"
                   className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => handleClickBookExp(e, "reviews", reviews)}
+                  onClick={(e) => handleClickBookExp(e, "reviews", reviews, "reviews_slider")}
                 >
                   <span className="spinner d-inline-block">
                     <span className="bounce1" />
@@ -1022,10 +939,6 @@ const BookExp = () => {
                         </Label>
                         <Input type="text" name="title" value={consciousDining.title ? consciousDining.title : ""} onChange={handleConsciousDining} />
                         <Label className="mt-4">
-                          <IntlMessages id="bookExperience.consciousDining.link" />
-                        </Label>
-                        <Input type="text" name="link" value={consciousDining.link ? consciousDining.link : ""} onChange={handleConsciousDining} />
-                        <Label className="mt-4">
                           <IntlMessages id="bookExperience.consciousDining.image" />
                         </Label>
                       </Colxx>
@@ -1046,15 +959,15 @@ const BookExp = () => {
                               type="file"
                               id="consciousDiningImage[0]"
                               rclassName="d-none"
-                              onChange={(e) => changeImageConsciousDining(e, 0, "conscious_dining", consciousDining)}
+                              onChange={(e) => changeImageConsciousDining(e, 0, "what_we_cook", consciousDining, "what_we_cook_slider")}
                               style={{ display: "none" }}
                             />
                           </Button>
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={consciousDining.images ? consciousDining.images[0] : ""}
-                              thumb={consciousDining.images ? consciousDining.images[0] : ""}
+                              large={consciousDining.content ? consciousDining.content[0].image : ""}
+                              thumb={consciousDining.content ? consciousDining.content[0].image : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -1075,15 +988,15 @@ const BookExp = () => {
                               type="file"
                               id="consciousDiningImage[1]"
                               rclassName="d-none"
-                              onChange={(e) => changeImageConsciousDining(e, 1, "conscious_dining", consciousDining)}
+                              onChange={(e) => changeImageConsciousDining(e, 1, "what_we_cook", consciousDining, "what_we_cook_slider")}
                               style={{ display: "none" }}
                             />
                           </Button>
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={consciousDining.images ? consciousDining.images[1] : ""}
-                              thumb={consciousDining.images ? consciousDining.images[1] : ""}
+                              large={consciousDining.content ? consciousDining.content[1].image : ""}
+                              thumb={consciousDining.content ? consciousDining.content[1].image : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -1104,15 +1017,15 @@ const BookExp = () => {
                               type="file"
                               id="consciousDiningImage[2]"
                               rclassName="d-none"
-                              onChange={(e) => changeImageConsciousDining(e, 2, "conscious_dining", consciousDining)}
+                              onChange={(e) => changeImageConsciousDining(e, 2, "what_we_cook", consciousDining, "what_we_cook_slider")}
                               style={{ display: "none" }}
                             />
                           </Button>
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={consciousDining.images ? consciousDining.images[2] : ""}
-                              thumb={consciousDining.images ? consciousDining.images[2] : ""}
+                              large={consciousDining.content ? consciousDining.content[2].image : ""}
+                              thumb={consciousDining.content ? consciousDining.content[2].image : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -1126,8 +1039,8 @@ const BookExp = () => {
                         </Label>
                         <Input
                           type="text"
-                          name="title"
-                          value={consciousDining.content ? consciousDining.content[0].title : ""}
+                          name="text"
+                          value={consciousDining.content ? consciousDining.content[0].text : ""}
                           onChange={(e) => handleConsciousDining(e, 0)}
                         />
                       </Colxx>
@@ -1137,8 +1050,8 @@ const BookExp = () => {
                         </Label>
                         <Input
                           type="text"
-                          name="title"
-                          value={consciousDining.content ? consciousDining.content[1].title : ""}
+                          name="text"
+                          value={consciousDining.content ? consciousDining.content[1].text : ""}
                           onChange={(e) => handleConsciousDining(e, 1)}
                         />
                       </Colxx>
@@ -1148,8 +1061,8 @@ const BookExp = () => {
                         </Label>
                         <Input
                           type="text"
-                          name="title"
-                          value={consciousDining.content ? consciousDining.content[2].title : ""}
+                          name="text"
+                          value={consciousDining.content ? consciousDining.content[2].text : ""}
                           onChange={(e) => handleConsciousDining(e, 2)}
                         />
                       </Colxx>
@@ -1163,7 +1076,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "conscious_dining", consciousDining)}
+              onClick={(e) => handleClickBookExp(e, "what_we_cook", consciousDining, "what_we_cook_slider")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -1237,7 +1150,7 @@ const BookExp = () => {
                 <Button
                   color="primary"
                   className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => handleClickBookExp(e, "news_reviews", newsReviews)}
+                  onClick={(e) => handleClickBookExp(e, "news_reviews", newsReviews, "news_reviews_slider")}
                 >
                   <span className="spinner d-inline-block">
                     <span className="bounce1" />
@@ -1281,8 +1194,8 @@ const BookExp = () => {
                       <IntlMessages id="bookExperience.foodDrools.image" />
                     </Label>
                     <Row>
-                      {foodDrools.images &&
-                        foodDrools.images.map((foodDrool, index) => {
+                      {foodDrools.content &&
+                        foodDrools.content.map((foodDrool, index) => {
                           return (
                             <Colxx xxs="12" md="4">
                               <div>
@@ -1299,7 +1212,7 @@ const BookExp = () => {
                                     type="file"
                                     id={`foodDroolsImage${index}`}
                                     rclassName="d-none"
-                                    onChange={(e) => changeImageFoodDrools(e, index, "food_drools", foodDrools)}
+                                    onChange={(e) => changeImageFoodDrools(e, index, "food_drools", foodDrools, "food_drools_gallery")}
                                     style={{ display: "none" }}
                                   />
                                 </Button>
@@ -1316,8 +1229,8 @@ const BookExp = () => {
                                 <br></br>
                                 <Col>
                                   <SingleLightbox
-                                    large={foodDrools.images[index] ? foodDrools.images[index] : ""}
-                                    thumb={foodDrools.images[index] ? foodDrools.images[index] : ""}
+                                    large={foodDrools.content[index] ? foodDrools.content[index] : ""}
+                                    thumb={foodDrools.content[index] ? foodDrools.content[index] : ""}
                                     className="card-img-top"
                                   ></SingleLightbox>
                                 </Col>
@@ -1337,7 +1250,7 @@ const BookExp = () => {
                 <Button
                   color="primary"
                   className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => handleClickBookExp(e, "food_drools", foodDrools)}
+                  onClick={(e) => handleClickBookExp(e, "food_drools", foodDrools, "food_drools_gallery")}
                 >
                   <span className="spinner d-inline-block">
                     <span className="bounce1" />
@@ -1352,14 +1265,16 @@ const BookExp = () => {
                   color="primary"
                   className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
                   onClick={() => {
-                    openFileInput(`foodDroolsImage${foodDrools.images ? foodDrools.images.length : 0}`);
+                    openFileInput(`foodDroolsImage${foodDrools.content ? foodDrools.content.length : 0}`);
                   }}
                 >
                   <input
                     type="file"
-                    id={`foodDroolsImage${foodDrools.images ? foodDrools.images.length : 0}`}
+                    id={`foodDroolsImage${foodDrools.content ? foodDrools.content.length : 0}`}
                     rclassName="d-none"
-                    onChange={(e) => changeImageFoodDrools(e, foodDrools.images ? foodDrools.images.length : 0, "food_drools", foodDrools)}
+                    onChange={(e) =>
+                      changeImageFoodDrools(e, foodDrools.content ? foodDrools.content.length : 0, "food_drools", foodDrools, "food_drools_gallery")
+                    }
                     style={{ display: "none" }}
                   />
                   <span className="label">
@@ -1382,21 +1297,21 @@ const BookExp = () => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.gift.subTitle" />
+                      <IntlMessages id="bookExperience.gift.hashtag" />
                     </Label>
-                    <Input type="text" name="sub_title" value={gift ? gift.sub_title : ""} onChange={handleGift} />
+                    <Input type="text" name="hashtag" value={gift.gift ? gift.gift.hashtag : ""} onChange={(e) => handleGift(e, "gift")} />
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.gift.title" />
                     </Label>
-                    <Input type="text" name="title" value={gift ? gift.title : ""} onChange={handleGift} />
+                    <Input type="text" name="title" value={gift.gift ? gift.gift.title : ""} onChange={(e) => handleGift(e, "gift")} />
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.gift.description" />
                     </Label>
-                    <Input type="textarea" name="description" value={gift ? gift.description : ""} onChange={handleGift} />
+                    <Input type="textarea" name="description" value={gift.gift ? gift.gift.description : ""} onChange={(e) => handleGift(e, "gift")} />
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.gift.button" />
                     </Label>
-                    <Input type="text" name="button" value={gift ? gift.button : ""} onChange={handleGift} />
+                    <Input type="text" name="button_text" value={gift.gift ? gift.gift.button_text : ""} onChange={(e) => handleGift(e, "gift")} />
                   </Colxx>
                 </Row>
               </Form>
@@ -1406,7 +1321,76 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "gift", gift)}
+              onClick={(e) => handleClickBookExp(e, "gift", gift, "gift")}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>Patron Privilage</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.patronPrivilage.hashtag" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="hashtag"
+                      value={patronPrivilage.patron ? patronPrivilage.patron.hashtag : ""}
+                      onChange={(e) => handleGift(e, "patron")}
+                    />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.patronPrivilage.title" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="title"
+                      value={patronPrivilage.patron ? patronPrivilage.patron.title : ""}
+                      onChange={(e) => handleGift(e, "patron")}
+                    />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.gift.description" />
+                    </Label>
+                    <Input
+                      type="textarea"
+                      name="description"
+                      value={patronPrivilage.patron ? patronPrivilage.patron.description : ""}
+                      onChange={(e) => handleGift(e, "patron")}
+                    />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.patronPrivilage.button" />
+                    </Label>
+                    <Input
+                      type="text"
+                      name="button_text"
+                      value={patronPrivilage.patron ? patronPrivilage.patron.button_text : ""}
+                      onChange={(e) => handleGift(e, "patron")}
+                    />
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickBookExp(e, "gift", gift, "gift")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -1434,52 +1418,66 @@ const BookExp = () => {
                       <IntlMessages id="bookExperience.corporate.title" />
                     </Label>
                     <Input type="text" name="title" value={corporate.title ? corporate.title : ""} onChange={handleCorporate} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporate.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={corporate.description ? corporate.description : ""} onChange={handleCorporate} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporate.designation" />
-                    </Label>
-                    <Input type="text" name="designation" value={corporate.designation ? corporate.designation : ""} onChange={handleCorporate} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporate.name" />
-                    </Label>
-                    <Input type="text" name="name" value={corporate.name ? corporate.name : ""} onChange={handleCorporate} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporate.link" />
-                    </Label>
-                    <Input type="text" name="link" value={corporate.link ? corporate.link : ""} onChange={handleCorporate} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.corporate.image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("corporateImage");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="corporateImage"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageCorporate(e, "image", "corporate", corporate)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={corporate ? corporate.image : ""}
-                          thumb={corporate ? corporate.image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
+                    {corporate.content &&
+                      corporate.content.map((data, index) => {
+                        return (
+                          <div>
+                            <Label className="mt-4">
+                              <IntlMessages id="bookExperience.corporate.name" />
+                            </Label>
+                            <Input type="text" name="name" value={data.name ? data.name : ""} onChange={(e) => handleCorporate(e, index)} />
+                            <Label className="mt-4">
+                              <IntlMessages id="bookExperience.corporate.description" />
+                            </Label>
+                            <Input
+                              type="textarea"
+                              name="description"
+                              value={data.description ? data.description : ""}
+                              onChange={(e) => handleCorporate(e, index)}
+                            />
+                            <Label className="mt-4">
+                              <IntlMessages id="bookExperience.corporate.position" />
+                            </Label>
+                            <Input type="text" name="position" value={data.position ? data.position : ""} onChange={(e) => handleCorporate(e, index)} />
+
+                            <Label className="mt-4">
+                              <IntlMessages id="bookExperience.corporate.button_text" />
+                            </Label>
+                            <Input
+                              type="text"
+                              name="button_text"
+                              value={data.button_text ? data.button_text : ""}
+                              onChange={(e) => handleCorporate(e, index)}
+                            />
+                            <Label className="mt-4">
+                              <IntlMessages id="bookExperience.corporate.image" />
+                            </Label>
+                            <div>
+                              <Button
+                                onClick={() => {
+                                  openFileInput(`corporateImage${index}`);
+                                }}
+                                className="icon-button"
+                                style={{ float: "right" }}
+                              >
+                                <i className="simple-icon-pencil" />
+                                <br></br>
+                                <input
+                                  type="file"
+                                  id={`corporateImage${index}`}
+                                  rclassName="d-none"
+                                  onChange={(e) => changeImageCorporate(e, "image", "corporate", corporate, index, "corporate_slider")}
+                                  style={{ display: "none" }}
+                                />
+                              </Button>
+                              <br></br>
+                              <Col md={4}>
+                                <SingleLightbox large={data ? data.image : ""} thumb={data ? data.image : ""} className="card-img-top"></SingleLightbox>
+                              </Col>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </Colxx>
                 </Row>
               </Form>
@@ -1489,139 +1487,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "corporate", corporate)}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="bookExperience.update" />
-              </span>
-            </Button>
-          </center>
-        </Colxx>
-      </Row>
-      <Row>
-        <Col sm="12">
-          <h4>Join our table</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.joinTable.title" />
-                    </Label>
-                    <Input type="text" name="title" value={joinTable.title ? joinTable.title : ""} onChange={handleJoinTable} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.joinTable.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={joinTable.description ? joinTable.description : ""} onChange={handleJoinTable} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.joinTable.image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("joinTableImage");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="joinTableImage"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageJoinTable(e, "image", "join_table", joinTable)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox
-                          large={joinTable ? joinTable.image : ""}
-                          thumb={joinTable ? joinTable.image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.joinTable.tc" />
-                    </Label>
-                    <Input type="text" name="tc" value={joinTable.tc ? joinTable.tc : ""} onChange={handleJoinTable} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.joinTable.policy" />
-                    </Label>
-                    <Input type="text" name="policy" value={joinTable.policy ? joinTable.policy : ""} onChange={handleJoinTable} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.joinTable.instagram" />
-                    </Label>
-                    <Input type="text" name="instagram" value={joinTable.instagram ? joinTable.instagram : ""} onChange={handleJoinTable} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.joinTable.linkedIn" />
-                    </Label>
-                    <Input type="text" name="linkedIn" value={joinTable.linkedIn ? joinTable.linkedIn : ""} onChange={handleJoinTable} />
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Button
-              color="primary"
-              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "join_table", joinTable)}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="bookExperience.update" />
-              </span>
-            </Button>
-          </center>
-        </Colxx>
-      </Row>
-      <Row>
-        <Col sm="12">
-          <h4>Patron Privilage</h4>
-        </Col>
-        <Colxx xxs="12" className="mb-4">
-          <Card className="mb-4">
-            <CardBody>
-              <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patronPrivilage.subTitle" />
-                    </Label>
-                    <Input type="text" name="sub_title" value={patronPrivilage ? patronPrivilage.sub_title : ""} onChange={handlePatronPrivilage} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patronPrivilage.title" />
-                    </Label>
-                    <Input type="text" name="title" value={patronPrivilage ? patronPrivilage.title : ""} onChange={handlePatronPrivilage} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.patronPrivilage.button" />
-                    </Label>
-                    <Input type="text" name="button" value={patronPrivilage ? patronPrivilage.button : ""} onChange={handlePatronPrivilage} />
-                  </Colxx>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-          <center>
-            <Button
-              color="primary"
-              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "patron_privilage", patronPrivilage)}
+              onClick={(e) => handleClickBookExp(e, "corporate", corporate, "corporate_slider")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -1668,7 +1534,7 @@ const BookExp = () => {
                               type="file"
                               id="blogImage0"
                               rclassName="d-none"
-                              onChange={(e) => changeImageBlog(e, "image", "blog", blog, 0)}
+                              onChange={(e) => changeImageBlog(e, "image", "blog", blog, 0, "blog_list")}
                               style={{ display: "none" }}
                             />
                           </Button>
@@ -1697,7 +1563,7 @@ const BookExp = () => {
                               type="file"
                               id="blogImage1"
                               rclassName="d-none"
-                              onChange={(e) => changeImageBlog(e, "image", "blog", blog, 1)}
+                              onChange={(e) => changeImageBlog(e, "image", "blog", blog, 1, "blog_list")}
                               style={{ display: "none" }}
                             />
                           </Button>
@@ -1726,7 +1592,7 @@ const BookExp = () => {
                               type="file"
                               id="blogImage2"
                               rclassName="d-none"
-                              onChange={(e) => changeImageBlog(e, "image", "blog", blog, 2)}
+                              onChange={(e) => changeImageBlog(e, "image", "blog", blog, 2, "blog_list")}
                               style={{ display: "none" }}
                             />
                           </Button>
@@ -1790,7 +1656,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "blog", blog)}
+              onClick={(e) => handleClickBookExp(e, "blog", blog, "blog_list")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -1806,6 +1672,116 @@ const BookExp = () => {
       </Row>
       <Row>
         <Col sm="12">
+          <h4>Private Dining</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Label className="mt-4">
+                    <IntlMessages id="bookExperience.privateDining.title" />
+                  </Label>
+                  <Input type="text" name="title" value={privateDining ? privateDining.title : ""} onChange={handlePrivateDining} />
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.privateDining.image" />
+                    </Label>
+                    <Row>
+                      {privateDining.images &&
+                        privateDining.images.map((privateDine, index) => {
+                          return (
+                            <Colxx xxs="12" md="4">
+                              <div>
+                                <Button
+                                  onClick={() => {
+                                    openFileInput(`privateDiningImage${index}`);
+                                  }}
+                                  className="icon-button"
+                                  style={{ float: "right" }}
+                                >
+                                  <i className="simple-icon-pencil" />
+                                  <br></br>
+                                  <input
+                                    type="file"
+                                    id={`privateDiningImage${index}`}
+                                    rclassName="d-none"
+                                    onChange={(e) => changeImagePrivateDining(e, index, "private_dining", privateDining, "private_dining")}
+                                    style={{ display: "none" }}
+                                  />
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    deletePrivateDining(index);
+                                  }}
+                                  className="icon-button"
+                                  style={{ float: "left" }}
+                                >
+                                  <i className="simple-icon-trash" />
+                                  <br></br>
+                                </Button>
+                                <br></br>
+                                <Col>
+                                  <SingleLightbox
+                                    large={privateDining.images[index] ? privateDining.images[index] : ""}
+                                    thumb={privateDining.images[index] ? privateDining.images[index] : ""}
+                                    className="card-img-top"
+                                  ></SingleLightbox>
+                                </Col>
+                              </div>
+                            </Colxx>
+                          );
+                        })}
+                    </Row>
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Row>
+              <Colxx>
+                <Button
+                  color="primary"
+                  className={`btn-shadow mt-4 mr-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+                  onClick={(e) => handleClickBookExp(e, "private_dining", privateDining, "private_dining")}
+                >
+                  <span className="spinner d-inline-block">
+                    <span className="bounce1" />
+                    <span className="bounce2" />
+                    <span className="bounce3" />
+                  </span>
+                  <span className="label">
+                    <IntlMessages id="bookExperience.update" />
+                  </span>
+                </Button>
+                <Button
+                  color="primary"
+                  className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+                  onClick={() => {
+                    openFileInput(`privateDiningImage${privateDining.images ? privateDining.images.length : 0}`);
+                  }}
+                >
+                  <input
+                    type="file"
+                    id={`privateDiningImage${privateDining.images ? privateDining.images.length : 0}`}
+                    rclassName="d-none"
+                    onChange={(e) =>
+                      changeImagePrivateDining(e, privateDining.images ? privateDining.images.length : 0, "private_dining", privateDining, "private_dining")
+                    }
+                    style={{ display: "none" }}
+                  />
+                  <span className="label">
+                    <IntlMessages id="bookExperience.addNew" />
+                  </span>
+                </Button>
+              </Colxx>
+            </Row>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
           <h4>Home Footer</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
@@ -1815,13 +1791,29 @@ const BookExp = () => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.homeFooter.title" />
+                      <IntlMessages id="bookExperience.homeFooter.desktop_button_call" />
                     </Label>
-                    <Input type="text" name="title" value={homeFooter ? homeFooter.title : ""} onChange={handleHomeFooter} />
+                    <Input type="text" name="desktop_button_call" value={homeFooter ? homeFooter.desktop_button_call : ""} onChange={handleHomeFooter} />
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.homeFooter.button" />
+                      <IntlMessages id="bookExperience.homeFooter.desktop_button_email" />
                     </Label>
-                    <Input type="text" name="button" value={homeFooter ? homeFooter.button : ""} onChange={handleHomeFooter} />
+                    <Input type="text" name="desktop_button_email" value={homeFooter ? homeFooter.desktop_button_email : ""} onChange={handleHomeFooter} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.homeFooter.desktop_description" />
+                    </Label>
+                    <Input type="text" name="desktop_description" value={homeFooter ? homeFooter.desktop_description : ""} onChange={handleHomeFooter} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.homeFooter.desktop_title" />
+                    </Label>
+                    <Input type="text" name="desktop_title" value={homeFooter ? homeFooter.desktop_title : ""} onChange={handleHomeFooter} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.homeFooter.mobile_button" />
+                    </Label>
+                    <Input type="text" name="mobile_button" value={homeFooter ? homeFooter.mobile_button : ""} onChange={handleHomeFooter} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.homeFooter.moblie_title" />
+                    </Label>
+                    <Input type="text" name="moblie_title" value={homeFooter ? homeFooter.moblie_title : ""} onChange={handleHomeFooter} />
                   </Colxx>
                 </Row>
               </Form>
@@ -1831,7 +1823,7 @@ const BookExp = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickBookExp(e, "home_footer", homeFooter)}
+              onClick={(e) => handleClickBookExp(e, "home_footer", homeFooter, "home_footer")}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
