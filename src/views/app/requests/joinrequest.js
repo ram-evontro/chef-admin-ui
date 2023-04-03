@@ -67,7 +67,7 @@ const Joinrequest = ({ match, history }) => {
   const exportCSV = async () => {
     setIsLoading(true);
     try {
-      let response = await api.post(axiosURLS.USERS + "/exportcsv", {
+      let response = await api.post(axiosURLS.PARTNERS + "/exportcsv", {
         selected: selectedItems,
         role: "diner",
       });
@@ -91,7 +91,7 @@ const Joinrequest = ({ match, history }) => {
     }
     senddata["role"] = "diner";
     try {
-      let { data } = await api.get(axiosURLS.USERS, { params: senddata });
+      let { data } = await api.get(axiosURLS.PARTNERS, { params: senddata });
       setTotalPage(data.totalPages);
       setItems(data.results);
       setIsLoading(false);
