@@ -24,14 +24,20 @@ import classnames from "classnames";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
 import IntlMessages from "helpers/IntlMessages";
+import fileapi from "helpers/fileupload";
 import api from "helpers/api";
 import { NotificationManager } from "components/common/react-notifications";
+import SingleLightbox from "components/pages/SingleLightbox";
 import * as axiosURLS from "helpers/endpoints";
 const ContactUs = () => {
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [header, setHeader] = useState({});
+  const { upload } = fileapi();
 
+  const openFileInput = (image) => {
+    document.getElementById(image).click();
+  };
   const handleHeader = (e, x = -1) => {
     let tempdata = { ...header };
     let val = e.target.value;
@@ -43,7 +49,27 @@ const ContactUs = () => {
     }
     setHeader(tempdata);
   };
-
+  const changeImageHeader = async (e, imageSection, section, component) => {
+    e.preventDefault();
+    let formdata = { ...component };
+    if (e.target.files[0]) {
+      let fileurl = await upload(e.target.files[0]);
+      formdata[imageSection] = fileurl;
+    }
+    try {
+      var form = { section: section, type: component.type, details: { ...formdata } };
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.CONTACT_US, form);
+      setHeader({ ...formdata });
+      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
+      e.target.value = "";
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
+  };
   const handleClickForContactUs = async (e, section, component) => {
     setIsLoading(true);
     let newfomdata = { section: section, type: component.type, details: { ...component } };
@@ -64,9 +90,7 @@ const ContactUs = () => {
   useEffect(async () => {
     setLoading(true);
     try {
-      //   let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.CONTACT_US);
-      //   valueSetter(data);
-      let data = {};
+      let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.CONTACT_US);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -78,7 +102,12 @@ const ContactUs = () => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.contact_us ? data.contact_us.header : {});
+    let all = {};
+    data.map((ele) => {
+      ele.details.type = ele.type;
+      all[ele.section] = ele;
+    });
+    setHeader(all.contact_us.details);
   };
 
   return loading ? (
@@ -104,9 +133,39 @@ const ContactUs = () => {
                     </Label>
                     <Input type="textarea" name="description" value={header.description ? header.description : ""} onChange={handleHeader} />
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.contactUs.header.button" />
+                      <IntlMessages id="bookExperience.contactUs.header.image" />
                     </Label>
-                    <Input type="text" name="button" value={header.button ? header.button : ""} onChange={handleHeader} />
+                    <Row>
+                      <Colxx xxs="12">
+                        <div>
+                          <Button
+                            onClick={() => {
+                              openFileInput("contactUsImage");
+                            }}
+                            className="icon-button"
+                            style={{ float: "right" }}
+                          >
+                            <i className="simple-icon-pencil" />
+                            <br></br>
+                            <input
+                              type="file"
+                              id="contactUsImage"
+                              rclassName="d-none"
+                              onChange={(e) => changeImageHeader(e, "image", "contact_us", header)}
+                              style={{ display: "none" }}
+                            />
+                          </Button>
+                          <br></br>
+                          <Col md={11}>
+                            <SingleLightbox
+                              large={header && header.image ? header.image : ""}
+                              thumb={header && header.image ? header.image : ""}
+                              className="card-img-top"
+                            ></SingleLightbox>
+                          </Col>
+                        </div>
+                      </Colxx>
+                    </Row>
                   </Colxx>
                 </Row>
               </Form>
@@ -116,7 +175,7 @@ const ContactUs = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickForContactUs(e, "header", header)}
+              onClick={(e) => handleClickForContactUs(e, "contact_us", header)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />

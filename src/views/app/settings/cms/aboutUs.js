@@ -42,6 +42,7 @@ const AboutUs = () => {
   const [ourTeam, setOurTeam] = useState({});
   const [aboutFooter, setAboutFooter] = useState({});
   const [positions, setPositions] = useState({});
+  const [whoAreWe, setWhoAreWe] = useState({});
   const [positionTitleModalOpen, setPositionTitleModalOpen] = useState(false);
   const [positionDetailsModalOpen, setPositionDetailsModalOpen] = useState(false);
   const [index, setIndex] = useState(0);
@@ -79,6 +80,13 @@ const AboutUs = () => {
       tempdata[name] = val;
     }
     setMission(tempdata);
+  };
+  const handleWhoAreWe = (e) => {
+    let tempdata = { ...whoAreWe };
+    let val = e.target.value;
+    let name = e.target.name;
+    tempdata[name] = val;
+    setWhoAreWe(tempdata);
   };
   const handleValues = (e, x = -1) => {
     let tempdata = { ...values };
@@ -146,11 +154,11 @@ const AboutUs = () => {
   };
   const handlePositionDetails = (e, contentIndex, x) => {
     let allData = { ...positions };
-    let tempdata = { ...positions.content[contentIndex].content[x] };
+    let tempdata = { ...positions.content[contentIndex].positions[x] };
     let val = e.target.value;
     let name = e.target.name;
     tempdata[name] = val;
-    allData.content[contentIndex].content[x] = tempdata;
+    allData.content[contentIndex].positions[x] = tempdata;
     setPositions(allData);
   };
   const handleAboutFooter = (e, x = -1) => {
@@ -169,7 +177,7 @@ const AboutUs = () => {
     setIsLoading(true);
     let newfomdata = { section: section, type: component.type, details: { ...component } };
     try {
-      // await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, newfomdata);
+      await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, newfomdata);
       NotificationManager.success("Saved successfully", "Saved", 3000, null, null, "");
     } catch (err) {
       console.log(err);
@@ -182,40 +190,18 @@ const AboutUs = () => {
     setIsLoading(false);
   };
 
-  const changeImageHeader = async (e, imageSection, section, component) => {
+  const changeImageWhoAreWe = async (e, imageSection, section, component) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
 
-      formdata["images"][imageSection] = fileurl;
+      formdata["gallery"][imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
-      setHeader({ ...formdata });
-      NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
-      e.target.value = "";
-    } catch (err) {
-      console.log(err);
-      console.log(err.response);
-      if (err.response) {
-        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
-      }
-    }
-  };
-  const changeImageNews = async (e, imageSection, section, component) => {
-    e.preventDefault();
-    let formdata = { ...component };
-    if (e.target.files[0]) {
-      let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
-    }
-    try {
-      var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
-      setNews({ ...formdata });
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
+      setWhoAreWe({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
     } catch (err) {
@@ -231,12 +217,11 @@ const AboutUs = () => {
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
-      formdata["images"][imageSection] = fileurl;
+      formdata[imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
       setMeetTeam({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -257,7 +242,7 @@ const AboutUs = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
       setDining({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
     } catch (err) {
@@ -278,7 +263,7 @@ const AboutUs = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
       setMission({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
     } catch (err) {
@@ -299,7 +284,7 @@ const AboutUs = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
       setValues({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
     } catch (err) {
@@ -320,7 +305,7 @@ const AboutUs = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.ABOUT_US, form);
       setOurTeam({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
     } catch (err) {
@@ -332,14 +317,15 @@ const AboutUs = () => {
     }
   };
   const fetchPositionTitleData = (data) => {
+    let info = { name: data.title };
     let allData = positions;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.content ? allData.content.push(info) : (allData.content = [info]);
     setPositions(allData);
   };
   const fetchPositionDetailsData = (data, index) => {
     let allData = positions;
     let newData = positions.content[index] ?? [];
-    newData.content ? newData.content.push(data) : (newData.content = [data]);
+    newData.positions ? newData.positions.push(data) : (newData.positions = [data]);
     allData.content[index] = newData;
     setPositions(allData);
   };
@@ -349,11 +335,11 @@ const AboutUs = () => {
     allData.images = result;
     setHeader({ ...allData });
   };
-  const deleteNews = (index) => {
-    let allData = news;
-    const result = news.images.filter((element, i) => i != index);
-    allData.images = result;
-    setNews({ ...allData });
+  const deleteWhoAreWe = (index) => {
+    let allData = whoAreWe;
+    const result = whoAreWe.gallery.filter((element, i) => i != index);
+    allData.gallery = result;
+    setWhoAreWe({ ...allData });
   };
   const deletePosition = (index) => {
     let allData = positions;
@@ -363,8 +349,8 @@ const AboutUs = () => {
   };
   const deletePositionRole = (index, innerIndex) => {
     let allData = positions;
-    const result = positions.content[index].content.filter((element, i) => i != innerIndex);
-    allData.content[index].content = result;
+    const result = positions.content[index].positions.filter((element, i) => i != innerIndex);
+    allData.content[index].positions = result;
     setPositions({ ...allData });
   };
   const deleteMeetTeam = (index) => {
@@ -380,10 +366,7 @@ const AboutUs = () => {
   useEffect(async () => {
     setLoading(true);
     try {
-      // let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.ABOUT_US);
-      // setAllData(data.about_us);
-      // valueSetter(data);
-      let data = {};
+      let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.ABOUT_US);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -395,15 +378,20 @@ const AboutUs = () => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.about_us ? data.about_us.header : { images: [] });
-    setDining(data.about_us ? data.about_us.dining : { content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setMission(data.about_us ? data.about_us.mission : {});
-    setValues(data.about_us ? data.about_us.values : {});
-    setNews(data.about_us ? data.about_us.news : { images: [] });
-    setMeetTeam(data.about_us ? data.about_us.meet_team : { images: [] });
-    setAboutFooter(data.about_us ? data.about_us.about_footer : {});
-    setOurTeam(data.about_us ? data.about_us.our_team : { content: [{ title: "title1" }, { title: "title2" }] });
-    setPositions(data.about_us ? data.about_us.positions : {});
+    let all = {};
+    data.map((ele) => {
+      ele.details.type = ele.type;
+      all[ele.section] = ele;
+    });
+    setHeader(all.header.details);
+    setDining(all.dining.details);
+    setMission(all.mission.details);
+    setValues(all.values.details);
+    setWhoAreWe(all.who_we_are.details);
+    setMeetTeam(all.meet_team.details);
+    setAboutFooter(all.about_footer.details);
+    setOurTeam(all.our_team.details);
+    setPositions(all.positions.details);
   };
   return loading ? (
     <div className="loading" />
@@ -423,83 +411,8 @@ const AboutUs = () => {
                       <IntlMessages id="bookExperience.aboutUs.header.title" />
                     </Label>
                     <Input type="text" name="title" value={header.title ? header.title : ""} onChange={handleHeader} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.header.description" />
-                    </Label>
-                    <Input type="textarea" name="description" value={header.description ? header.description : ""} onChange={handleHeader} />
                   </Colxx>
                 </Row>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.header.image" />
-                    </Label>
-                  </Colxx>
-                  {header.images &&
-                    header.images.map((element, index) => {
-                      return (
-                        <Colxx xxs="12" md="4">
-                          <div>
-                            <Button
-                              onClick={() => {
-                                openFileInput(`aboutUsHeaderImage${index}`);
-                              }}
-                              className="icon-button"
-                              style={{ float: "right" }}
-                            >
-                              <i className="simple-icon-pencil" />
-                              <br></br>
-                              <input
-                                type="file"
-                                id={`aboutUsHeaderImage${index}`}
-                                rclassName="d-none"
-                                onChange={(e) => changeImageHeader(e, index, "header", header)}
-                                style={{ display: "none" }}
-                              />
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                deleteHeader(index);
-                              }}
-                              className="icon-button"
-                              style={{ float: "left" }}
-                            >
-                              <i className="simple-icon-trash" />
-                              <br></br>
-                            </Button>
-                            <br></br>
-                            <Col>
-                              <SingleLightbox
-                                large={header.images[index] ? header.images[index] : ""}
-                                thumb={header.images[index] ? header.images[index] : ""}
-                                className="card-img-top"
-                              ></SingleLightbox>
-                            </Col>
-                          </div>
-                        </Colxx>
-                      );
-                    })}
-                </Row>
-                <center>
-                  <Button
-                    color="primary"
-                    className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                    onClick={() => {
-                      openFileInput(`aboutUsHeaderImage${header.images ? header.images.length : 0}`);
-                    }}
-                  >
-                    <input
-                      type="file"
-                      id={`aboutUsHeaderImage${header.images ? header.images.length : 0}`}
-                      rclassName="d-none"
-                      onChange={(e) => changeImageHeader(e, header.images ? header.images.length : 0, "header", header)}
-                      style={{ display: "none" }}
-                    />
-                    <span className="label">
-                      <IntlMessages id="bookExperience.addNew" />
-                    </span>
-                  </Button>
-                </center>
               </Form>
             </CardBody>
           </Card>
@@ -562,15 +475,15 @@ const AboutUs = () => {
                               type="file"
                               id="diningImage0"
                               rclassName="d-none"
-                              onChange={(e) => changeImageDining(e, "image", "dining", dining, 0)}
+                              onChange={(e) => changeImageDining(e, "icon", "dining", dining, 0)}
                               style={{ display: "none" }}
                             />
                           </Button>
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={dining && dining.content ? dining.content[0].image : ""}
-                              thumb={dining && dining.content ? dining.content[0].image : ""}
+                              large={dining && dining.content ? dining.content[0].icon : ""}
+                              thumb={dining && dining.content ? dining.content[0].icon : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -591,15 +504,15 @@ const AboutUs = () => {
                               type="file"
                               id="diningImage1"
                               rclassName="d-none"
-                              onChange={(e) => changeImageDining(e, "image", "dining", dining, 1)}
+                              onChange={(e) => changeImageDining(e, "icon", "dining", dining, 1)}
                               style={{ display: "none" }}
                             />
                           </Button>
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={dining && dining.content ? dining.content[1].image : ""}
-                              thumb={dining && dining.content ? dining.content[1].image : ""}
+                              large={dining && dining.content ? dining.content[1].icon : ""}
+                              thumb={dining && dining.content ? dining.content[1].icon : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -620,15 +533,15 @@ const AboutUs = () => {
                               type="file"
                               id="diningImage2"
                               rclassName="d-none"
-                              onChange={(e) => changeImageDining(e, "image", "dining", dining, 2)}
+                              onChange={(e) => changeImageDining(e, "icon", "dining", dining, 2)}
                               style={{ display: "none" }}
                             />
                           </Button>
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={dining && dining.content ? dining.content[2].image : ""}
-                              thumb={dining && dining.content ? dining.content[2].image : ""}
+                              large={dining && dining.content ? dining.content[2].icon : ""}
+                              thumb={dining && dining.content ? dining.content[2].icon : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -640,19 +553,19 @@ const AboutUs = () => {
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.aboutUs.dining.content[0].title" />
                         </Label>
-                        <Input type="text" name="title" value={dining.content ? dining.content[0].title : ""} onChange={(e) => handleDining(e, 0)} />
+                        <Input type="text" name="text" value={dining.content ? dining.content[0].text : ""} onChange={(e) => handleDining(e, 0)} />
                       </Colxx>
                       <Colxx xxs="12" md="4">
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.aboutUs.dining.content[1].title" />
                         </Label>
-                        <Input type="text" name="title" value={dining.content ? dining.content[1].title : ""} onChange={(e) => handleDining(e, 1)} />
+                        <Input type="text" name="text" value={dining.content ? dining.content[1].text : ""} onChange={(e) => handleDining(e, 1)} />
                       </Colxx>
                       <Colxx xxs="12" md="4">
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.aboutUs.dining.content[2].title" />
                         </Label>
-                        <Input type="text" name="title" value={dining.content ? dining.content[2].title : ""} onChange={(e) => handleDining(e, 2)} />
+                        <Input type="text" name="text" value={dining.content ? dining.content[2].text : ""} onChange={(e) => handleDining(e, 2)} />
                       </Colxx>
                     </Row>
                   </Colxx>
@@ -824,7 +737,7 @@ const AboutUs = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>News About Us</h4>
+          <h4>Who are we</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">
@@ -833,9 +746,15 @@ const AboutUs = () => {
                 <Row>
                   <Colxx xxs="12">
                     <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.news.title" />
+                      <IntlMessages id="bookExperience.aboutUs.whoAreWe.title" />
                     </Label>
-                    <Input type="text" name="title" value={news.title ? news.title : ""} onChange={handleNews} />
+                    <Input type="text" name="title" value={whoAreWe.title ? whoAreWe.title : ""} onChange={handleWhoAreWe} />
+                  </Colxx>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.aboutUs.whoAreWe.description" />
+                    </Label>
+                    <Input type="textarea" name="description" value={whoAreWe.description ? whoAreWe.description : ""} onChange={handleWhoAreWe} />
                   </Colxx>
                 </Row>
                 <Row>
@@ -844,14 +763,14 @@ const AboutUs = () => {
                       <IntlMessages id="bookExperience.aboutUs.news.image" />
                     </Label>
                   </Colxx>
-                  {news.images &&
-                    news.images.map((element, index) => {
+                  {whoAreWe.gallery &&
+                    whoAreWe.gallery.map((element, index) => {
                       return (
                         <Colxx xxs="12" md="4">
                           <div>
                             <Button
                               onClick={() => {
-                                openFileInput(`aboutUsNewsImage${index}`);
+                                openFileInput(`aboutUsWhoAreWeImage${index}`);
                               }}
                               className="icon-button"
                               style={{ float: "right" }}
@@ -860,15 +779,15 @@ const AboutUs = () => {
                               <br></br>
                               <input
                                 type="file"
-                                id={`aboutUsNewsImage${index}`}
+                                id={`aboutUsWhoAreWeImage${index}`}
                                 rclassName="d-none"
-                                onChange={(e) => changeImageNews(e, index, "news", news)}
+                                onChange={(e) => changeImageWhoAreWe(e, index, "who_we_are", whoAreWe)}
                                 style={{ display: "none" }}
                               />
                             </Button>
                             <Button
                               onClick={() => {
-                                deleteNews(index);
+                                deleteWhoAreWe(index);
                               }}
                               className="icon-button"
                               style={{ float: "left" }}
@@ -879,8 +798,8 @@ const AboutUs = () => {
                             <br></br>
                             <Col>
                               <SingleLightbox
-                                large={news.images[index] ? news.images[index] : ""}
-                                thumb={news.images[index] ? news.images[index] : ""}
+                                large={whoAreWe.gallery[index] ? whoAreWe.gallery[index] : ""}
+                                thumb={whoAreWe.gallery[index] ? whoAreWe.gallery[index] : ""}
                                 className="card-img-top"
                               ></SingleLightbox>
                             </Col>
@@ -894,14 +813,14 @@ const AboutUs = () => {
                     color="primary"
                     className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
                     onClick={() => {
-                      openFileInput(`aboutUsNewsImage${news.images ? news.images.length : 0}`);
+                      openFileInput(`aboutUsWhoAreWeImage${whoAreWe.gallery ? whoAreWe.gallery.length : 0}`);
                     }}
                   >
                     <input
                       type="file"
-                      id={`aboutUsNewsImage${news.images ? news.images.length : 0}`}
+                      id={`aboutUsWhoAreWeImage${whoAreWe.gallery ? whoAreWe.gallery.length : 0}`}
                       rclassName="d-none"
-                      onChange={(e) => changeImageNews(e, news.images ? news.images.length : 0, "news", news)}
+                      onChange={(e) => changeImageWhoAreWe(e, whoAreWe.gallery ? whoAreWe.gallery.length : 0, "who_we_are", whoAreWe)}
                       style={{ display: "none" }}
                     />
                     <span className="label">
@@ -916,7 +835,7 @@ const AboutUs = () => {
             <Button
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-              onClick={(e) => handleClickForAboutUs(e, "news", news)}
+              onClick={(e) => handleClickForAboutUs(e, "who_we_are", whoAreWe)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -944,79 +863,44 @@ const AboutUs = () => {
                       <IntlMessages id="bookExperience.aboutUs.meetTeam.title" />
                     </Label>
                     <Input type="text" name="title" value={meetTeam.title ? meetTeam.title : ""} onChange={handleMeetTeam} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.aboutUs.meetTeam.description" />
+                    </Label>
+                    <Input type="textarea" name="description" value={meetTeam.description ? meetTeam.description : ""} onChange={handleMeetTeam} />
                   </Colxx>
-                </Row>
-                <Row>
-                  <Colxx xxs="12">
+                  <Colxx xxs="12" md="12">
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.aboutUs.meetTeam.image" />
                     </Label>
+                    <div>
+                      <Button
+                        onClick={() => {
+                          openFileInput("aboutUsMeetTeamImage");
+                        }}
+                        className="icon-button"
+                        style={{ float: "right" }}
+                      >
+                        <i className="simple-icon-pencil" />
+                        <br></br>
+                        <input
+                          type="file"
+                          id="aboutUsMeetTeamImage"
+                          rclassName="d-none"
+                          onChange={(e) => changeImageMeetTeam(e, "image", "meet_team", meetTeam)}
+                          style={{ display: "none" }}
+                        />
+                      </Button>
+                      <br></br>
+                      <Col md={4}>
+                        <SingleLightbox
+                          large={meetTeam.image ? meetTeam.image : ""}
+                          thumb={meetTeam.image ? meetTeam.image : ""}
+                          className="card-img-top"
+                        ></SingleLightbox>
+                      </Col>
+                    </div>
                   </Colxx>
-                  {meetTeam.images &&
-                    meetTeam.images.map((element, index) => {
-                      return (
-                        <Colxx xxs="12" md="4">
-                          <div>
-                            <Button
-                              onClick={() => {
-                                openFileInput(`aboutUsMeetTeamImage${index}`);
-                              }}
-                              className="icon-button"
-                              style={{ float: "right" }}
-                            >
-                              <i className="simple-icon-pencil" />
-                              <br></br>
-                              <input
-                                type="file"
-                                id={`aboutUsMeetTeamImage${index}`}
-                                rclassName="d-none"
-                                onChange={(e) => changeImageMeetTeam(e, index, "meet_team", meetTeam)}
-                                style={{ display: "none" }}
-                              />
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                deleteMeetTeam(index);
-                              }}
-                              className="icon-button"
-                              style={{ float: "left" }}
-                            >
-                              <i className="simple-icon-trash" />
-                              <br></br>
-                            </Button>
-                            <br></br>
-                            <Col>
-                              <SingleLightbox
-                                large={meetTeam.images[index] ? meetTeam.images[index] : ""}
-                                thumb={meetTeam.images[index] ? meetTeam.images[index] : ""}
-                                className="card-img-top"
-                              ></SingleLightbox>
-                            </Col>
-                          </div>
-                        </Colxx>
-                      );
-                    })}
                 </Row>
-                <center>
-                  <Button
-                    color="primary"
-                    className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                    onClick={() => {
-                      openFileInput(`aboutUsMeetTeamImage${meetTeam.images ? meetTeam.images.length : 0}`);
-                    }}
-                  >
-                    <input
-                      type="file"
-                      id={`aboutUsMeetTeamImage${meetTeam.images ? meetTeam.images.length : 0}`}
-                      rclassName="d-none"
-                      onChange={(e) => changeImageMeetTeam(e, meetTeam.images ? meetTeam.images.length : 0, "meet_team", meetTeam)}
-                      style={{ display: "none" }}
-                    />
-                    <span className="label">
-                      <IntlMessages id="bookExperience.addNew" />
-                    </span>
-                  </Button>
-                </center>
               </Form>
             </CardBody>
           </Card>
@@ -1046,124 +930,85 @@ const AboutUs = () => {
           <Card className="mb-4">
             <CardBody>
               <Form>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[0]" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ourTeamImage0");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ourTeamImage0"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageOurTeam(e, "image", "our_team", ourTeam, 0)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={ourTeam && ourTeam.content ? ourTeam.content[0].image : ""}
-                          thumb={ourTeam && ourTeam.content ? ourTeam.content[0].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[0].title" />
-                    </Label>
-                    <Input type="text" name="title" value={ourTeam.content ? ourTeam.content[0].title : ""} onChange={(e) => handleOurTeam(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[0].designation" />
-                    </Label>
-                    <Input type="text" name="designation" value={ourTeam.content ? ourTeam.content[0].designation : ""} onChange={(e) => handleOurTeam(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[0].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={ourTeam.content ? ourTeam.content[0].description : ""}
-                      onChange={(e) => handleOurTeam(e, 0)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[0].instagram" />
-                    </Label>
-                    <Input type="textarea" name="instagram" value={ourTeam.content ? ourTeam.content[0].instagram : ""} onChange={(e) => handleOurTeam(e, 0)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[0].linkedin" />
-                    </Label>
-                    <Input type="textarea" name="linkedin" value={ourTeam.content ? ourTeam.content[0].linkedin : ""} onChange={(e) => handleOurTeam(e, 0)} />
-                  </Colxx>
-                </Row>
-                <Row>
-                  <Colxx xxs="12">
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[1]" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("ourTeamImage1");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="ourTeamImage1"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageOurTeam(e, "image", "our_team", ourTeam, 1)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={11}>
-                        <SingleLightbox
-                          large={ourTeam && ourTeam.content ? ourTeam.content[1].image : ""}
-                          thumb={ourTeam && ourTeam.content ? ourTeam.content[1].image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
-                      </Col>
-                    </div>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[1].title" />
-                    </Label>
-                    <Input type="text" name="title" value={ourTeam.content ? ourTeam.content[1].title : ""} onChange={(e) => handleOurTeam(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[1].designation" />
-                    </Label>
-                    <Input type="text" name="designation" value={ourTeam.content ? ourTeam.content[1].designation : ""} onChange={(e) => handleOurTeam(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[1].description" />
-                    </Label>
-                    <Input
-                      type="textarea"
-                      name="description"
-                      value={ourTeam.content ? ourTeam.content[1].description : ""}
-                      onChange={(e) => handleOurTeam(e, 1)}
-                    />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[1].instagram" />
-                    </Label>
-                    <Input type="textarea" name="instagram" value={ourTeam.content ? ourTeam.content[1].instagram : ""} onChange={(e) => handleOurTeam(e, 1)} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.aboutUs.ourTeam.content[1].linkedin" />
-                    </Label>
-                    <Input type="textarea" name="linkedin" value={ourTeam.content ? ourTeam.content[1].linkedin : ""} onChange={(e) => handleOurTeam(e, 1)} />
-                  </Colxx>
-                </Row>
+                {ourTeam.content &&
+                  ourTeam.content.map((data, index) => {
+                    return (
+                      <Row>
+                        <Colxx xxs="12">
+                          <Label className="mt-4">
+                            <IntlMessages id="bookExperience.aboutUs.ourTeam.content.image" />
+                          </Label>
+                          <div>
+                            <Button
+                              onClick={() => {
+                                openFileInput(`ourTeamImage${index}`);
+                              }}
+                              className="icon-button"
+                              style={{ float: "right" }}
+                            >
+                              <i className="simple-icon-pencil" />
+                              <br></br>
+                              <input
+                                type="file"
+                                id={`ourTeamImage${index}`}
+                                rclassName="d-none"
+                                onChange={(e) => changeImageOurTeam(e, "image", "our_team", ourTeam, index)}
+                                style={{ display: "none" }}
+                              />
+                            </Button>
+                            <br></br>
+                            <Col md={4}>
+                              <SingleLightbox
+                                large={ourTeam && ourTeam.content ? ourTeam.content[index].image : ""}
+                                thumb={ourTeam && ourTeam.content ? ourTeam.content[index].image : ""}
+                                className="card-img-top"
+                              ></SingleLightbox>
+                            </Col>
+                          </div>
+                          <Label className="mt-4">
+                            <IntlMessages id="bookExperience.aboutUs.ourTeam.content.name" />
+                          </Label>
+                          <Input type="text" name="name" value={ourTeam.content ? ourTeam.content[index].name : ""} onChange={(e) => handleOurTeam(e, index)} />
+                          <Label className="mt-4">
+                            <IntlMessages id="bookExperience.aboutUs.ourTeam.content.position" />
+                          </Label>
+                          <Input
+                            type="text"
+                            name="position"
+                            value={ourTeam.content ? ourTeam.content[index].position : ""}
+                            onChange={(e) => handleOurTeam(e, index)}
+                          />
+                          <Label className="mt-4">
+                            <IntlMessages id="bookExperience.aboutUs.ourTeam.content.description" />
+                          </Label>
+                          <Input
+                            type="textarea"
+                            name="description"
+                            value={ourTeam.content ? ourTeam.content[index].description : ""}
+                            onChange={(e) => handleOurTeam(e, index)}
+                          />
+                          <Label className="mt-4">
+                            <IntlMessages id="bookExperience.aboutUs.ourTeam.content.instagram" />
+                          </Label>
+                          <Input
+                            type="textarea"
+                            name="instagram"
+                            value={ourTeam.content ? ourTeam.content[index].instagram : ""}
+                            onChange={(e) => handleOurTeam(e, index)}
+                          />
+                          <Label className="mt-4">
+                            <IntlMessages id="bookExperience.aboutUs.ourTeam.content.facebook" />
+                          </Label>
+                          <Input
+                            type="textarea"
+                            name="facebook"
+                            value={ourTeam.content ? ourTeam.content[index].facebook : ""}
+                            onChange={(e) => handleOurTeam(e, index)}
+                          />
+                        </Colxx>
+                      </Row>
+                    );
+                  })}
               </Form>
             </CardBody>
           </Card>
@@ -1222,13 +1067,13 @@ const AboutUs = () => {
                         <Colxx xxs="12">
                           <Input
                             type="text"
-                            name="title"
-                            value={positions.content[index].title ? positions.content[index].title : ""}
+                            name="name"
+                            value={positions.content[index].name ? positions.content[index].name : ""}
                             onChange={(e) => handlePosition(e, index)}
                           />
                           {positions.content[index] &&
-                            positions.content[index].content &&
-                            positions.content[index].content.map((element, innerIndex) => {
+                            positions.content[index].positions &&
+                            positions.content[index].positions.map((element, innerIndex) => {
                               return (
                                 <Colxx>
                                   <Row className="mt-4">
@@ -1251,7 +1096,7 @@ const AboutUs = () => {
                                   <Input
                                     type="text"
                                     name="title"
-                                    value={positions.content[index].content[innerIndex].title ? positions.content[index].content[innerIndex].title : ""}
+                                    value={positions.content[index].positions[innerIndex].title ? positions.content[index].positions[innerIndex].title : ""}
                                     onChange={(e) => handlePositionDetails(e, index, innerIndex)}
                                   />
                                   <Label className="mt-2">
@@ -1261,7 +1106,20 @@ const AboutUs = () => {
                                     type="textarea"
                                     name="description"
                                     value={
-                                      positions.content[index].content[innerIndex].description ? positions.content[index].content[innerIndex].description : ""
+                                      positions.content[index].positions[innerIndex].description
+                                        ? positions.content[index].positions[innerIndex].description
+                                        : ""
+                                    }
+                                    onChange={(e) => handlePositionDetails(e, index, innerIndex)}
+                                  />
+                                  <Label className="mt-2">
+                                    <IntlMessages id="bookExperience.aboutUs.positions.location" />
+                                  </Label>
+                                  <Input
+                                    type="text"
+                                    name="location"
+                                    value={
+                                      positions.content[index].positions[innerIndex].location ? positions.content[index].positions[innerIndex].location : ""
                                     }
                                     onChange={(e) => handlePositionDetails(e, index, innerIndex)}
                                   />
@@ -1329,6 +1187,7 @@ const AboutUs = () => {
         isDescription={true}
         index={index}
         title={"Role"}
+        isLocation={true}
       />
       <Modal
         fetchData={fetchPositionTitleData}
@@ -1358,7 +1217,7 @@ const AboutUs = () => {
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.aboutUs.aboutFooter.button" />
                     </Label>
-                    <Input type="text" name="button" value={aboutFooter.button ? aboutFooter.button : ""} onChange={handleAboutFooter} />
+                    <Input type="text" name="button_text" value={aboutFooter.button_text ? aboutFooter.button_text : ""} onChange={handleAboutFooter} />
                   </Colxx>
                 </Row>
               </Form>

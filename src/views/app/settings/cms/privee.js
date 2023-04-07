@@ -37,6 +37,7 @@ const Privee = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [header, setHeader] = useState({});
   const [work, setWork] = useState({});
+  const [bookExperience, setBookExperience] = useState({});
   const [experiences, setExperiences] = useState({});
   const [privateDining, setPrivateDining] = useState({});
   const [priveeFooter, setPriveeFooter] = useState({});
@@ -62,7 +63,7 @@ const Privee = () => {
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.contents[x][name] = val;
     } else {
       tempdata[name] = val;
     }
@@ -105,11 +106,11 @@ const Privee = () => {
     let tempdata = { ...reviews };
     let val = e.target.value;
     let name = e.target.name;
-    if (e.target.name === "ratings" && val != "" && (val < 1 || val > 5)) {
+    if (e.target.name === "rating" && val != "" && (val < 1 || val > 5)) {
       return;
     }
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.reviews[x][name] = val;
     } else {
       tempdata[name] = val;
     }
@@ -120,24 +121,22 @@ const Privee = () => {
     let val = e.target.value;
     let name = e.target.name;
     if (x !== -1) {
-      tempdata.content[x][name] = val;
+      tempdata.contents[x][name] = val;
     } else {
       tempdata[name] = val;
     }
     setFaq(tempdata);
   };
-
   const changeImageHeader = async (e, imageSection, section, component) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
       formdata[imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PRIVEE, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PRIVEE, form);
       setHeader({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -149,19 +148,17 @@ const Privee = () => {
       }
     }
   };
-  const changeImageWork = async (e, imageSection, section, component) => {
+  const changeImageBookExperience = async (e, imageSection, section, component) => {
     e.preventDefault();
     let formdata = { ...component };
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
-
       formdata[imageSection] = fileurl;
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PRIVEE, form);
-      setWork({ ...formdata });
-
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PRIVEE, form);
+      setBookExperience({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
     } catch (err) {
@@ -182,7 +179,7 @@ const Privee = () => {
     }
     try {
       var form = { section: section, type: component.type, details: { ...formdata } };
-      // let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PRIVEE, form);
+      let { data } = await api.patch(axiosURLS.BASE_URL + axiosURLS.PRIVEE, form);
       setPrivateDining({ ...formdata });
       NotificationManager.success("Image updated successfully", "Success", 3000, null, null, "");
       e.target.value = "";
@@ -194,7 +191,6 @@ const Privee = () => {
       }
     }
   };
-
   const handleClickForPrivee = async (e, section, component) => {
     setIsLoading(true);
     let newfomdata = { section: section, type: component.type, details: { ...component } };
@@ -218,18 +214,18 @@ const Privee = () => {
 
   const fetchData = (data) => {
     let allData = reviews;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.reviews ? allData.reviews.push(data) : (allData.reviews = [data]);
     setReviews(allData);
   };
   const fetchFaqData = (data) => {
     let allData = faq;
-    allData.content ? allData.content.push(data) : (allData.content = [data]);
+    allData.contents ? allData.contents.push(data) : (allData.contents = [data]);
     setFaq(allData);
   };
   const deleteReview = (index) => {
     let allData = reviews;
-    const result = reviews.content.filter((element, i) => i != index);
-    allData.content = result;
+    const result = reviews.reviews.filter((element, i) => i != index);
+    allData.reviews = result;
     setReviews({ ...allData });
   };
   const deletePrivateDining = (index) => {
@@ -240,16 +236,14 @@ const Privee = () => {
   };
   const deleteFaq = (index) => {
     let allData = faq;
-    const result = faq.content.filter((element, i) => i != index);
-    allData.content = result;
+    const result = faq.contents.filter((element, i) => i != index);
+    allData.contents = result;
     setFaq({ ...allData });
   };
   useEffect(async () => {
     setLoading(true);
     try {
-      // let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.PRIVEE);
-      // valueSetter(data.privee);
-      let data = {};
+      let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.PRIVEE);
       valueSetter(data);
     } catch (err) {
       console.log(err);
@@ -261,13 +255,19 @@ const Privee = () => {
     setLoading(false);
   }, []);
   const valueSetter = (data) => {
-    setHeader(data.privee ? data.privee.header : {});
-    setWork(data.privee ? data.privee.work : { content: [{ title: "title1" }, { title: "title2" }, { title: "title3" }] });
-    setExperiences(data.privee ? data.privee.experiences : {});
-    setPrivateDining(data.privee ? data.privee.private_dining : { images: [] });
-    setPriveeFooter(data.privee ? data.privee.privee_footer : {});
-    setFaq(data.privee ? data.privee.faq : {});
-    setReviews(data.privee ? data.privee.reviews : { content: [] });
+    let all = {};
+    data.map((ele) => {
+      ele.details.type= ele.type;
+      all[ele.section] = ele;
+    });
+    setHeader(all.header.details);
+    setWork(all.work.details);
+    setBookExperience(all.book_an_experience.details);
+    setExperiences(all.experiences.details);
+    setReviews(all.reviews.details);
+    setPrivateDining(all.private_dining.details);
+    setFaq(all.faq.details);
+    setPriveeFooter(all.privee_footer.details);
   };
   return loading ? (
     <div className="loading" />
@@ -289,7 +289,7 @@ const Privee = () => {
                     <div>
                       <Button
                         onClick={() => {
-                          openFileInput("headerImage");
+                          openFileInput("priveeHeaderImage");
                         }}
                         className="icon-button"
                         style={{ float: "right" }}
@@ -298,7 +298,7 @@ const Privee = () => {
                         <br></br>
                         <input
                           type="file"
-                          id="headerImage"
+                          id="priveeHeaderImage"
                           rclassName="d-none"
                           onChange={(e) => changeImageHeader(e, "image", "header", header)}
                           style={{ display: "none" }}
@@ -351,76 +351,36 @@ const Privee = () => {
                       <IntlMessages id="bookExperience.privee.work.title" />
                     </Label>
                     <Input type="text" name="title" value={work.title ? work.title : ""} onChange={handleWork} />
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.privee.work.content[0].title" />
-                        </Label>
-                        <Input type="text" name="title" value={work.content ? work.content[0].title : ""} onChange={(e) => handleWork(e, 0)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.privee.work.content[1].title" />
-                        </Label>
-                        <Input type="text" name="title" value={work.content ? work.content[1].title : ""} onChange={(e) => handleWork(e, 1)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.privee.work.content[2].title" />
-                        </Label>
-                        <Input type="text" name="title" value={work.content ? work.content[2].title : ""} onChange={(e) => handleWork(e, 2)} />
-                      </Colxx>
-                    </Row>
-                    <Row>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.privee.work.content[0].description" />
-                        </Label>
-                        <Input type="textarea" name="description" value={work.content ? work.content[0].description : ""} onChange={(e) => handleWork(e, 0)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.privee.work.content[1].description" />
-                        </Label>
-                        <Input type="textarea" name="description" value={work.content ? work.content[1].description : ""} onChange={(e) => handleWork(e, 1)} />
-                      </Colxx>
-                      <Colxx xxs="12" md="4">
-                        <Label className="mt-4">
-                          <IntlMessages id="bookExperience.privee.work.content[2].description" />
-                        </Label>
-                        <Input type="textarea" name="description" value={work.content ? work.content[2].description : ""} onChange={(e) => handleWork(e, 2)} />
-                      </Colxx>
-                    </Row>
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.privee.work.image" />
-                    </Label>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          openFileInput("workImage");
-                        }}
-                        className="icon-button"
-                        style={{ float: "right" }}
-                      >
-                        <i className="simple-icon-pencil" />
-                        <br></br>
-                        <input
-                          type="file"
-                          id="workImage"
-                          rclassName="d-none"
-                          onChange={(e) => changeImageWork(e, "image", "work", work)}
-                          style={{ display: "none" }}
-                        />
-                      </Button>
-                      <br></br>
-                      <Col md={4}>
-                        <SingleLightbox large={work ? work.image : ""} thumb={work ? work.image : ""} className="card-img-top"></SingleLightbox>
-                      </Col>
-                    </div>
-                    <Label className="mt-4">
-                          <IntlMessages id="bookExperience.privee.work.subTitle" />
-                        </Label>
-                        <Input type="text" name="sub_title" value={work.sub_title ? work.sub_title : ""} onChange={handleWork} />
+                    {work.contents &&
+                      work.contents.map((data, index) => {
+                        return (
+                          <Row>
+                            <Colxx xxs="12" md="4">
+                              <Label className="mt-4">
+                                <IntlMessages id={`bookExperience.privee.work.content[${index}].text`} />
+                              </Label>
+                              <Input type="text" name="text" value={work.contents ? work.contents[index].text : ""} onChange={(e) => handleWork(e, index)} />
+                            </Colxx>
+                            <Colxx xxs="12" md="4">
+                              <Label className="mt-4">
+                                <IntlMessages id={`bookExperience.privee.work.content[${index}].title`} />
+                              </Label>
+                              <Input type="text" name="title" value={work.contents ? work.contents[index].title : ""} onChange={(e) => handleWork(e, index)} />
+                            </Colxx>
+                            <Colxx xxs="12" md="4">
+                              <Label className="mt-4">
+                                <IntlMessages id={`bookExperience.privee.work.content[${index}].description`} />
+                              </Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                value={work.contents ? work.contents[index].description : ""}
+                                onChange={(e) => handleWork(e, index)}
+                              />
+                            </Colxx>
+                          </Row>
+                        );
+                      })}
                   </Colxx>
                 </Row>
               </Form>
@@ -431,6 +391,70 @@ const Privee = () => {
               color="primary"
               className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
               onClick={(e) => handleClickForPrivee(e, "work", work)}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.privee.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>Book an Experience</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.privee.bookExperience.image" />
+                    </Label>
+                    <div>
+                      <Button
+                        onClick={() => {
+                          openFileInput("priveeBookExperienceImage");
+                        }}
+                        className="icon-button"
+                        style={{ float: "right" }}
+                      >
+                        <i className="simple-icon-pencil" />
+                        <br></br>
+                        <input
+                          type="file"
+                          id="priveeBookExperienceImage"
+                          rclassName="d-none"
+                          onChange={(e) => changeImageBookExperience(e, "image", "book_an_experience", bookExperience)}
+                          style={{ display: "none" }}
+                        />
+                      </Button>
+                      <br></br>
+                      <Col md={4}>
+                        <SingleLightbox
+                          large={bookExperience ? bookExperience.image : ""}
+                          thumb={bookExperience ? bookExperience.image : ""}
+                          className="card-img-top"
+                        ></SingleLightbox>
+                      </Col>
+                    </div>
+                    <br></br>
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickForPrivee(e, "book_an_experience", bookExperience)}
             >
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
@@ -490,8 +514,8 @@ const Privee = () => {
             <CardBody>
               <Form>
                 <Row>
-                  {reviews.content &&
-                    reviews.content.map((review, index) => {
+                  {reviews.reviews &&
+                    reviews.reviews.map((review, index) => {
                       return (
                         <Colxx xxs="12">
                           <Row className="mt-4">
@@ -515,7 +539,7 @@ const Privee = () => {
                           <Input
                             type="text"
                             name="title"
-                            value={reviews.content[index].title ? reviews.content[index].title : ""}
+                            value={reviews.reviews[index].title ? reviews.reviews[index].title : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
@@ -523,8 +547,8 @@ const Privee = () => {
                           </Label>
                           <Input
                             type="number"
-                            name="ratings"
-                            value={reviews.content[index].ratings ? reviews.content[index].ratings : ""}
+                            name="rating"
+                            value={reviews.reviews[index].rating ? reviews.reviews[index].rating : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
@@ -533,16 +557,16 @@ const Privee = () => {
                           <Input
                             type="textarea"
                             name="description"
-                            value={reviews.content[index].description ? reviews.content[index].description : ""}
+                            value={reviews.reviews[index].description ? reviews.reviews[index].description : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <Label className="mt-4">
-                            <IntlMessages id="bookExperience.privee.reviews.designation" />
+                            <IntlMessages id="bookExperience.privee.reviews.reviewer" />
                           </Label>
                           <Input
                             type="text"
-                            name="designation"
-                            value={reviews.content[index].designation ? reviews.content[index].designation : ""}
+                            name="reviewer"
+                            value={reviews.reviews[index].reviewer ? reviews.reviews[index].reviewer : ""}
                             onChange={(e) => handleReviews(e, index)}
                           />
                           <br></br>
@@ -600,10 +624,6 @@ const Privee = () => {
                       <IntlMessages id="bookExperience.privee.privateDining.title" />
                     </Label>
                     <Input type="text" name="title" value={privateDining ? privateDining.title : ""} onChange={handlePrivateDining} />
-                    <Label className="mt-4">
-                      <IntlMessages id="bookExperience.privee.privateDining.link" />
-                    </Label>
-                    <Input type="text" name="link" value={privateDining ? privateDining.link : ""} onChange={handlePrivateDining} />
                     <Row>
                       <Colxx xxs="12">
                         <Label className="mt-4">
@@ -617,7 +637,7 @@ const Privee = () => {
                                   <div>
                                     <Button
                                       onClick={() => {
-                                        openFileInput(`privateDiningImage${index}`);
+                                        openFileInput(`priveePrivateDiningImage${index}`);
                                       }}
                                       className="icon-button"
                                       style={{ float: "right" }}
@@ -626,7 +646,7 @@ const Privee = () => {
                                       <br></br>
                                       <input
                                         type="file"
-                                        id={`privateDiningImage${index}`}
+                                        id={`priveePrivateDiningImage${index}`}
                                         rclassName="d-none"
                                         onChange={(e) => changeImagePrivateDining(e, index, "private_dining", privateDining)}
                                         style={{ display: "none" }}
@@ -662,12 +682,12 @@ const Privee = () => {
                                 color="primary"
                                 className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
                                 onClick={() => {
-                                  openFileInput(`privateDiningImage${privateDining.images ? privateDining.images.length : 0}`);
+                                  openFileInput(`priveePrivateDiningImage${privateDining.images ? privateDining.images.length : 0}`);
                                 }}
                               >
                                 <input
                                   type="file"
-                                  id={`privateDiningImage${privateDining.images ? privateDining.images.length : 0}`}
+                                  id={`priveePrivateDiningImage${privateDining.images ? privateDining.images.length : 0}`}
                                   rclassName="d-none"
                                   onChange={(e) =>
                                     changeImagePrivateDining(e, privateDining.images ? privateDining.images.length : 0, "private_dining", privateDining)
@@ -723,8 +743,8 @@ const Privee = () => {
                   </Colxx>
                 </Row>
                 <Row>
-                  {faq.content &&
-                    faq.content.map((element, index) => {
+                  {faq.contents &&
+                    faq.contents.map((element, index) => {
                       return (
                         <Colxx xxs="12">
                           <Row className="mt-4">
@@ -748,7 +768,7 @@ const Privee = () => {
                           <Input
                             type="text"
                             name="title"
-                            value={faq.content[index].title ? faq.content[index].title : ""}
+                            value={faq.contents[index].title ? faq.contents[index].title : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <Label className="mt-4">
@@ -757,7 +777,7 @@ const Privee = () => {
                           <Input
                             type="textarea"
                             name="description"
-                            value={faq.content[index].description ? faq.content[index].description : ""}
+                            value={faq.contents[index].description ? faq.contents[index].description : ""}
                             onChange={(e) => handleFaq(e, index)}
                           />
                           <br></br>
@@ -817,7 +837,7 @@ const Privee = () => {
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.privee.priveeFooter.button" />
                     </Label>
-                    <Input type="text" name="button" value={priveeFooter ? priveeFooter.button : ""} onChange={handlePriveeFooter} />
+                    <Input type="text" name="button_text" value={priveeFooter ? priveeFooter.button_text : ""} onChange={handlePriveeFooter} />
                   </Colxx>
                 </Row>
               </Form>

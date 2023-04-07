@@ -29,7 +29,7 @@ const RecentOrders = ({items,updateAction}) => {
                     className="d-block position-relative"
                   >
                     <img
-                      src={booking.type=="chef_table"?booking.chefs[0].picture:booking.type=="chef_event"?(booking.event.pictures?booking.event.pictures[0]:images.chefplaceholder.default):((booking.type==="virtual_dining"&&booking.menu_selection==="host")?booking.common_menu.cover_picture:images.chefplaceholder.default)}
+                      src={booking.type=="chef_table"?booking?.chefs[0]?.picture:booking.type=="chef_event"?(booking.event.pictures?booking.event.pictures[0]:images.chefplaceholder.default):((booking.type==="virtual_dining"&&booking.menu_selection==="host")?booking.common_menu.cover_picture:images.chefplaceholder.default)}
                       alt={booking.title}                      
                       className="list-thumbnail border-0"
                     />

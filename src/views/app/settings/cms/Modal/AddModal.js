@@ -6,7 +6,19 @@ import IntlMessages from "helpers/IntlMessages";
 import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
-const addModal = ({ modalOpen, toggleModal, fetchData, isImage = false, isDescription = true, isButton = false, index = 0, title = "" }) => {
+const addModal = ({
+  modalOpen,
+  toggleModal,
+  fetchData,
+  isImage = false,
+  isDescription = true,
+  isButton = false,
+  index = 0,
+  title = "",
+  isBehindScene = false,
+  isName = false,
+  isLocation= false,
+}) => {
   const ReactDOMServer = require("react-dom/server");
   let componentConfig = { postUrl: "no-url", multiple: false };
   let eventHandlers = { addedfile: (file) => setImage(file) };
@@ -77,7 +89,7 @@ const addModal = ({ modalOpen, toggleModal, fetchData, isImage = false, isDescri
   };
   const validate = (e) => {
     let tempErrors = {};
-    if (!formdata["title"] || formdata["title"] === "") {
+    if ((!formdata["title"] || formdata["title"] === "") && !isBehindScene) {
       tempErrors.title = "Please enter title";
     }
     if (isDescription) {
@@ -89,6 +101,17 @@ const addModal = ({ modalOpen, toggleModal, fetchData, isImage = false, isDescri
       if (!formdata["button"] || formdata["button"] === "") {
         tempErrors.button = "Please Enter Button Text";
       }
+    }
+    if (isBehindScene) {
+      if (!formdata["name"] || formdata["name"] === "") {
+        tempErrors.name = "Please enter name";
+      }
+      if (!formdata["location"] || formdata["location"] === "") {
+        tempErrors.location = "Please enter location";
+      }
+    }
+    if ((!formdata["location"] || formdata["location"] === "") && isLocation) {
+      tempErrors.location = "Please enter location";
     }
     setErrors(tempErrors);
     if (tempErrors && Object.keys(tempErrors).length === 0) {
@@ -128,13 +151,43 @@ const addModal = ({ modalOpen, toggleModal, fetchData, isImage = false, isDescri
         Add New {title}
       </ModalHeader>
       <ModalBody>
-        <FormGroup>
-          <Label>
-            <IntlMessages id="bookExperience.addModal.title" />
-          </Label>
-          <Input type="text" name="title" value={formdata.title ? formdata.title : ""} onChange={handleChange} />
-          {errors.title && <div className="invalid-feedback d-block">{errors.title}</div>}
-        </FormGroup>
+        {!isBehindScene ? (
+          <FormGroup>
+            <Label>
+              <IntlMessages id="bookExperience.addModal.title" />
+            </Label>
+            <Input type="text" name="title" value={formdata.title ? formdata.title : ""} onChange={handleChange} />
+            {errors.title && <div className="invalid-feedback d-block">{errors.title}</div>}
+          </FormGroup>
+        ) : (
+          <div>
+            <FormGroup>
+              <Label>
+                <IntlMessages id="bookExperience.addModal.name" />
+              </Label>
+              <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
+              {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
+            </FormGroup>
+            <FormGroup>
+              <Label>
+                <IntlMessages id="bookExperience.addModal.location" />
+              </Label>
+              <Input type="text" name="location" value={formdata.location ? formdata.location : ""} onChange={handleChange} />
+              {errors.location && <div className="invalid-feedback d-block">{errors.location}</div>}
+            </FormGroup>
+          </div>
+        )}
+        {isName ? (
+          <FormGroup>
+            <Label>
+              <IntlMessages id="bookExperience.addModal.name" />
+            </Label>
+            <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
+            {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
+          </FormGroup>
+        ) : (
+          <div></div>
+        )}
         {isDescription ? (
           <FormGroup className="mt-3">
             <Label>
@@ -163,6 +216,17 @@ const addModal = ({ modalOpen, toggleModal, fetchData, isImage = false, isDescri
             </Label>
             <Input type="text" name="button" value={formdata.button ? formdata.button : ""} onChange={handleChange} />
             {errors.button && <div className="invalid-feedback d-block">{errors.button}</div>}
+          </FormGroup>
+        ) : (
+          <div></div>
+        )}
+        {isLocation ? (
+          <FormGroup>
+            <Label>
+              <IntlMessages id="bookExperience.addModal.location" />
+            </Label>
+            <Input type="text" name="location" value={formdata.location ? formdata.location : ""} onChange={handleChange} />
+            {errors.location && <div className="invalid-feedback d-block">{errors.location}</div>}
           </FormGroup>
         ) : (
           <div></div>

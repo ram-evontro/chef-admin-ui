@@ -30,18 +30,18 @@ const ratingsModal = ({ modalOpen, toggleModal, fetchData }) => {
     if (!formdata["title"] || formdata["title"] === "") {
       tempErrors.title = "Please enter title";
     }
-    if (!formdata["ratings"] || formdata["ratings"] === "") {
-      tempErrors.ratings = "Please enter ratings";
+    if (!formdata["rating"] || formdata["rating"] === "") {
+      tempErrors.rating = "Please enter rating";
     }
-    if (formdata["ratings"] !== "" && (formdata["ratings"] < 1 || formdata["ratings"] > 5)) {
-      tempErrors.ratings = "Please enter valid ratings";
+    if (formdata["rating"] !== "" && (formdata["rating"] < 1 || formdata["rating"] > 5)) {
+      tempErrors.rating = "Please enter valid ratings";
     }
     if (!formdata["description"] || formdata["description"] === "") {
       tempErrors.description = "Please enter description";
     }
 
-    if (!formdata["designation"] || formdata["designation"] === "") {
-      tempErrors.designation = "Please enter designation";
+    if (!formdata["reviewer"] || formdata["reviewer"] === "") {
+      tempErrors.reviewer = "Please enter Reviewer details";
     }
     setErrors(tempErrors);
     if (tempErrors && Object.keys(tempErrors).length === 0) {
@@ -84,10 +84,10 @@ const ratingsModal = ({ modalOpen, toggleModal, fetchData }) => {
         </FormGroup>
         <FormGroup>
           <Label>
-            <IntlMessages id="bookExperience.reviews.ratingsModal.ratings" />
+            <IntlMessages id="bookExperience.reviews.ratingsModal.rating" />
           </Label>
-          <Input type="number" name="ratings" value={formdata.ratings ? formdata.ratings : ""} onChange={handleChange} />
-          {errors.ratings && <div className="invalid-feedback d-block">{errors.ratings}</div>}
+          <Input type="number" name="rating" value={formdata.rating ? formdata.rating : ""} onChange={handleChange} />
+          {errors.rating && <div className="invalid-feedback d-block">{errors.rating}</div>}
         </FormGroup>
         <FormGroup className="mt-3">
           <Label>
@@ -98,10 +98,10 @@ const ratingsModal = ({ modalOpen, toggleModal, fetchData }) => {
         </FormGroup>
         <FormGroup className="mt-3">
           <Label>
-            <IntlMessages id="bookExperience.reviews.ratingsModal.designation" />
+            <IntlMessages id="bookExperience.reviews.ratingsModal.reviewer" />
           </Label>
-          <Input type="text" name="designation" value={formdata.designation ? formdata.designation : ""} onChange={handleChange} />
-          {errors.designation && <div className="invalid-feedback d-block">{errors.designation}</div>}
+          <Input type="text" name="reviewer" value={formdata.reviewer ? formdata.reviewer : ""} onChange={handleChange} />
+          {errors.reviewer && <div className="invalid-feedback d-block">{errors.reviewer}</div>}
         </FormGroup>
       </ModalBody>
       <ModalFooter>
