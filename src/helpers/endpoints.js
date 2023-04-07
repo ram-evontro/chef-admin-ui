@@ -72,3 +72,6 @@ export const INTEGRATIONS = "util/integration_keys";
 export const QUICKBOOKSAUTH = "util/quickbooksauth";
 export const SCHEDULE_CALL = "call_schedule";
 export const REQUEST_CONTACT_US = "contact_us";
+export const JOIN_REQUEST = "requestjoin";
+export const PARTNERS = "partner";
+export const PATRONS = "patron";

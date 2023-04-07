@@ -204,6 +204,18 @@ const Datatable = ({
             {props.value}
           </>
         ),
+      },
+      {
+        Header: "Message",
+        accessor: "cover_letter",
+        cellClass: "w-20",
+        Cell: (props) => (
+          <>
+           
+              {props.value}
+           
+          </>
+        ),
       }
     ],
     [selectedItems]

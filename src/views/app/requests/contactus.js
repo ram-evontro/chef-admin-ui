@@ -67,7 +67,7 @@ const Contactus = ({ match, history }) => {
   const exportCSV = async () => {
     setIsLoading(true);
     try {
-      let response = await api.post(axiosURLS.USERS + "/exportcsv", {
+      let response = await api.post(axiosURLS.REQUEST_CONTACT_US + "/exportcsv", {
         selected: selectedItems,
         role: "diner",
       });
@@ -91,7 +91,7 @@ const Contactus = ({ match, history }) => {
     }
     senddata["role"] = "diner";
     try {
-      let { data } = await api.get(axiosURLS.USERS, { params: senddata });
+      let { data } = await api.get(axiosURLS.REQUEST_CONTACT_US, { params: senddata });
       setTotalPage(data.totalPages);
       setItems(data.results);
       setIsLoading(false);
