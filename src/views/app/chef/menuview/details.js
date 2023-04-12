@@ -14,6 +14,7 @@ import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
 import { images } from "helpers/images";
 import MealsContainer from "./MealsContainer";
+import PriceContainer from "./PriceContainer";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => {
@@ -156,6 +157,7 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     }
     formdata["tags"] = tagsLO;
     delete formdata["id"];
+    delete formdata["chef_type"];
     delete formdata["user"];
     try {
       let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
@@ -220,6 +222,64 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     tempmenu["meals"] = temparr;
     setMenu(tempmenu);
   };
+  const addPriceCard = () => {
+    let tempmenu = { ...menu };
+    let temparr = [];
+    if (tempmenu.prices && tempmenu.prices.length > 0) {
+      temparr = [...tempmenu.prices];
+    }
+    let meal_price = menu.price_per_course ?? 5000;
+    let min_course = menu.min_course ?? 3;
+    let newMeal = { _id: Math.floor(Math.random() * 1000000) + 1, min_diner: 1, max_diner: 2, price_per_diner: meal_price * 1.5, min_courses: 6 };
+    if (tempmenu?.prices?.length == 1) {
+      newMeal.min_diner = 3;
+      newMeal.max_diner = 4;
+      newMeal.price_per_diner = meal_price * 1.4;
+      newMeal.min_courses = 6;
+    }
+    if (tempmenu?.prices?.length == 2) {
+      newMeal.min_diner = 5;
+      newMeal.max_diner = 6;
+      newMeal.price_per_diner = meal_price * 1.3;
+      newMeal.min_courses = 6;
+    }
+    if (tempmenu?.prices?.length >= 3) {
+      newMeal.min_diner = 7;
+      newMeal.max_diner = 999;
+      newMeal.price_per_diner = meal_price;
+      newMeal.min_courses = min_course;
+    }
+    temparr.push(newMeal);
+    tempmenu["prices"] = temparr;
+    setMenu(tempmenu);
+  };
+  const handlePriceChange = (e, id) => {
+    let tempmenu = { ...menu };
+    let temparr = [];
+    let val = e.target.value;
+    let name = e.target.name;
+
+    if (tempmenu.prices && tempmenu.prices.length > 0) {
+      temparr = [...tempmenu.prices];
+      const priceindex = temparr.findIndex((price) => (price._id === id ? true : false));
+      temparr[priceindex][name] = val;
+      tempmenu["prices"] = temparr;
+      setMenu(tempmenu);
+    }
+  };
+  const handlePriceDelete = (id) => {
+    let tempmenu = { ...menu };
+    let temparr = [];
+    if (tempmenu.prices && tempmenu.prices.length > 0) {
+      temparr = [...tempmenu.prices];
+      const priceindex = temparr.findIndex((price) => (price._id === id ? true : false));
+      if (priceindex > -1) {
+        temparr.splice(priceindex, 1);
+      }
+      tempmenu["prices"] = temparr;
+      setMenu(tempmenu);
+    }
+  };
   const handleMenuChange = (e, id) => {
     let tempmenu = { ...menu };
     let temparr = [];
@@ -261,6 +321,31 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
       try {
         let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
         NotificationManager.success("Meal added successfully", "Success", 3000, null, null, "");
+        setMenu(data);
+      } catch (err) {
+        console.log(err);
+        console.log(err.response);
+        if (err.response) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+      setIsLoading(false);
+    }
+  };
+  const handlePriceUpload = async () => {
+    let tempmenu = { ...menu };
+    let formdata = {};
+    if (tempmenu.prices && tempmenu.prices.length > 0) {
+      formdata["prices"] = tempmenu.prices.map((meal) => {
+        let tempmeal = { ...meal };
+        delete tempmeal["id"];
+        delete tempmeal["_id"];
+        return tempmeal;
+      });
+      setIsLoading(true);
+      try {
+        let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
+        NotificationManager.success("Prices added successfully", "Success", 3000, null, null, "");
         setMenu(data);
       } catch (err) {
         console.log(err);
@@ -315,12 +400,24 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.meal_highlight" />
             </p>
-            <Input className="form-control mb-2" type="text" name="meal_highlight" value={menu.meal_highlight ? menu.meal_highlight : ""} onChange={handleChange} />
+            <Input
+              className="form-control mb-2"
+              type="text"
+              name="meal_highlight"
+              value={menu.meal_highlight ? menu.meal_highlight : ""}
+              onChange={handleChange}
+            />
 
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.price_per_course" />
             </p>
-            <Input className="form-control mb-2" type="number" name="price_per_course" value={menu.price_per_course ? menu.price_per_course : ""} onChange={handleChange} />
+            <Input
+              className="form-control mb-2"
+              type="number"
+              name="price_per_course"
+              value={menu.price_per_course ? menu.price_per_course : ""}
+              onChange={handleChange}
+            />
 
             <p className="text-muted text-small mb-1">
               <IntlMessages id="forms.min_course" />
@@ -405,6 +502,38 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
               </span>
             </Button>
             <Button color="primary" className={`btn-shadow ml-3 mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={addMealCard}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.add_more" />
+              </span>
+            </Button>
+          </CardBody>
+        </Card>
+        <Card className="mb-4">
+          <CardBody>
+            {menu.prices &&
+              menu.prices.map(
+                (price) =>
+                  <PriceContainer handlePriceDelete={handlePriceDelete} handleChange={handlePriceChange} price={price} key={price.id} /> ?? (
+                    <PriceContainer handlePriceDelete={handlePriceDelete} handleChange={handlePriceChange} price={price} key={price.id} />
+                  )
+              )}
+
+            <Button color="primary" className={`btn-shadow btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handlePriceUpload}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.update" />
+              </span>
+            </Button>
+            <Button color="primary" className={`btn-shadow ml-3 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={addPriceCard}>
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
                 <span className="bounce2" />

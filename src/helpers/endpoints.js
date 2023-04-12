@@ -1,4 +1,4 @@
-export const BASE_URL = "https://chefv2.hypervergedemo.site/v1/"; //'http://localhost:8000/v1/'; //
+export const BASE_URL = 'http://localhost:8000/v1/'; //"https://chefv2.hypervergedemo.site/v1/"; //
 export const LOGIN = "auth/login";
 export const LOGOUT = "auth/logout";
 export const FORGOT_PASSWORD = "auth/forgot-password";
@@ -25,6 +25,7 @@ export const BOOKING_SCHEDULE_DINER = "booking/schedulediner";
 export const CHEF_TYPES = "chef_types";
 export const CHEF_TYPES_ALL = "chef_types/all";
 export const FEEDBACK_PRAMS = "feedback_types";
+export const FEEDBACK = "feedback";
 export const MEAL_TYPES = "meal_types";
 export const MEAL_TYPES_ALL = "meal_types/all";
 export const MEAL_TIMES = "meal_times";

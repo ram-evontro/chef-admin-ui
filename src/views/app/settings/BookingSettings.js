@@ -84,27 +84,15 @@ const BookingSettings = ({ match }) => {
                   </Colxx>
                   <Colxx xxs="12" md="6">
                     <Label className="mt-4">
-                      <IntlMessages id="forms.max_distance" />
-                    </Label>
-                    <Input type="text" name="max_distance" value={formdata.max_distance ? formdata.max_distance : ""} onChange={handleChange} />
-                  </Colxx>
-                  <Colxx xxs="12" md="6">
-                    <Label className="mt-4">
                       <IntlMessages id="forms.max_otp_resends" />
                     </Label>
                     <Input type="text" name="max_otp_resends" value={formdata.max_otp_resends ? formdata.max_otp_resends : ""} onChange={handleChange} />
                   </Colxx>
                   <Colxx xxs="12" md="6">
                     <Label className="mt-4">
-                      <IntlMessages id="forms.mood_bag_cost" />
+                      <IntlMessages id="forms.service_charges" />
                     </Label>
-                    <Input type="text" name="mood_bag_cost" value={formdata.mood_bag_cost ? formdata.mood_bag_cost : ""} onChange={handleChange} />
-                  </Colxx>
-                  <Colxx xxs="12" md="6">
-                    <Label className="mt-4">
-                      <IntlMessages id="forms.delivery_charges" />
-                    </Label>
-                    <Input type="text" name="delivery_charges" value={formdata.delivery_charges ? formdata.delivery_charges : ""} onChange={handleChange} />
+                    <Input type="text" name="service_charges" value={formdata.service_charges ? formdata.service_charges : ""} onChange={handleChange} />
                   </Colxx>
                   <Colxx xxs="12" md="6">
                     <Label className="mt-4">

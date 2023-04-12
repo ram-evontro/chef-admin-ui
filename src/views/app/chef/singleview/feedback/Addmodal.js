@@ -9,7 +9,7 @@ import * as axiosURLS from "helpers/endpoints";
 import { NotificationManager } from "components/common/react-notifications";
 import Select from "react-select";
 import CustomSelectInput from "components/common/CustomSelectInput";
-const Addmodal = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) => {
+const Addmodal = ({ modalOpen, toggleModal, id, fetchData }) => {
   const [formdata, setFormdata] = useState({});
   const [errors, setErrors] = useState({});
   const [selectedChef, setSelectedChef] = useState({});
@@ -40,31 +40,17 @@ const Addmodal = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =
   };
   const validate = (e) => {
     let tempErrors = {};
-    if (!id) {
-      if (!formdata["chef"] || formdata["chef"] === "") {
-        tempErrors.chef = "Please select chef";
-      }
-    }
     if (!formdata["title"] || formdata["title"] === "") {
       tempErrors.title = "Please enter title";
     }
     if (!formdata["desc"] || formdata["desc"] === "") {
       tempErrors.desc = "Please enter some description";
     }
-    if (!formdata["venue"] || formdata["venue"] === "") {
-      tempErrors.venue = "Please enter venue";
+    if (!formdata["rating"] || formdata["rating"] === "") {
+      tempErrors.rating = "Please enter rating";
     }
-    if (!formdata["seats"] || formdata["seats"] === "") {
-      tempErrors.seats = "Please enter seats";
-    }
-    if (!formdata["seats_chefs_table"] || formdata["seats_chefs_table"] === "") {
-      tempErrors.seats_chefs_table = "Please enter chefs table seats";
-    }
-    if (!formdata["price_chefs_table"] || formdata["price_chefs_table"] === "") {
-      tempErrors.price_chefs_table = "Please enter an price for chefs table";
-    }
-    if (!formdata["price"] || formdata["price"] === "") {
-      tempErrors.price = "Please enter an amount";
+    if (!formdata["from"] || formdata["from"] === "") {
+      tempErrors.from = "Please enter from";
     }
     setErrors(tempErrors);
     if (tempErrors && Object.keys(tempErrors).length === 0) {
@@ -85,8 +71,8 @@ const Addmodal = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =
         formdata["chef"] = id;
       }
 
-      await api.post(axiosURLS.EVENT, formdata);
-      NotificationManager.success("Event Added successfully", "Added", 3000, null, null, "");
+      await api.post(axiosURLS.FEEDBACK, formdata);
+      NotificationManager.success("Feedback Added successfully", "Added", 3000, null, null, "");
 
       fetchData();
     } catch (err) {
@@ -113,27 +99,6 @@ const Addmodal = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =
         <IntlMessages id="pages.add-new-modal-title" />
       </ModalHeader>
       <ModalBody>
-        {!id ? (
-          <FormGroup>
-            <Label>
-              <IntlMessages id="forms.chef" />
-            </Label>
-            <Select
-              components={{ Input: CustomSelectInput }}
-              className="react-select"
-              classNamePrefix="react-select"
-              name="form-field-name"
-              options={chefs.map((chef, i) => {
-                return { label: chef.name, value: chef.id, key: chef.id };
-              })}
-              value={selectedChef}
-              onChange={handleChefSelect}
-            />
-            {errors.chef && <div className="invalid-feedback d-block">{errors.chef}</div>}
-          </FormGroup>
-        ) : (
-          ""
-        )}
         <FormGroup>
           <Label>
             <IntlMessages id="forms.title" />
@@ -150,38 +115,17 @@ const Addmodal = ({ modalOpen, toggleModal, chefTypes, id, fetchData, chefs }) =
         </FormGroup>
         <FormGroup className="mt-3">
           <Label>
-            <IntlMessages id="forms.venue" />
+            <IntlMessages id="forms.rating" />
           </Label>
-          <Input type="textarea" name="venue" value={formdata.venue ? formdata.venue : ""} onChange={handleChange} />
-          {errors.venue && <div className="invalid-feedback d-block">{errors.venue}</div>}
+          <Input type="number" max="5" min="0" name="rating" value={formdata.rating ? formdata.rating : ""} onChange={handleChange} />
+          {errors.rating && <div className="invalid-feedback d-block">{errors.rating}</div>}
         </FormGroup>
         <FormGroup>
           <Label>
-            <IntlMessages id="forms.seats" />
+            <IntlMessages id="forms.from" />
           </Label>
-          <Input type="number" name="seats" value={formdata.seats ? formdata.seats : ""} onChange={handleChange} />
-          {errors.seats && <div className="invalid-feedback d-block">{errors.seats}</div>}
-        </FormGroup>
-        <FormGroup>
-          <Label>
-            <IntlMessages id="forms.price" />
-          </Label>
-          <Input type="number" name="price" value={formdata.price ? formdata.price : ""} onChange={handleChange} />
-          {errors.price && <div className="invalid-feedback d-block">{errors.price}</div>}
-        </FormGroup>
-        <FormGroup>
-          <Label>
-            <IntlMessages id="forms.seats_chefs_table" />
-          </Label>
-          <Input type="number" name="seats_chefs_table" value={formdata.seats_chefs_table ? formdata.seats_chefs_table : ""} onChange={handleChange} />
-          {errors.seats_chefs_table && <div className="invalid-feedback d-block">{errors.seats_chefs_table}</div>}
-        </FormGroup>
-        <FormGroup>
-          <Label>
-            <IntlMessages id="forms.price_chefs_table" />
-          </Label>
-          <Input type="number" name="price_chefs_table" value={formdata.price_chefs_table ? formdata.price_chefs_table : ""} onChange={handleChange} />
-          {errors.price_chefs_table && <div className="invalid-feedback d-block">{errors.price_chefs_table}</div>}
+          <Input type="number" name="from" value={formdata.from ? formdata.from : ""} onChange={handleChange} />
+          {errors.from && <div className="invalid-feedback d-block">{errors.from}</div>}
         </FormGroup>
       </ModalBody>
       <ModalFooter>

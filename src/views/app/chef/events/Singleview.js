@@ -427,6 +427,18 @@ const Singleview = ({ event, setEvent, chefs }) => {
               </p>
               <input onChange={handleChange} type="number" name="price" className="form-control" value={event.price} />
             </FormGroup>
+            <FormGroup>
+              <p className="text-muted text-small mb-1">
+                <IntlMessages id="forms.seats_chefs_table" />
+              </p>
+              <input onChange={handleChange} type="number" name="seats_chefs_table" className="form-control" value={event.seats_chefs_table} />
+            </FormGroup>
+            <FormGroup>
+              <p className="text-muted text-small mb-1">
+                <IntlMessages id="forms.price_chefs_table" />
+              </p>
+              <input onChange={handleChange} type="number" name="price_chefs_table" className="form-control" value={event.price_chefs_table} />
+            </FormGroup>
             <Button color="primary" className={`btn-shadow btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleClick}>
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
