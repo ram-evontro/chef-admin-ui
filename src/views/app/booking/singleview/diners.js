@@ -39,34 +39,32 @@ const DinerItem = ({ item, menu, delivery, deliveryObj, resendLink, isLoadingDun
             ""
           )}
 
-          {item.allergen.length > 0 ? (
+          {
             <p>
-              <b>Allergic to:</b> {item.allergen.join(",")}
+              <b>Allergic to:</b> {item?.allergen}
             </p>
-          ) : (
-            ""
-          )}
+          }
           {item.meal_type ? (
             <p>
-              <b>Meal preference:</b> {item.meal_type}
+              <b>Meal preference:</b> {item?.meal_type}
             </p>
           ) : (
             ""
           )}
           {menu && item.menu ? (
             <>
-            <p>
-              <b>Menu Selected:</b>{" "}
-              <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${item.menu.id}`}>
-                {item.menu.title}
-              </NavLink>
-            </p>
-            <p>
-              <b>Chef:</b>{" "}
-              <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${item.menu.id}`}>
-                {item.menu.user?item.menu.user.name:'NA'}
-              </NavLink>
-            </p>
+              <p>
+                <b>Menu Selected:</b>{" "}
+                <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${item.menu.id}`}>
+                  {item.menu.title}
+                </NavLink>
+              </p>
+              <p>
+                <b>Chef:</b>{" "}
+                <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${item.menu.id}`}>
+                  {item.menu.user ? item.menu.user.name : "NA"}
+                </NavLink>
+              </p>
             </>
           ) : (
             ""

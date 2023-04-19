@@ -328,7 +328,7 @@ const Singleview = ({ match, history }) => {
               <IntlMessages id="pages.details" />
             </NavLink>
           </NavItem>
-          {booking.type === "chef_event" || (booking.type === "virtual_dining" && (booking.menu_selection === "diner" || booking.delivery_selection === "diner")) ? (
+          {booking.type === "chef_event" || booking.type === "chef_table" ? (
             <NavItem>
               <NavLink
                 className={classnames({
@@ -548,7 +548,7 @@ const Singleview = ({ match, history }) => {
               </Colxx>
               <Colxx xxs="12" lg="7" className="mb-4 col-right">
                 <Log logAction={logAction} isLoadingForLog={isLoadingForLog} data={booking.log} className="mb-4" />
-                {((booking.type === "virtual_dining" && booking.delivery_selection === "common")|| booking.type === "chef_table") ? (
+                {(booking.type === "virtual_dining" && booking.delivery_selection === "common") || booking.type === "chef_table" ? (
                   <Card className="mb-2">
                     <CardBody>
                       <CardTitle>
@@ -596,21 +596,21 @@ const Singleview = ({ match, history }) => {
                         <h3>Event Details</h3>
                       </CardTitle>
                       <NavLink location={{}} to={`${adminRoot}/chef/eventview/?event=${booking.event.id}`}>
-                      <p>
-                        <b>Title:</b> {booking.event.title}
-                      </p>
-                      <p>
-                        <b>Description:</b> {booking.event.desc}
-                      </p>
-                      <p>
-                        <b>Venue:</b> {booking.event.venue}
-                      </p>
-                      <p>
-                        <b>Time From:</b> {booking.event.timefrom}
-                      </p>
-                      <p>
-                        <b>Time Till:</b> {booking.event.timetill}
-                      </p>
+                        <p>
+                          <b>Title:</b> {booking.event.title}
+                        </p>
+                        <p>
+                          <b>Description:</b> {booking.event.desc}
+                        </p>
+                        <p>
+                          <b>Venue:</b> {booking.event.venue}
+                        </p>
+                        <p>
+                          <b>Time From:</b> {booking.event.timefrom}
+                        </p>
+                        <p>
+                          <b>Time Till:</b> {booking.event.timetill}
+                        </p>
                       </NavLink>
                     </CardBody>
                   </Card>
@@ -632,7 +632,7 @@ const Singleview = ({ match, history }) => {
                           <b>Menu Desc:</b> {booking.common_menu.desc}
                         </p>
                         <p>
-                          <b>Chef :</b> {booking.common_menu.user?booking.common_menu.user.name:'NA'}
+                          <b>Chef :</b> {booking.common_menu.user ? booking.common_menu.user.name : "NA"}
                         </p>
                       </NavLink>
                     </CardBody>
@@ -664,39 +664,19 @@ const Singleview = ({ match, history }) => {
                     <Card className="mb-2">
                       <CardBody>
                         <CardTitle>
-                          <h3>Chefs Requested</h3>
+                          <h3>Experience Requested</h3>
                         </CardTitle>
                         <Row>
-                          {booking.chefs.map((chef) => (
-                            <React.Fragment key={chef.id}>
+                          {
+                            <React.Fragment key={booking?.common_menu?.id}>
                               <Colxx xxs="8">
-                                <NavLink location={{}} to={`${adminRoot}/chef/view/?p=${chef.id}`}>
-                                  <ThumbnailImage rounded small src={chef.picture} alt="profile" className="m-2" /> {chef.name},({chef.mobile})
+                                <NavLink location={{}} to={`${adminRoot}/chef/menuview/?menu=${booking?.common_menu?.id}`}>
+                                  {booking?.common_menu?.title}
                                 </NavLink>
-                                {!booking.chosen_chef && (booking.status === "Order Placed" || booking.status === "Order Paid") ? (
-                                  <Button
-                                    color="primary"
-                                    className={`btn-shadow btn-multiple-state ${isLoadingForLog ? "show-spinner" : ""}`}
-                                    onClick={() => {
-                                      confirmAction("choose_chef", chef.id);
-                                    }}
-                                  >
-                                    <span className="spinner d-inline-block">
-                                      <span className="bounce1" />
-                                      <span className="bounce2" />
-                                      <span className="bounce3" />
-                                    </span>
-                                    <span className="label">
-                                      <IntlMessages id="pages.choose" />
-                                    </span>
-                                  </Button>
-                                ) : (
-                                  ""
-                                )}
                               </Colxx>
                               <Colxx xxs="4"></Colxx>
                             </React.Fragment>
-                          ))}
+                          }
                         </Row>
                       </CardBody>
                     </Card>
@@ -707,8 +687,7 @@ const Singleview = ({ match, history }) => {
               </Colxx>
             </Row>
           </TabPane>
-          {booking.type === "chef_event" ||
-          (booking.type === "virtual_dining" && (booking.menu_selection === "diner" || booking.delivery_selection === "diner")) ? (
+          {booking.type === "chef_event" || booking.type === "chef_table" ? (
             <TabPane tabId="diners">
               <Row>
                 <Diners

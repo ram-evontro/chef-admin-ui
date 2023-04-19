@@ -178,10 +178,16 @@ const Datatable = ({
         Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
       },
       {
+        Header: "Price",
+        accessor: "price",
+        cellClass: "list-item-heading w-40",
+        Cell: (props) => <React.Fragment>{props.value}</React.Fragment>,
+      },
+      {
         Header: "Image",
         accessor: "image",
         cellClass: "list-item-heading w-40",
-        Cell: (props) => <React.Fragment><img src={props.value} /></React.Fragment>,
+        Cell: (props) => <React.Fragment><img height={100} width={100} src={props.value} /></React.Fragment>,
       },
       {
         Header: "Actions",

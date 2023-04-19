@@ -230,24 +230,27 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     }
     let meal_price = menu.price_per_course ?? 5000;
     let min_course = menu.min_course ?? 3;
-    let newMeal = { _id: Math.floor(Math.random() * 1000000) + 1, min_diner: 1, max_diner: 2, price_per_diner: meal_price * 1.5, min_courses: 6 };
+    let newMeal = { _id: Math.floor(Math.random() * 1000000) + 1, min_diner: 1, max_diner: 2, price_per_diner: meal_price * 1.5, min_courses: 6,max_courses:6 };
     if (tempmenu?.prices?.length == 1) {
       newMeal.min_diner = 3;
       newMeal.max_diner = 4;
       newMeal.price_per_diner = meal_price * 1.4;
       newMeal.min_courses = 6;
+      newMeal.max_courses = 6;
     }
     if (tempmenu?.prices?.length == 2) {
       newMeal.min_diner = 5;
       newMeal.max_diner = 6;
       newMeal.price_per_diner = meal_price * 1.3;
       newMeal.min_courses = 6;
+      newMeal.max_courses = 6;
     }
     if (tempmenu?.prices?.length >= 3) {
       newMeal.min_diner = 7;
       newMeal.max_diner = 999;
       newMeal.price_per_diner = meal_price;
       newMeal.min_courses = min_course;
+      newMeal.max_courses = 10;
     }
     temparr.push(newMeal);
     tempmenu["prices"] = temparr;
