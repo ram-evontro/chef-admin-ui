@@ -213,7 +213,7 @@ const Datatable = ({
         cellClass: "text-muted  w-15",
         Cell: (props) => (
           <>
-            {props.value === "virtual_dining" ? "Virtual Dining" : props.value === "chef_table"?"Privee":"Supper Club"}
+            {props.value === "virtual_dining" ? "Virtual Dining" : props.value === "chef_table"?"Private":"Ticketed"}
             <br />
             Diners:{props.row.original.diner_count}
           </>

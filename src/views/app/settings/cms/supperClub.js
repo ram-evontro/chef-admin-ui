@@ -424,7 +424,7 @@ const SupperClub = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Upcoming Supper Clubs</h4>
+          <h4>Upcoming Tickets</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">
@@ -690,7 +690,7 @@ const SupperClub = () => {
       <RatingsModal fetchData={fetchData} modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} />
       <Row>
         <Col sm="12">
-          <h4>Supper Clubs Look</h4>
+          <h4>Tickets Look</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">

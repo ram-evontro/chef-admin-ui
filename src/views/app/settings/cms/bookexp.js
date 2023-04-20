@@ -735,7 +735,7 @@ const BookExp = () => {
       </Row>
       <Row>
         <Col sm="12">
-          <h4>Upcoming Supper Clubs</h4>
+          <h4>Upcoming Tickets</h4>
         </Col>
         <Colxx xxs="12" className="mb-4">
           <Card className="mb-4">

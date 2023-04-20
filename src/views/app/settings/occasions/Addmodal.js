@@ -54,10 +54,10 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
     let newformdata;
     try {
       if (modalFor === "edit") {
-        await api.patch(axiosURLS.ADDONS_CATEGORIES + "/" + id, formdata);
+        await api.patch(axiosURLS.OCCASION + "/" + id, formdata);
         NotificationManager.success("Addons Edited successfully", "Success", 3000, null, null, "");
       } else {
-        await api.post(axiosURLS.ADDONS_CATEGORIES, formdata);
+        await api.post(axiosURLS.OCCASION, formdata);
         NotificationManager.success("Addons Added successfully", "Success", 3000, null, null, "");
       }
       fetchData();
@@ -77,17 +77,10 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
       <ModalBody>
         <FormGroup>
           <Label>
-            <IntlMessages id="forms.addon_categories" />
+            <IntlMessages id="forms.occasion" />
           </Label>
           <Input type="text" name="name" value={formdata.name ? formdata.name : ""} onChange={handleChange} />
           {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
-        </FormGroup>
-        <FormGroup>
-          <Label>
-            <IntlMessages id="forms.image" />
-          </Label>
-          <Input type="text" name="image" value={formdata.image ? formdata.image : ""} onChange={handleChange} />
-          {errors.image && <div className="invalid-feedback d-block">{errors.image}</div>}
         </FormGroup>
       </ModalBody>
       <ModalFooter>

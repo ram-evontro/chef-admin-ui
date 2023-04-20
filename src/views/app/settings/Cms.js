@@ -147,7 +147,7 @@ const Cms = ({ match }) => {
                 toggle("2");
               }}
             >
-              Privée
+              Private
             </NavLink>
           </NavItem>
           <NavItem>
@@ -157,7 +157,7 @@ const Cms = ({ match }) => {
                 toggle("3");
               }}
             >
-              Supper Club
+              Ticketed
             </NavLink>
           </NavItem>
           <NavItem>

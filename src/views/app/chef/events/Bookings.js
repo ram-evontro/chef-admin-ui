@@ -114,7 +114,7 @@ const Bookings = ({ diners }) => {
         };
         row["meal_type"] = diner.meal_type ? diner.meal_type : "NA";
         row["meal"] = diner.meal ? diner.meal : "NA";
-        row["allergen"] = diner.allergen?.length > 0 ? diner?.allergen.join(",") : diner?.allergen;
+        row["allergen"] = diner?.allergen;
         tempdata.push(row);
       });
       setData(tempdata);

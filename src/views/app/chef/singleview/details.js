@@ -191,13 +191,13 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
         delete temp["feedbacks"];
         temp["tags"] = tagsLO;
         temp["coordinates"] = {};
-        temp["coordinates"]["lat"] = mylat;
-        temp["coordinates"]["lng"] = mylong;
-        if (!temp["address2"] || (temp["address2"] && temp["address2"] === "")) {
-          NotificationManager.error("Address section is mandatory for dunzo delivery please fill address first", "Error", 3000, null, null, "");
-          setLoading(false);
-          return;
-        }
+        // temp["coordinates"]["lat"] = mylat;
+        // temp["coordinates"]["lng"] = mylong;
+        // if (!temp["address2"] || (temp["address2"] && temp["address2"] === "")) {
+        //   NotificationManager.error("Address section is mandatory for dunzo delivery please fill address first", "Error", 3000, null, null, "");
+        //   setLoading(false);
+        //   return;
+        // }
         let formdata = { details: temp };
         let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
         spreadUser(data);

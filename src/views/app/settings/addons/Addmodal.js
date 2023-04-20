@@ -91,8 +91,8 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
     if (!formdata.name) {
       tempErrors.name = "Please enter value";
     }
-    if (!formdata.price) {
-      tempErrors.price = "Please enter price";
+    if (!formdata.link) {
+      tempErrors.link = "Please enter link";
     }
     setErrors(tempErrors);
     if (tempErrors && Object.keys(tempErrors).length === 0) {
@@ -142,10 +142,10 @@ const Addmodal = ({ modalOpen, toggleModal, fetchData, editformdata, modalFor })
         </FormGroup>
         <FormGroup>
           <Label>
-            <IntlMessages id="forms.price" />
+            <IntlMessages id="forms.link" />
           </Label>
-          <Input type="text" name="price" value={formdata.price ? formdata.price : ""} onChange={handleChange} />
-          {errors.price && <div className="invalid-feedback d-block">{errors.price}</div>}
+          <Input type="text" name="link" value={formdata.link ? formdata.link : ""} onChange={handleChange} />
+          {errors.link && <div className="invalid-feedback d-block">{errors.link}</div>}
         </FormGroup>
         <FormGroup>
           <Label>
