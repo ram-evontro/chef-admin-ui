@@ -3,6 +3,7 @@ import { Row, Card, CardBody, Button, CardTitle, Badge } from "reactstrap";
 import { Colxx } from "components/common/CustomBootstrap";
 import IntlMessages from "helpers/IntlMessages";
 import GalleryDetail from "../../elements/GalleryDetail";
+import GalleryDetailWithText from "../../elements/GalleryDetailWithText";
 import SingleLightbox from "components/pages/SingleLightbox";
 import DropzoneComponent from "react-dropzone-component";
 import "dropzone/dist/min/dropzone.min.css";
@@ -29,8 +30,11 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
   const [tempFile, setTempFile] = useState([]);
   const [fileAction, setFileAction] = useState("none");
   const [imageToDelete, setImageToDelete] = useState(null);
+  const [sliderToDelete, setSliderToDelete] = useState(null);
   const [dropZone, setDropZone] = useState(null);
-  const [mapKey, setMapKey] = useState("");
+  const [dropZoneSlider, setDropZoneSlider] = useState(null);
+  const [sliderImage, setSliderImage] = useState({});
+  const [sliderText, setSliderText] = useState("");
   let componentConfig = { postUrl: "no-url" };
   const { upload } = fileapi();
   let eventHandlers = {
@@ -44,6 +48,17 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
     },
     init: (dropzone) => {
       setDropZone(dropzone);
+    },
+  };
+  let eventHandlersForSlider = {
+    addedfile: (file) => {
+      setSliderImage(file);
+    },
+    removedfile: (file) => {
+      setSliderImage(file);
+    },
+    init: (dropZoneSlider) => {
+      setDropZoneSlider(dropZoneSlider);
     },
   };
   useEffect(async () => {
@@ -65,6 +80,13 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
       setImageToDelete(null);
     }
   }, [imageToDelete]);
+  useEffect(async () => {
+    console.log("slider to delete changes");
+    if (sliderToDelete) {
+      await handleClick("deleteslider");
+      setSliderToDelete(null);
+    }
+  }, [sliderToDelete]);
   const djsConfig = {
     thumbnailHeight: 160,
     maxFilesize: 2,
@@ -135,7 +157,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
       setChefTypes(response.data);
       setChefTypesForView(response.data);
       response = await api.get(axiosURLS.INTEGRATIONS);
-      setMapKey(response.data.google_map.api_key);
+      // setMapKey(response.data.google_map.api_key);
     } catch (err) {
       console.log(err);
       console.log(err.response);
@@ -152,6 +174,9 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
     let name = e.target.name;
     tempdata[name] = val;
     setUser(tempdata);
+  };
+  const handleChangeSliderText = (e) => {
+    setSliderText(e.target.value);
   };
   const handleClick = async (attr) => {
     setLoading(true);
@@ -263,6 +288,58 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
         }
       }
     }
+    if (attr === "deleteslider") {
+      if (user.sliders) {
+        let temp = [...user.sliders];
+        const index = temp.findIndex(obj => obj.image === sliderToDelete);
+        if (index > -1) {
+          temp.splice(index, 1);
+        }
+        try {
+          let formdata = { details: { sliders: temp } };
+          let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
+          spreadUser(data);
+          NotificationManager.success("Slider deleted successfully", "Success", 3000, null, null, "");
+        } catch (err) {
+          console.log(err);
+          console.log(err.response);
+          if (err.response) {
+            NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+          }
+        }
+      }
+    }
+    if (attr === "slider") {
+      let temp = { ...user };
+      let sliders = temp?.sliders;
+      if (!sliders) {
+        sliders = [];
+      }
+      if (sliderImage && sliderText !== "") {
+        let slider = {};
+        let fileurl = await upload(sliderImage);
+        slider["image"] = fileurl;
+        slider["text"] = sliderText;
+        sliders.push(slider);
+        try {
+          let formdata = { details: { sliders } };
+          let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
+          spreadUser(data);
+          setSliderImage(null);
+          setSliderText("");
+          NotificationManager.success("User updated successfully", "Success", 3000, null, null, "");
+        } catch (err) {
+          console.log(err);
+          console.log(err.response);
+          if (err.response) {
+            NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+          }
+        }
+      } else {
+        NotificationManager.error("Add text and image both", "Error occured", 3000, null, null, "");
+        // return;
+      }
+    }
     setLoading(false);
     console.log(user);
   };
@@ -290,6 +367,26 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
     let fileurl = await upload(picture);
     temp.push(fileurl);
     let formdata = { details: { gallery_pictures: temp } };
+    let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
+    spreadUser(data);
+    console.log(findIndex);
+    console.log(picture, replace);
+    // let fileUrl = await upload(picture);
+  };
+  const updateSilderImage = async (picture, replace) => {
+    let temp = [];
+    if (user.sliders) {
+      temp = [...user.sliders];
+    }
+    const findIndex = temp.findIndex((row) => {
+      return row === replace ? true : false;
+    });
+    if (findIndex > -1) {
+      temp.splice(findIndex, 1);
+    }
+    let fileurl = await upload(picture);
+    temp.push(fileurl);
+    let formdata = { details: { sliders: temp } };
     let { data } = await api.post(axiosURLS.USER_DETAILS_UPDATE + "/" + id, formdata);
     spreadUser(data);
     console.log(findIndex);
@@ -480,45 +577,38 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
             <CardTitle>
               <IntlMessages id="forms.slider" />
             </CardTitle>
+            <GalleryDetailWithText
+              updateGalleryImage={updateGalleryImage}
+              setSliderToDelete={setSliderToDelete}
+              handleClick={handleClick}
+              images={user.sliders}
+            />
+          </CardBody>
+        </Card>
+        <Card className="mb-4">
+          <CardBody>
+            <CardTitle>
+              <IntlMessages id="forms.add_slider" />
+            </CardTitle>
             <Row>
-              <Colxx xxs="5">
+              <Colxx xxs="12">
                 <p className="text-muted text-small mb-1">
-                  <IntlMessages id="forms.image" />
+                  <IntlMessages id="forms.picture" />
                 </p>
-                <input onChange={handleChange} type="text" name="address1" className="form-control mb-2" value={user.address1} />
+                <DropzoneComponent config={componentConfig} eventHandlers={eventHandlersForSlider} djsConfig={djsConfig} />
               </Colxx>
-              <Colxx xxs="5">
-                <p className="text-muted text-small mb-1">
+              <Colxx xxs="12">
+                <p className="text-muted text-small mt-2">
                   <IntlMessages id="forms.text" />
                 </p>
-                <input onChange={handleChange} type="text" name="address1" className="form-control mb-2" value={user.address1} />
-              </Colxx>
-              <Colxx xxs="2">
-               Delete
+                <input onChange={handleChangeSliderText} type="text" name="slidertext" className="form-control mb-2" value={sliderText} />
               </Colxx>
             </Row>
-
-            <Button
-              color="primary"
-              className={`btn-shadow mt-2 btn-multiple-state ${loading ? "show-spinner" : ""}`}
-              onClick={() => {
-                handleClick("details");
-              }}
-            >
-              <span className="spinner d-inline-block">
-                <span className="bounce1" />
-                <span className="bounce2" />
-                <span className="bounce3" />
-              </span>
-              <span className="label">
-                <IntlMessages id="forms.update" />
-              </span>
-            </Button>
             <Button
               color="primary"
               className={`btn-shadow ml-3 mt-2 btn-multiple-state ${loading ? "show-spinner" : ""}`}
               onClick={() => {
-                handleClick("details");
+                handleClick("slider");
               }}
             >
               <span className="spinner d-inline-block">
@@ -527,7 +617,7 @@ const Details = ({ id, setUserName, setChefTypesForView, setFeedbacks, updateDet
                 <span className="bounce3" />
               </span>
               <span className="label">
-                <IntlMessages id="forms.add_more" />
+                <IntlMessages id="forms.add_slider" />
               </span>
             </Button>
           </CardBody>

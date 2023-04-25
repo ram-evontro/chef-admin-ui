@@ -8,7 +8,7 @@ import api from "helpers/api";
 import * as axiosURLS from "helpers/endpoints";
 import Rating from "components/common/Rating";
 import friendsData from "data/follow";
-const Feedback = ({ feedbacks }) => {
+const Feedback = ({ feedbacks,id }) => {
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const deleteSelected = async (res) => {
@@ -75,7 +75,7 @@ const Feedback = ({ feedbacks }) => {
           );
         })}
       </Row>
-      <Addmodal fetchData={feedbacks} modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} />
+      <Addmodal id={id} fetchData={feedbacks} modalOpen={modalOpen} toggleModal={() => setModalOpen(!modalOpen)} />
       <Deletealert modalOpen={deleteAlert} toggleModal={() => setDeleteAlert(!deleteAlert)} setSureDelete={deleteSelected} />
     </>
   );

@@ -43,8 +43,8 @@ const Addmodal = ({ modalOpen, toggleModal, id, fetchData }) => {
     if (!formdata["title"] || formdata["title"] === "") {
       tempErrors.title = "Please enter title";
     }
-    if (!formdata["desc"] || formdata["desc"] === "") {
-      tempErrors.desc = "Please enter some description";
+    if (!formdata["description"] || formdata["description"] === "") {
+      tempErrors.description = "Please enter some description";
     }
     if (!formdata["rating"] || formdata["rating"] === "") {
       tempErrors.rating = "Please enter rating";
@@ -68,10 +68,10 @@ const Addmodal = ({ modalOpen, toggleModal, id, fetchData }) => {
     let newformdata;
     try {
       if (id) {
-        formdata["chef"] = id;
+        formdata["to"] = id;
       }
 
-      await api.post(axiosURLS.FEEDBACK, formdata);
+      await api.post(axiosURLS.CREATE_FEEDBACK, formdata);
       NotificationManager.success("Feedback Added successfully", "Added", 3000, null, null, "");
 
       fetchData();
@@ -110,8 +110,8 @@ const Addmodal = ({ modalOpen, toggleModal, id, fetchData }) => {
           <Label>
             <IntlMessages id="forms.description" />
           </Label>
-          <Input type="textarea" name="desc" value={formdata.desc ? formdata.desc : ""} onChange={handleChange} />
-          {errors.desc && <div className="invalid-feedback d-block">{errors.desc}</div>}
+          <Input type="textarea" name="description" value={formdata.description ? formdata.description : ""} onChange={handleChange} />
+          {errors.description && <div className="invalid-feedback d-block">{errors.description}</div>}
         </FormGroup>
         <FormGroup className="mt-3">
           <Label>
@@ -124,7 +124,7 @@ const Addmodal = ({ modalOpen, toggleModal, id, fetchData }) => {
           <Label>
             <IntlMessages id="forms.from" />
           </Label>
-          <Input type="number" name="from" value={formdata.from ? formdata.from : ""} onChange={handleChange} />
+          <Input type="text" name="from" value={formdata.from ? formdata.from : ""} onChange={handleChange} />
           {errors.from && <div className="invalid-feedback d-block">{errors.from}</div>}
         </FormGroup>
       </ModalBody>

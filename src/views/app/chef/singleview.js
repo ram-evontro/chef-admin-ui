@@ -229,7 +229,7 @@ const Singleview = ({ match, history }) => {
               <Menu id={id} chefTypes={chefTypes} />
             </TabPane>
             <TabPane tabId="feedback">
-              <Feedback feedbacks={feedbacks} />
+              <Feedback id={id} feedbacks={feedbacks} />
             </TabPane>
             <TabPane tabId="events">
             {activeTab==="events"?(<Events match={match} history={history} forchef={id} />):('')}

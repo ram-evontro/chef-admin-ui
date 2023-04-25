@@ -729,6 +729,9 @@ module.exports = {
   "forms.server_cost": "Server Cost",
   "forms.max_courses":"Max courses",
   "forms.link":"Link",
+  "forms.add_slider":"Add Slider",
+  "forms.rating":"Rating",
+  "forms.from":"Given By",
   /* 07.11.Form Components */
   "form-components.custom-inputs": "Custom Inputs",
   "form-components.checkboxes": "Checkboxes",

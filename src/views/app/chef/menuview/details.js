@@ -159,6 +159,7 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
     delete formdata["id"];
     delete formdata["chef_type"];
     delete formdata["user"];
+    delete formdata["prices"];
     try {
       let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
       NotificationManager.success("Menu updated successfully", "Success", 3000, null, null, "");

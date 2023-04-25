@@ -26,6 +26,7 @@ export const CHEF_TYPES = "chef_types";
 export const CHEF_TYPES_ALL = "chef_types/all";
 export const FEEDBACK_PRAMS = "feedback_types";
 export const FEEDBACK = "feedback";
+export const CREATE_FEEDBACK = "feedback_types/createfeedback";
 export const MEAL_TYPES = "meal_types";
 export const MEAL_TYPES_ALL = "meal_types/all";
 export const MEAL_TIMES = "meal_times";
