@@ -49,6 +49,7 @@ const BookExp = () => {
   const [privateDining, setPrivateDining] = useState({});
   const [gift, setGift] = useState({});
   const [corporate, setCorporate] = useState({});
+  const [duchchef, setDuchchef] = useState({});
   const [joinTable, setJoinTable] = useState({});
   const [patronPrivilage, setPatronPrivilage] = useState({});
   const [blog, setBlog] = useState({});
@@ -147,6 +148,32 @@ const BookExp = () => {
     let name = e.target.name;
     tempdata[type][name] = val;
     setGift(tempdata);
+  };
+  const handleDuchchef = (e, x = -1) => {
+    let tempdata = { ...duchchef };
+    let val = e.target.value;
+    let name = e.target.name;
+    if (x !== -1) {
+      tempdata.content[x][name] = val;
+    } else {
+      tempdata[name] = val;
+    }
+    setDuchchef(tempdata);
+  };
+  const isImageOrVideo = (filename) => {
+    const fileExtension = filename.split('.').pop(); // Get the file extension
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    const videoExtensions = ['mp4', 'mov', 'avi', 'mkv'];
+  
+    const lowercaseExtension = fileExtension.toLowerCase();
+  
+    if (imageExtensions.includes(lowercaseExtension)) {
+      return 'image';
+    } else if (videoExtensions.includes(lowercaseExtension)) {
+      return 'video';
+    } else {
+      return 'other';
+    }
   };
   const handleCorporate = (e, x = -1) => {
     let tempdata = { ...corporate };
@@ -449,6 +476,7 @@ const BookExp = () => {
     setGift(all.gift.details);
     setPatronPrivilage(all.gift.details);
     setCorporate(all.corporate.details);
+    setDuchchef(all.duchchef.details);
     setBlog(all.blog.details);
     setHomeFooter(all.home_footer.details);
   };
@@ -561,11 +589,21 @@ const BookExp = () => {
                       </Button>
                       <br></br>
                       <Col md={11}>
-                        <SingleLightbox
+                      {isImageOrVideo(bookingTypes.privee.image) ===
+                    "video" ? (
+                      <video style={{ height: "300px",objectFit:"cover",width:"100%" }} className="video" autoPlay muted loop>
+                        <source
+                          src={bookingTypes.privee.image}
+                          type="video/mp4"
+                        />
+                      </video>
+                    ) : (
+                      <SingleLightbox
                           large={bookingTypes && bookingTypes.privee ? bookingTypes.privee.image : ""}
                           thumb={bookingTypes && bookingTypes.privee ? bookingTypes.privee.image : ""}
                           className="card-img-top"
                         ></SingleLightbox>
+                    )}
                       </Col>
                     </div>
                   </Colxx>
@@ -590,11 +628,22 @@ const BookExp = () => {
                       </Button>
                       <br></br>
                       <Col md={11}>
-                        <SingleLightbox
-                          large={bookingTypes && bookingTypes.supper_club ? bookingTypes.supper_club.image : ""}
-                          thumb={bookingTypes && bookingTypes.supper_club ? bookingTypes.supper_club.image : ""}
-                          className="card-img-top"
-                        ></SingleLightbox>
+                      {isImageOrVideo(bookingTypes.supper_club.image) ===
+                    "video" ? (
+                      <video style={{ height: "300px",objectFit:"cover",width:"100%" }} className="video" autoPlay muted loop>
+                        <source
+                          src={bookingTypes.supper_club.image}
+                          type="video/mp4"
+                        />
+                      </video>
+                    ) : (
+                      <SingleLightbox
+                      large={bookingTypes && bookingTypes.supper_club ? bookingTypes.supper_club.image : ""}
+                      thumb={bookingTypes && bookingTypes.supper_club ? bookingTypes.supper_club.image : ""}
+                      className="card-img-top"
+                    ></SingleLightbox>
+                    )}
+                        
                       </Col>
                     </div>
                   </Colxx>
@@ -1161,15 +1210,6 @@ const BookExp = () => {
                     <IntlMessages id="bookExperience.update" />
                   </span>
                 </Button>
-                <Button
-                  color="primary"
-                  className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
-                  onClick={(e) => setNewsReviewsModalOpen(!newsReviewsModalOpen)}
-                >
-                  <span className="label">
-                    <IntlMessages id="bookExperience.addNew" />
-                  </span>
-                </Button>
               </Colxx>
             </Row>
           </center>
@@ -1197,7 +1237,7 @@ const BookExp = () => {
                       {foodDrools.content &&
                         foodDrools.content.map((foodDrool, index) => {
                           return (
-                            <Colxx xxs="12" md="4">
+                            <Colxx xxs="12" md="12">
                               <div>
                                 <Button
                                   onClick={() => {
@@ -1216,16 +1256,7 @@ const BookExp = () => {
                                     style={{ display: "none" }}
                                   />
                                 </Button>
-                                <Button
-                                  onClick={() => {
-                                    deleteFoodDrool(index);
-                                  }}
-                                  className="icon-button"
-                                  style={{ float: "left" }}
-                                >
-                                  <i className="simple-icon-trash" />
-                                  <br></br>
-                                </Button>
+                          
                                 <br></br>
                                 <Col>
                                   <SingleLightbox
@@ -1381,6 +1412,55 @@ const BookExp = () => {
                       value={patronPrivilage.patron ? patronPrivilage.patron.button_text : ""}
                       onChange={(e) => handleGift(e, "patron")}
                     />
+                  </Colxx>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
+          <center>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={(e) => handleClickBookExp(e, "gift", gift, "gift")}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="bookExperience.update" />
+              </span>
+            </Button>
+          </center>
+        </Colxx>
+      </Row>
+      <Row>
+        <Col sm="12">
+          <h4>Dutch your Chef</h4>
+        </Col>
+        <Colxx xxs="12" className="mb-4">
+          <Card className="mb-4">
+            <CardBody>
+              <Form>
+                <Row>
+                  <Colxx xxs="12">
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.gift.hashtag" />
+                    </Label>
+                    <Input type="text" name="hashtag" value={gift.duchchef ? gift.duchchef.hashtag : ""} onChange={(e) => handleGift(e, "duchchef")} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.gift.title" />
+                    </Label>
+                    <Input type="text" name="title" value={gift.duchchef ? gift.duchchef.title : ""} onChange={(e) => handleGift(e, "duchchef")} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.gift.description" />
+                    </Label>
+                    <Input type="textarea" name="description" value={gift.duchchef ? gift.duchchef.description : ""} onChange={(e) => handleGift(e, "duchchef")} />
+                    <Label className="mt-4">
+                      <IntlMessages id="bookExperience.gift.button" />
+                    </Label>
+                    <Input type="text" name="button_text" value={gift.duchchef ? gift.duchchef.button_text : ""} onChange={(e) => handleGift(e, "duchchef")} />
                   </Colxx>
                 </Row>
               </Form>

@@ -361,10 +361,88 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
       setIsLoading(false);
     }
   };
+  const handleImportantInfoUpload = async () => {
+    let tempmenu = { ...menu };
+    let formdata = {};
+    if (tempmenu.important_info && tempmenu.important_info.length > 0) {
+      formdata["important_info"] = tempmenu.important_info;
+      setIsLoading(true);
+      try {
+        let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
+        NotificationManager.success("Important info updated successfully", "Success", 3000, null, null, "");
+        setMenu(data);
+      } catch (err) {
+        console.log(err);
+        console.log(err.response);
+        if (err.response) {
+          NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+        }
+      }
+      setIsLoading(false);
+    }
+  };
   const setDate = (val, param) => {
     let tempdata = { ...menu };
     tempdata[param] = val;
     setMenu(tempdata);
+  };
+  const handleImportantInfoDelete = (key) => {
+    let tempmenu = { ...menu };
+    let temparr = [];
+    if (tempmenu.important_info && tempmenu.important_info.length > 0) {
+      temparr = [...tempmenu.important_info];
+      if (key > -1) {
+        temparr.splice(key, 1);
+      }
+      tempmenu["important_info"] = temparr;
+      setMenu(tempmenu);
+    }
+  };
+  const handleImportantInfoChange = (e, key) => {
+    let tempmenu = { ...menu };
+    let val = e.target.value;
+    tempmenu["important_info"][key] = val;
+    setMenu(tempmenu);
+  };
+  const handleAddImportantInfo = () => {
+    let tempmenu = { ...menu };
+    let temparr = [];
+    if (tempmenu.important_info && tempmenu.important_info.length > 0) {
+      temparr = [...tempmenu.important_info];
+    }
+    temparr.push("");
+    tempmenu["important_info"] = temparr;
+    setMenu(tempmenu);
+  };
+  const updateGalleryImage = async (picture, replace) => {
+    let temp = [];
+    if (menu.pictures) {
+      temp = [...menu.pictures];
+    }
+    const findIndex = temp.findIndex((row) => {
+      return row === replace ? true : false;
+    });
+    if (findIndex > -1) {
+      temp.splice(findIndex, 1);
+    }
+    let fileurl = await upload(picture);
+    temp.push(fileurl);
+    let formdata = { pictures: temp };
+    try {
+      let { data } = await api.patch(axiosURLS.MENU + "/" + menu.id, formdata);
+      setMenu(data);
+      setUserGalleryPic([]);
+      setFileAction("none");
+      dropZone.removeAllFiles(true);
+      setTempFile(null);
+      NotificationManager.success("Picture cropped successfully", "Success", 3000, null, null, "");
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      if (err.response) {
+        NotificationManager.error(err.response.data.message, "Error occured", 3000, null, null, "");
+      }
+    }
   };
   return (
     <Row>
@@ -463,7 +541,7 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
             <CardTitle>
               <IntlMessages id="pages.gallery" />
             </CardTitle>
-            <GalleryDetail setImageToDelete={setImageToDelete} handleClick={deletePicture} images={menu.pictures} />
+            <GalleryDetail updateGalleryImage={updateGalleryImage} setImageToDelete={setImageToDelete} handleClick={deletePicture} images={menu.pictures} />
           </CardBody>
         </Card>
         <Card className="mb-4">
@@ -519,6 +597,9 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
         </Card>
         <Card className="mb-4">
           <CardBody>
+          <CardTitle>
+              <IntlMessages id="pages.price_breakup" />
+            </CardTitle>
             {menu.prices &&
               menu.prices.map(
                 (price) =>
@@ -538,6 +619,65 @@ const Details = ({ menu, setMenu, mealTypes, chefTypes, cuisines, courses }) => 
               </span>
             </Button>
             <Button color="primary" className={`btn-shadow ml-3 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={addPriceCard}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.add_more" />
+              </span>
+            </Button>
+          </CardBody>
+        </Card>
+        <Card className="mb-4">
+          <CardBody>
+            <CardTitle>
+              <IntlMessages id="pages.important_info" />
+            </CardTitle>
+            <Row>
+              {menu.important_info &&
+                menu.important_info.map((row, key) => (
+                  <Colxx xxs="12">
+                    <div className="position-relative text-right mt-n4 mr-n4">
+                      <Button
+                        onClick={() => {
+                          handleImportantInfoDelete(key);
+                        }}
+                        color="primary"
+                        className="icon-button"
+                      >
+                        <i className="simple-icon-trash" />
+                      </Button>
+                    </div>
+                    <input
+                      type="text"
+                      onChange={(e) => {
+                        handleImportantInfoChange(e, key);
+                      }}
+                      className="form-control mb-5"
+                      value={row}
+                    />
+                  </Colxx>
+                ))}
+            </Row>
+            <Button
+              color="primary"
+              className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`}
+              onClick={() => {
+                handleImportantInfoUpload();
+              }}
+            >
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.update" />
+              </span>
+            </Button>
+            <Button color="primary" className={`btn-shadow ml-3 mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleAddImportantInfo}>
               <span className="spinner d-inline-block">
                 <span className="bounce1" />
                 <span className="bounce2" />

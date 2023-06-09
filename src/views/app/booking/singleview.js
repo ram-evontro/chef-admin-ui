@@ -297,6 +297,15 @@ const Singleview = ({ match, history }) => {
               ) : (
                 ""
               )}
+              {booking.status !== "Order Completed" && booking.status !== "Order Cancelled" ? (
+                <DropdownItem onClick={() => {
+                  resendLink(booking.user.id, "fill_diner_form");
+                }}>
+                  Resend Host form to fill diner details
+                </DropdownItem>
+              ) : (
+                ""
+              )}
               {booking.type === "virtual_dining" && booking.status == "Order Paid" ? (
                 <DropdownItem
                   onClick={() => {

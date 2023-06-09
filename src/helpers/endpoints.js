@@ -1,4 +1,4 @@
-export const BASE_URL = "https://chefv2.hypervergedemo.site/v1/"; //'http://localhost:8000/v1/'; //
+export const BASE_URL = "https://backend.chefsaporter.com/v1/"; //'http://localhost:8001/v1/'; // 
 export const LOGIN = "auth/login";
 export const LOGOUT = "auth/logout";
 export const FORGOT_PASSWORD = "auth/forgot-password";
@@ -63,6 +63,7 @@ export const GIFT_CARDS = "cms/admin/gift_card"
 export const PRIVATE_EXP = "cms/private_experiences";
 export const JOIN_US = "cms/admin/join_us";
 export const CONTACT_US = "cms/admin/contact_us";
+export const COMMON_FOOTER = "cms/admin/common_footer";
 export const DUNZO = "util/dunzo";
 export const DUNZO_EDIT = "util/dunzoedit";
 export const DUNZO_EMAIL = "util/dunzosendemail";

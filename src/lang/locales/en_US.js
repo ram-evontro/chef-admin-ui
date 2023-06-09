@@ -372,6 +372,8 @@ module.exports = {
   "pages.dates": "Dates",
   "pages.what_to_expect": "What to expect",
   "pages.events": "TICKETED",
+  "pages.price_breakup":"Price Breakup",
+  "pages.important_info": "Important info",
   /* 06.Applications */
 
   /* 06.01.Chat */

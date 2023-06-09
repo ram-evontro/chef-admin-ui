@@ -32,7 +32,7 @@ const validateEmail = (value) => {
 
 const Login = ({ history, loading, error, loginUserAction }) => {
   const [email] = useState('admin@admin.com');
-  const [password] = useState('As123456');
+  const [password] = useState('');
 
   useEffect(() => {
     if (error) {

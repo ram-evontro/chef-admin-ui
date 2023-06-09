@@ -36,6 +36,7 @@ import Patron from "./cms/patron";
 import GiftCards from "./cms/giftCards";
 import JoinUs from "./cms/joinUs";
 import ContactUs from "./cms/contactUs";
+import CommonFooter from "./cms/commonFooter";
 
 const Cms = ({ match }) => {
   const [bookExperience, setBookExperience] = useState({});
@@ -46,7 +47,7 @@ const Cms = ({ match }) => {
   const [formdata, setFormdata] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("10");
+  const [activeTab, setActiveTab] = useState("1");
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -230,6 +231,16 @@ const Cms = ({ match }) => {
               Contact Us
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: activeTab === "11" })}
+              onClick={() => {
+                toggle("11");
+              }}
+            >
+              Common Footer
+            </NavLink>
+          </NavItem>
         </Nav>
         <br></br>
         <TabContent activeTab={activeTab}>
@@ -262,6 +273,9 @@ const Cms = ({ match }) => {
           </TabPane>
           <TabPane tabId="10">
             <ContactUs/>
+          </TabPane>
+          <TabPane tabId="11">
+            <CommonFooter/>
           </TabPane>
         </TabContent>
       </div>
