@@ -103,11 +103,11 @@ const Singleview = ({ event, setEvent, chefs }) => {
       try{
         let { data } = await api.patch(axiosURLS.EVENT + "/" + event.id, formdata);
         if(data){
-          NotificationManager.success('fields added', "Error", 3000);
+          NotificationManager.success('fields added', "Sucess", 3000);
         }
       }
       catch(error){
-        NotificationManager.success('Something went wrong', "Error", 3000);
+        NotificationManager.error('Empty fields', "Error", 3000);
         console.log(error.message);
       }
     }
@@ -600,6 +600,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
                           onChange={(e) => handleCategoryChange(e, categoryIndex)}
                           placeholder="Category Title"
                           className="form-control flex-grow-1 mr-2"
+                          required
                         />
                         <Button color="primary" onClick={() => handleDeleteCategory(categoryIndex)} style={{ width: "20%" }}>
                           <i className="simple-icon-trash" />
@@ -613,6 +614,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
                             value={dish.heading}
                             onChange={(e) => handleDishChange(e, categoryIndex, dishIndex, "heading")}
                             placeholder="Heading"
+                            required
                           />
                           <input
                             type="text"
@@ -620,6 +622,7 @@ const Singleview = ({ event, setEvent, chefs }) => {
                             value={dish.description}
                             onChange={(e) => handleDishChange(e, categoryIndex, dishIndex, "description")}
                             placeholder="Description"
+                            required
                           />
                           <div style={{ display: "flex", gap: "10px", justifyContent: "start" }}>
                             <Button onClick={() => handleDeleteDish(categoryIndex, dishIndex)} color="primary">
