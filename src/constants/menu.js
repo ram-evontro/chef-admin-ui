@@ -48,7 +48,6 @@ const data = [
     icon: "iconsminds-headphone",
     label: "menu.requests",
     to: `${adminRoot}/menu`,
-    notification:2,
     subs: [
       {
         icon: "simple-icon-phone",

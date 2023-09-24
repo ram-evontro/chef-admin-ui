@@ -589,7 +589,7 @@ const BookExp = () => {
                       </Button>
                       <br></br>
                       <Col md={11}>
-                      {isImageOrVideo(bookingTypes.privee.image) ===
+                      {bookingTypes && bookingTypes.privee && isImageOrVideo(bookingTypes.privee.image) ===
                     "video" ? (
                       <video style={{ height: "300px",objectFit:"cover",width:"100%" }} className="video" autoPlay muted loop>
                         <source
@@ -628,7 +628,7 @@ const BookExp = () => {
                       </Button>
                       <br></br>
                       <Col md={11}>
-                      {isImageOrVideo(bookingTypes.supper_club.image) ===
+                      {bookingTypes && bookingTypes.supper_club &&isImageOrVideo(bookingTypes.supper_club.image) ===
                     "video" ? (
                       <video style={{ height: "300px",objectFit:"cover",width:"100%" }} className="video" autoPlay muted loop>
                         <source
