@@ -376,7 +376,7 @@ const Singleview = ({ match, history }) => {
                       <b>Diner Count:</b> {booking.diner_count}
                     </p>
                     <p>
-                      <b>Experience date:</b> {moment(booking.booking_date).format("MMM D, Y HH:mm")}
+                      <b>Experience date:</b> {moment.utc(booking.booking_date).format('MMM D, YYYY')}
                       {booking.dunzo_taskids && booking.dunzo_taskids.length === 0 && booking.type === "virtual_dining" ? (
                         <button onClick={updateBookingTime} className="btn btn-outline-primary" title="Edit delivery Time">
                           <i className="simple-icon-pencil" />
@@ -384,6 +384,12 @@ const Singleview = ({ match, history }) => {
                       ) : (
                         ""
                       )}
+                    </p>
+                    <p>
+                      <b>Slot:</b> {booking.slot}
+                    </p>
+                    <p>
+                      <b>Meal:</b> {booking.meal}
                     </p>
                     {booking.type !== "chef_event" ? (
                       <>
