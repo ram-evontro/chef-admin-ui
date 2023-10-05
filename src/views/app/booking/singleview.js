@@ -386,7 +386,7 @@ const Singleview = ({ match, history }) => {
                       )}
                     </p>
                     <p>
-                      <b>Slot:</b> {booking.slot || "10:00 AM to 12:00 PM" }
+                      <b>Slot:</b> {booking.slot}
                     </p>
                     <p>
                       <b>Meal:</b> {booking.meal}
