@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Row,
   Card,
@@ -52,10 +52,11 @@ const BookExp = () => {
   const [duchchef, setDuchchef] = useState({});
   const [joinTable, setJoinTable] = useState({});
   const [patronPrivilage, setPatronPrivilage] = useState({});
-  const [blog, setBlog] = useState({});
+  const [blog, setBlog] = useState({ content: [] });
   const [homeFooter, setHomeFooter] = useState({});
   const [bookExperience, setBookExperience] = useState({});
   const { upload } = fileapi();
+  const imageRef = useRef();
 
   const handleHeader = (e) => {
     let tempdata = { ...header };
@@ -161,18 +162,18 @@ const BookExp = () => {
     setDuchchef(tempdata);
   };
   const isImageOrVideo = (filename) => {
-    const fileExtension = filename.split('.').pop(); // Get the file extension
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
-    const videoExtensions = ['mp4', 'mov', 'avi', 'mkv'];
-  
-    const lowercaseExtension = fileExtension.toLowerCase();
-  
+    const fileExtension = filename?.split(".").pop(); // Get the file extension
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp"];
+    const videoExtensions = ["mp4", "mov", "avi", "mkv"];
+
+    const lowercaseExtension = fileExtension?.toLowerCase();
+
     if (imageExtensions.includes(lowercaseExtension)) {
-      return 'image';
+      return "image";
     } else if (videoExtensions.includes(lowercaseExtension)) {
-      return 'video';
+      return "video";
     } else {
-      return 'other';
+      return "other";
     }
   };
   const handleCorporate = (e, x = -1) => {
@@ -201,7 +202,15 @@ const BookExp = () => {
     let tempdata = { ...blog };
     let val = e.target.value;
     let name = e.target.name;
+
+    if (!tempdata.content) {
+      tempdata.content = [];
+    }
+
     if (x !== -1) {
+      if (!tempdata.content[x]) {
+        tempdata.content[x] = { title: "" };
+      }
       tempdata.content[x][name] = val;
     } else {
       tempdata[name] = val;
@@ -220,14 +229,15 @@ const BookExp = () => {
     setHomeFooter(tempdata);
   };
   const handleClickBookExp = async (e, section, component, type) => {
+    console.log(component, "blog values :>>>>>>");
     setIsLoading(true);
     let newfomdata = { section: section, type: type, details: { ...component } };
+    console.log("newfomdata", component);
     try {
-      await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, newfomdata);
+      if (component) await api.patch(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE, newfomdata);
       NotificationManager.success("Saved successfully", "Saved", 3000, null, null, "");
     } catch (err) {
       console.log(err);
-      console.log(err.response);
       setIsLoading(false);
       if (err.response) {
         NotificationManager.error(err.response.data.message, "Update Error", 3000, null, null, "");
@@ -385,8 +395,15 @@ const BookExp = () => {
   const changeImageBlog = async (e, imageSection, section, component, i, type) => {
     e.preventDefault();
     let formdata = { ...component };
+    console.log(component, "component");
     if (e.target.files[0]) {
       let fileurl = await upload(e.target.files[0]);
+      if (!formdata.content) {
+        formdata.content = [];
+      }
+      if (!formdata.content[i]) {
+        formdata.content[i] = {};
+      }
       formdata.content[i][imageSection] = fileurl;
     }
     try {
@@ -447,7 +464,7 @@ const BookExp = () => {
     try {
       let { data } = await api.get(axiosURLS.BASE_URL + axiosURLS.BOOK_AN_EXPERIENCE);
       setBookExperience(data);
-      valueSetter(data);
+            valueSetter(data);
     } catch (err) {
       console.log(err);
       console.log(err.response);
@@ -463,22 +480,22 @@ const BookExp = () => {
     data.map((ele) => {
       all[ele.section] = ele;
     });
-    setHeader(all.header.details);
-    setBookingTypes(all.booking_types.details);
-    setContinueBrowsing(all.continue_browsing.details);
-    setUpcomingSupperClubs(all.upcoming_supper_clubs.details);
-    setChefsPrivateDining(all.chefs_private_dining.details);
-    setReviews(all.reviews.details);
-    setConsciousDining(all.what_we_cook.details);
-    setNewsReviews(all.news_reviews.details);
-    setFoodDrools(all.food_drools.details);
-    setPrivateDining(all.private_dining.details);
-    setGift(all.gift.details);
-    setPatronPrivilage(all.gift.details);
-    setCorporate(all.corporate.details);
-    setDuchchef(all.duchchef.details);
-    setBlog(all.blog.details);
-    setHomeFooter(all.home_footer.details);
+    all?.header && setHeader(all.header.details);
+    all?.booking_types && setBookingTypes(all.booking_types.details);
+    all?.continue_browsing && setContinueBrowsing(all.continue_browsing.details);
+    all?.upcoming_supper_clubs && setUpcomingSupperClubs(all.upcoming_supper_clubs.details);
+    all?.chefs_private_dining && setChefsPrivateDining(all.chefs_private_dining.details);
+    all?.reviews && setReviews(all.reviews.details);
+    all?.what_we_cook && setConsciousDining(all.what_we_cook.details);
+    all?.news_reviews && setNewsReviews(all.news_reviews.details);
+    all?.food_drools && setFoodDrools(all.food_drools.details);
+    all?.private_dining && setPrivateDining(all.private_dining.details);
+    all?.gift && setGift(all.gift.details);
+    all?.gift && setPatronPrivilage(all.gift.details);
+    all?.corporate && setCorporate(all.corporate.details);
+    all?.duchchef && setDuchchef(all.duchchef.details);
+    all?.blog && setBlog(all?.blog?.details);
+    all?.home_footer && setHomeFooter(all.home_footer.details);
   };
   return loading ? (
     <div className="loading" />
@@ -1256,7 +1273,7 @@ const BookExp = () => {
                                     style={{ display: "none" }}
                                   />
                                 </Button>
-                          
+
                                 <br></br>
                                 <Col>
                                   <SingleLightbox
@@ -1456,7 +1473,12 @@ const BookExp = () => {
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.gift.description" />
                     </Label>
-                    <Input type="textarea" name="description" value={gift.duchchef ? gift.duchchef.description : ""} onChange={(e) => handleGift(e, "duchchef")} />
+                    <Input
+                      type="textarea"
+                      name="description"
+                      value={gift.duchchef ? gift.duchchef.description : ""}
+                      onChange={(e) => handleGift(e, "duchchef")}
+                    />
                     <Label className="mt-4">
                       <IntlMessages id="bookExperience.gift.button" />
                     </Label>
@@ -1621,8 +1643,8 @@ const BookExp = () => {
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={blog && blog.content ? blog.content[0].image : ""}
-                              thumb={blog && blog.content ? blog.content[0].image : ""}
+                              large={blog && blog.content ? blog?.content[0]?.image : ""}
+                              thumb={blog && blog.content ? blog?.content[0]?.image : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -1650,8 +1672,8 @@ const BookExp = () => {
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={blog && blog.content ? blog.content[1].image : ""}
-                              thumb={blog && blog.content ? blog.content[1].image : ""}
+                              large={blog && blog.content ? blog?.content[1]?.image : ""}
+                              thumb={blog && blog.content ? blog?.content[1]?.image : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -1679,8 +1701,8 @@ const BookExp = () => {
                           <br></br>
                           <Col md={11}>
                             <SingleLightbox
-                              large={blog && blog.content ? blog.content[2].image : ""}
-                              thumb={blog && blog.content ? blog.content[2].image : ""}
+                              large={blog && blog.content ? blog?.content[2]?.image : ""}
+                              thumb={blog && blog.content ? blog?.content[2]?.image : ""}
                               className="card-img-top"
                             ></SingleLightbox>
                           </Col>
@@ -1692,19 +1714,19 @@ const BookExp = () => {
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.blog.content[0].title" />
                         </Label>
-                        <Input type="text" name="title" value={blog.content ? blog.content[0].title : ""} onChange={(e) => handleBlog(e, 0)} />
+                        <Input type="text" name="title" value={blog.content ? blog?.content[0]?.title : ""} onChange={(e) => handleBlog(e, 0)} />
                       </Colxx>
                       <Colxx xxs="12" md="4">
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.blog.content[1].title" />
                         </Label>
-                        <Input type="text" name="title" value={blog.content ? blog.content[1].title : ""} onChange={(e) => handleBlog(e, 1)} />
+                        <Input type="text" name="title" value={blog.content ? blog?.content[1]?.title : ""} onChange={(e) => handleBlog(e, 1)} />
                       </Colxx>
                       <Colxx xxs="12" md="4">
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.blog.content[2].title" />
                         </Label>
-                        <Input type="text" name="title" value={blog.content ? blog.content[2].title : ""} onChange={(e) => handleBlog(e, 2)} />
+                        <Input type="text" name="title" value={blog.content ? blog?.content[2]?.title : ""} onChange={(e) => handleBlog(e, 2)} />
                       </Colxx>
                     </Row>
                     <Row>
@@ -1712,19 +1734,34 @@ const BookExp = () => {
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.blog.content[0].description" />
                         </Label>
-                        <Input type="textarea" name="description" value={blog.content ? blog.content[0].description : ""} onChange={(e) => handleBlog(e, 0)} />
+                        <Input
+                          type="textarea"
+                          name="description"
+                          value={blog.content ? blog?.content[0]?.description : ""}
+                          onChange={(e) => handleBlog(e, 0)}
+                        />
                       </Colxx>
                       <Colxx xxs="12" md="4">
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.blog.content[1].description" />
                         </Label>
-                        <Input type="textarea" name="description" value={blog.content ? blog.content[1].description : ""} onChange={(e) => handleBlog(e, 1)} />
+                        <Input
+                          type="textarea"
+                          name="description"
+                          value={blog.content ? blog?.content[1]?.description : ""}
+                          onChange={(e) => handleBlog(e, 1)}
+                        />
                       </Colxx>
                       <Colxx xxs="12" md="4">
                         <Label className="mt-4">
                           <IntlMessages id="bookExperience.blog.content[2].description" />
                         </Label>
-                        <Input type="textarea" name="description" value={blog.content ? blog.content[2].description : ""} onChange={(e) => handleBlog(e, 2)} />
+                        <Input
+                          type="textarea"
+                          name="description"
+                          value={blog.content ? blog?.content[2]?.description : ""}
+                          onChange={(e) => handleBlog(e, 2)}
+                        />
                       </Colxx>
                     </Row>
                   </Colxx>

@@ -8,6 +8,8 @@ import { Badge, CustomInput } from "reactstrap";
 import { useTable, usePagination, useSortBy, useFilters } from "react-table";
 import classnames from "classnames";
 import DatatablePagination from "../../elements/DataTablePagination";
+import api from "helpers/api";
+import * as axiosURLS from "helpers/endpoints";
 
 const Table = ({
   columns,
@@ -63,6 +65,7 @@ const Table = ({
 
     console.log(sortBy);
   }, [sortBy]);
+
   return (
     <>
       <table
@@ -84,6 +87,7 @@ const Table = ({
                   {column.render("Header")}
                   <span />
                 </th>
+                
               ))}
             </tr>
           ))}
@@ -150,6 +154,8 @@ const Datatable = ({
     delete newData["Actions"];
     // editSelected(newData);
   };
+
+
   const cols = React.useMemo(
     () => [
       {
@@ -224,6 +230,7 @@ const Datatable = ({
               title="Click to change status"
               onClick={() => {
                 updateAction(row.values.status ? "deactivate" : "activate", row.values.id);
+                toggleStatus(row.values.status ? "deactivate" : "activate", row.values.id);
               }}
               href="javascript:;"
             >
@@ -270,6 +277,26 @@ const Datatable = ({
     ],
     [selectedItems]
   );
+  const toggleStatus = async (str, id) => {
+    
+    let formdata = {};
+    
+    if (str === "activate") {
+      formdata["status"] = true;
+    } else {
+      formdata["status"] = false;
+    }
+    try {
+      let {data} = await api.get(axiosURLS.USERS + "/" + id);
+      data?.experinces && (await Promise.all(
+          data?.experinces.map?.(async (item) => {
+            await api.patch(axiosURLS.MENU + "/" + item?.id, formdata);
+          })
+        ));
+    } catch (error) {
+      console.log(error);
+    }
+  };   
   return (
     <div className="mb-4">
       <Table
@@ -290,4 +317,4 @@ const Datatable = ({
   );
 };
 
-export default Datatable;
+export default Datatable;

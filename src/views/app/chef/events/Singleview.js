@@ -35,6 +35,90 @@ const Singleview = ({ event, setEvent, chefs }) => {
   const [mylong, setLong] = useState(77.58477366143252);
   const [mapKey, setMapKey] = useState("");
   const autoComplete = useRef(null);
+
+  const [ticketedMenu, setTicketedMenu] = useState([]);
+
+  const addCategory = () => {
+    setTicketedMenu((prevData) => [
+      ...prevData,
+      {
+        title: "",
+        data: [
+          {
+            heading: "",
+            description: "",
+          },
+        ],
+      },
+    ]);
+  };
+
+  const addDish = (categoryIndex) => {
+    const updatedData = [...ticketedMenu];
+    updatedData[categoryIndex].data.push({
+      heading: "",
+      description: "",
+    });
+    setTicketedMenu(updatedData);
+  };
+
+  const handleCategoryChange = (e, categoryIndex) => {
+    const updatedData = [...ticketedMenu];
+    updatedData[categoryIndex].title = e.target.value;
+    setTicketedMenu(updatedData);
+  };
+
+  const handleDishChange = (e, categoryIndex, dishIndex, field) => {
+    const updatedData = [...ticketedMenu];
+    updatedData[categoryIndex].data[dishIndex][field] = e.target.value;
+    setTicketedMenu(updatedData);
+  };
+
+  const handleDeleteDish = (categoryIndex, dishIndex) => {
+    const updatedData = [...ticketedMenu];
+    updatedData[categoryIndex].data.splice(dishIndex, 1);
+    setTicketedMenu(updatedData);
+  };
+
+  const handleDeleteCategory = (categoryIndex) => {
+    const updatedData = [...ticketedMenu];
+    updatedData.splice(categoryIndex, 1);
+    setTicketedMenu(updatedData);
+  };
+
+  const handleUpdate = async () => {
+    let formdata = {...event};
+    if(ticketedMenu.length === 0){
+      NotificationManager.error('empty fields', "Error", 3000);
+    }
+    else {
+      formdata["ticketed_menu"] = ticketedMenu;
+      delete formdata["dates"];
+      delete formdata["chef"];
+      delete formdata["what_to_expect"];
+      delete formdata["id"];
+      delete formdata["bookings"];
+      delete formdata["booking_count"];
+      delete formdata["booking_by_date"];
+      try{
+        let { data } = await api.patch(axiosURLS.EVENT + "/" + event.id, formdata);
+        if(data){
+          NotificationManager.success('fields added', "Sucess", 3000);
+        }
+      }
+      catch(error){
+        NotificationManager.error('Empty fields', "Error", 3000);
+        console.log(error.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    let {ticketed_menu} = {...event};
+    setTicketedMenu(ticketed_menu);
+  }, [])
+
+  //end here
   useEffect(async () => {
     setSelectedChef({ key: event.chef.id, value: event.chef.id, label: event.chef.name });
     if (event.lat) {
@@ -495,6 +579,85 @@ const Singleview = ({ event, setEvent, chefs }) => {
               </span>
               <span className="label">
                 <IntlMessages id="forms.upload" />
+              </span>
+            </Button>
+          </CardBody>
+        </Card>
+        <Card className="mb-4">
+          <CardBody>
+            <CardTitle>
+              <IntlMessages id="pages.ticketed_menu" defaultMessage="Ticketed Menu" />
+            </CardTitle>
+            <Colxx xxs="12">
+              <Row>
+                {ticketedMenu &&
+                  ticketedMenu.map((category, categoryIndex) => (
+                    <div key={categoryIndex} className="w-100 my-2 p-2" style={{ border: "1px solid #dbcec5", borderRadius: "10px" }}>
+                      <div className="mb-4 d-flex align-items-center">
+                        <input
+                          type="text"
+                          value={category.title}
+                          onChange={(e) => handleCategoryChange(e, categoryIndex)}
+                          placeholder="Category Title"
+                          className="form-control flex-grow-1 mr-2"
+                          required
+                        />
+                        <Button color="primary" onClick={() => handleDeleteCategory(categoryIndex)} style={{ width: "20%" }}>
+                          <i className="simple-icon-trash" />
+                        </Button>
+                      </div>
+                      {category.data.map((dish, dishIndex) => (
+                        <div key={dishIndex} className="w-80 my-3 p-2" style={{ border: "1px solid #dbcec5", borderRadius: "10px" }}>
+                          <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={dish.heading}
+                            onChange={(e) => handleDishChange(e, categoryIndex, dishIndex, "heading")}
+                            placeholder="Heading"
+                            required
+                          />
+                          <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={dish.description}
+                            onChange={(e) => handleDishChange(e, categoryIndex, dishIndex, "description")}
+                            placeholder="Description"
+                            required
+                          />
+                          <div style={{ display: "flex", gap: "10px", justifyContent: "start" }}>
+                            <Button onClick={() => handleDeleteDish(categoryIndex, dishIndex)} color="primary">
+                              <i className="simple-icon-trash" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="pl-2" style={{ display: "flex", justifyContent: "start" }}>
+                        <Button onClick={() => addDish(categoryIndex)} color="primary">
+                          +
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+              </Row>
+            </Colxx>
+            <Button color="primary" className={`btn-shadow mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={handleUpdate}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.update" />
+              </span>
+            </Button>
+            <Button color="primary" className={`btn-shadow ml-3 mt-4 btn-multiple-state ${isLoading ? "show-spinner" : ""}`} onClick={addCategory}>
+              <span className="spinner d-inline-block">
+                <span className="bounce1" />
+                <span className="bounce2" />
+                <span className="bounce3" />
+              </span>
+              <span className="label">
+                <IntlMessages id="forms.add_more" />
               </span>
             </Button>
           </CardBody>
