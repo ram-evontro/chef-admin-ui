@@ -98,6 +98,7 @@ const Table = ({
               <tr {...row.getRowProps()}>
                 {row.cells.map((cell, cellIndex) => (
                   <td
+                  style={{ userSelect: 'text', cursor: "default"}} 
                     key={`td_${cellIndex}`}
                     {...cell.getCellProps({
                       className: cell.column.cellClass,
