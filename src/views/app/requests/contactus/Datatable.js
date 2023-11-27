@@ -217,6 +217,18 @@ const Datatable = ({
            
           </>
         ),
+      },
+      {
+        Header: "Date",
+        accessor: "createdAt",
+        cellClass: "w-20",
+        Cell: (props) => (
+          <>
+           
+              { moment(props.value).format('MMM DD, YYYY')}
+           
+          </>
+        ),
       }
     ],
     [selectedItems]
