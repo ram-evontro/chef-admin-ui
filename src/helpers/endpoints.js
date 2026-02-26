@@ -1,4 +1,4 @@
-export const BASE_URL = "https://backend.chefsaporter.com/v1/"; //'http://localhost:8001/v1/'; //
+export const BASE_URL = "http://localhost:8001/v1/"; //"https://backend.chefsaporter.com/v1/";
 export const LOGIN = "auth/login";
 export const LOGOUT = "auth/logout";
 export const FORGOT_PASSWORD = "auth/forgot-password";
